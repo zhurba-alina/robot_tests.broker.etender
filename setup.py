@@ -1,11 +1,12 @@
 from setuptools import setup
 
-name = 'robot_tests.broker.etender'
+broker_name = 'etender'
+pkg_name = 'robot_tests.broker.{}'.format(broker_name)
 
-setup(name=name,
+setup(name=pkg_name,
       version='0.0.dev1',
-      description='E-tender broker for OpenProcurement Robot tests',
+      description='{} broker for OpenProcurement Robot tests'.format(broker_name),
       author='',
       author_email='',
-      url='https://github.com/openprocurement/{}'.format(name),
+      url='https://github.com/openprocurement/{}'.format(pkg_name),
       )

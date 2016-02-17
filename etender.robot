@@ -211,6 +211,8 @@ Set Multi Ids
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Wait Until Page Contains   Прозорі закупівлі    10
   sleep  1
+  Wait Until Element Is Visible   jquery=input[ng-change='searchChange()']
+  sleep  1
   Input Text  jquery=input[ng-change='searchChange()']  ${ARGUMENTS[1]}
   sleep  1
   ${timeout_on_wait}=  Get Broker Property By Username  ${ARGUMENTS[0]}  timeout_on_wait

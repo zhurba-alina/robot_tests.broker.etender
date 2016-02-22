@@ -53,10 +53,10 @@ ${locator.questions[0].answer}                                 xpath=(//div[@tex
   Run Keyword If   '${ARGUMENTS[0]}' != 'E-tender_Viewer'   Login
 
 Login
-  Wait Until Page Contains Element   id=inputUsername   10
+  Wait Until Page Contains Element   id=inputUsername   60
   Sleep  1
   Input text   id=inputUsername      ${USERS.users['${username}'].login}
-  Wait Until Page Contains Element   id=inputPassword   10
+  Wait Until Page Contains Element   id=inputPassword   60
   Sleep  1
   Input text   id=inputPassword      ${USERS.users['${username}'].password}
   Click Button   id=btn_submit
@@ -211,7 +211,7 @@ Set Multi Ids
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Wait Until Page Contains   Прозорі закупівлі    10
   sleep  1
-  Wait Until Element Is Visible   jquery=input[ng-change='searchChange()']
+  Wait Until Page Contains Element    jquery=input[ng-change='searchChange()']    60
   sleep  1
   Input Text  jquery=input[ng-change='searchChange()']  ${ARGUMENTS[1]}
   sleep  1
@@ -385,6 +385,7 @@ Set Multi Ids
   [Arguments]   ${fieldname}
   sleep  3
 #  відмітити на сторінці поле з тендера   ${fieldname}   ${locator.${fieldname}}
+  Wait Until Page Contains Element    ${locator.${fieldname}}    60
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}
 

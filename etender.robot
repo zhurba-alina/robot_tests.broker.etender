@@ -211,9 +211,11 @@ Set Multi Ids
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Wait Until Page Contains   Прозорі закупівлі    10
   sleep  1
-  Wait Until Page Contains Element    jquery=input[ng-change='searchChange()']    60
+  Wait Until Page Contains Element    xpath=//input[@type='text']    120
   sleep  1
-  Input Text  jquery=input[ng-change='searchChange()']  ${ARGUMENTS[1]}
+  Wait Until Element Is Visible    xpath=//input[@type='text']    120
+  sleep  3  
+  Input Text    xpath=//input[@type='text']    ${ARGUMENTS[1]}
   sleep  1
   ${timeout_on_wait}=  Get Broker Property By Username  ${ARGUMENTS[0]}  timeout_on_wait
   ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  0 s  Шукати і знайти
@@ -385,7 +387,8 @@ Set Multi Ids
   [Arguments]   ${fieldname}
   sleep  3
 #  відмітити на сторінці поле з тендера   ${fieldname}   ${locator.${fieldname}}
-  Wait Until Page Contains Element    ${locator.${fieldname}}    60
+  Wait Until Page Contains Element    ${locator.${fieldname}}    120
+  Sleep  1
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}
 

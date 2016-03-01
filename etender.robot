@@ -53,10 +53,10 @@ ${locator.questions[0].answer}                                 xpath=(//div[@tex
   Run Keyword If   '${ARGUMENTS[0]}' != 'E-tender_Viewer'   Login
 
 Login
-  Wait Until Page Contains Element   id=inputUsername   60
+  Wait Until Page Contains Element   id=inputUsername   180
   Sleep  1
   Input text   id=inputUsername      ${USERS.users['${username}'].login}
-  Wait Until Page Contains Element   id=inputPassword   60
+  Wait Until Page Contains Element   id=inputPassword   180
   Sleep  1
   Input text   id=inputPassword      ${USERS.users['${username}'].password}
   Click Button   id=btn_submit
@@ -209,11 +209,11 @@ Set Multi Ids
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Switch browser   ${ARGUMENTS[0]}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  Wait Until Page Contains   Прозорі закупівлі    10
+  Wait Until Page Contains   Прозорі закупівлі    60
   sleep  1
-  Wait Until Page Contains Element    xpath=//input[@type='text']    120
+  Wait Until Page Contains Element    xpath=//input[@type='text']    180
   sleep  1
-  Wait Until Element Is Visible    xpath=//input[@type='text']    120
+  Wait Until Element Is Visible    xpath=//input[@type='text']    180
   sleep  3  
   Input Text    xpath=//input[@type='text']    ${ARGUMENTS[1]}
   sleep  1
@@ -221,8 +221,10 @@ Set Multi Ids
   ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  0 s  Шукати і знайти
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
   sleep  3
+  Wait Until Page Contains Element    jquery=a[href^="#/tenderDetailes"]    180
+  sleep  1
   Click Link    jquery=a[href^="#/tenderDetailes"]
-  Wait Until Page Contains    ${ARGUMENTS[1]}   10
+  Wait Until Page Contains    ${ARGUMENTS[1]}   60
   sleep  1
   Capture Page Screenshot
 
@@ -387,7 +389,7 @@ Set Multi Ids
   [Arguments]   ${fieldname}
   sleep  3
 #  відмітити на сторінці поле з тендера   ${fieldname}   ${locator.${fieldname}}
-  Wait Until Page Contains Element    ${locator.${fieldname}}    120
+  Wait Until Page Contains Element    ${locator.${fieldname}}    180
   Sleep  1
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}

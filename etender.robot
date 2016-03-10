@@ -44,15 +44,15 @@ ${locator.questions[0].answer}                                 xpath=(//div[@tex
   [return]   ${INITIAL_TENDER_DATA}
 
 Підготувати клієнт для користувача
-  [Arguments]  @{ARGUMENTS}
+  [Arguments]  ${username}
   [Documentation]  Відкрити браузер, створити об’єкт api wrapper, тощо
-  ...      ${ARGUMENTS[0]} ==  username
-  Open Browser   ${USERS.users['${ARGUMENTS[0]}'].homepage}   ${USERS.users['${username}'].browser}   alias=${ARGUMENTS[0]}
-  Set Window Size   @{USERS.users['${ARGUMENTS[0]}'].size}
-  Set Window Position   @{USERS.users['${ARGUMENTS[0]}'].position}
-  Run Keyword If   '${ARGUMENTS[0]}' != 'E-tender_Viewer'   Login
+  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=${username}
+  Set Window Size  @{USERS.users['${username}'].size}
+  Set Window Position  @{USERS.users['${username}'].position}
+  Run Keyword If  '${username}' != 'E-tender_Viewer'  Login  ${username}
 
 Login
+  [Arguments]  ${username}
   Page Should Contain Link    xpath=//a[contains(@href, '#/login')]    180
   Sleep    1
   Click Link    xpath=//a[contains(@href, '#/login')]
@@ -64,7 +64,7 @@ Login
   Sleep  1
   Input text   id=inputPassword      ${USERS.users['${username}'].password}
   Click Button   id=btn_submit
-  Go To    ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Go To  ${USERS.users['${username}'].homepage}
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}

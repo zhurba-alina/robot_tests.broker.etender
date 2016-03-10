@@ -53,6 +53,10 @@ ${locator.questions[0].answer}                                 xpath=(//div[@tex
   Run Keyword If   '${ARGUMENTS[0]}' != 'E-tender_Viewer'   Login
 
 Login
+  Page Should Contain Link    xpath=//a[contains(@href, '#/login')]    180
+  Sleep    1
+  Click Link    xpath=//a[contains(@href, '#/login')]
+  Sleep    1
   Wait Until Page Contains Element   id=inputUsername   180
   Sleep  1
   Input text   id=inputUsername      ${USERS.users['${username}'].login}
@@ -60,6 +64,7 @@ Login
   Sleep  1
   Input text   id=inputPassword      ${USERS.users['${username}'].password}
   Click Button   id=btn_submit
+  Go To    ${USERS.users['${ARGUMENTS[0]}'].homepage}
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}

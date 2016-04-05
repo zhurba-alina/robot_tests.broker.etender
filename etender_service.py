@@ -1,5 +1,31 @@
 # -*- coding: utf-8 -
+
 from iso8601 import parse_date
+import dateutil.parser
+
+
+def get_all_etender_dates(initial_tender_data, key, subkey=None):
+    tender_period = initial_tender_data.data.tenderPeriod
+    enquiry_period = initial_tender_data.data.enquiryPeriod
+    end_period = dateutil.parser.parse(enquiry_period['endDate'])
+    start_dt = dateutil.parser.parse(tender_period['startDate'])
+    end_dt = dateutil.parser.parse(tender_period['endDate'])
+    data = {
+        'EndPeriod': {
+            'date': end_period.strftime("%d-%m-%Y"),
+            'time': end_period.strftime("%H:%M"),
+        },
+        'StartDate': {
+            'date': start_dt.strftime("%d-%m-%Y"),
+            'time': start_dt.strftime("%H:%M"),
+        },
+        'EndDate': {
+            'date': end_dt.strftime("%d-%m-%Y"),
+            'time': end_dt.strftime("%H:%M"),
+        },
+    }
+    dt = data.get(key, {})
+    return dt.get(subkey) if subkey else dt
 
 
 def convert_date_to_etender_format(isodate):
@@ -23,3 +49,14 @@ def convert_time_to_etender_format(isodate):
 def procuring_entity_name(tender_data):
     tender_data.data.procuringEntity['name'] = u"Повна назва невідомо чого"
     return tender_data
+
+
+def convert_etender_string_to_common_string(string):
+    return {
+        u"Київська область": u"м. Київ",
+        u"Київ": u"м. Київ",
+        u"кг.": u"кілограм",
+        u"грн.": u"UAH",
+        u"(включаючи ПДВ)": True,
+        500.01: 100.1,
+    }.get(string, string)

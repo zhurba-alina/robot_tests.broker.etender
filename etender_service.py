@@ -46,9 +46,17 @@ def convert_time_to_etender_format(isodate):
     return time_string
 
 
-def procuring_entity_name(tender_data):
-    tender_data.data.procuringEntity['name'] = u"Повна назва невідомо чого"
-    return tender_data
+def string_to_float(string):
+    return float(string)
+
+
+def change_data(initial_data):
+    initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
+    initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
+    initial_data['data']['items'][0]['classification']['description'] = u"Картонні коробки"
+    initial_data['data']['procuringEntity']['name'] = u"Степанов-Зайцева"
+    initial_data['data']['minimalStep']['amount'] = 750.11
+    return initial_data
 
 
 def convert_etender_string_to_common_string(string):

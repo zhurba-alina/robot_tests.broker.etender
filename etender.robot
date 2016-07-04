@@ -5,40 +5,39 @@ Library  DateTime
 Library  etender_service.py
 
 *** Variables ***
-${locator.tenderId}                                            id=tenderidua
-${locator.title}                                               jquery=tender-subject-info>div.row:contains("Конкрентна назва предмету закупівлі:")>:eq(1)>
-${locator.description}                                         jquery=tender-subject-info>div.row:contains("Загальні відомості про закупівлю:")>:eq(1)>
+${locator.auctionId}                                           xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[1]/h3
+${locator.status}                                              xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[1]/div[2]/p
+${locator.title}                                               jquery=tender-subject-info>div.row:contains("Назва аукціону:")>:eq(1)>
+${locator.description}                                         jquery=tender-subject-info>div.row:contains("Детальний опис аукціону:")>:eq(1)>
 ${locator.minimalStep.amount}                                  xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[9]
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
-${locator.value.amount}                                        id=totalvalue
+${locator.value}                                               xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[4]/div[2]/p
 ${locator.tenderPeriod.startDate}                              xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[3]
 ${locator.tenderPeriod.endDate}                                xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[4]
 ${locator.enquiryPeriod.startDate}                             xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[1]
 ${locator.enquiryPeriod.endDate}                               xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[2]
-${locator.items[0].description}                                xpath=//div[6]/div[4]/div[2]/p
+${locator.items[0].description}                                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[4]/div[2]/p
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
-${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
-${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
-${locator.items[0].deliveryAddress.postalCode}                 id=delivery_postIndex_0
-${locator.items[0].deliveryAddress.countryName}                id=delivery_country_0
-${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
+${locator.items[0].deliveryLocation}                           xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[8]/div[2]/p
+${locator.items[0].deliveryAddress.postalCode}                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p/span[1]
+${locator.items[0].deliveryAddress.countryName}                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p/span[2]
+${locator.items[0].deliveryAddress.region}                     xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p/span[3]
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
-${locator.items[0].classification.id}                          xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[10]//span[1]
-${locator.items[0].classification.description}                 xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[10]//span[2]
-${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
-${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
-${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
-${locator.items[0].unit.code}                                  id=item_unit_symb0
-${locator.items[0].quantity}                                   id=item_quantity0
-${locator.questions[0].title}                                  id=quest_title_0
-${locator.questions[0].description}                            id=quest_descr_0
-${locator.questions[0].date}                                   id=quest_date_0
-${locator.questions[0].answer}                                 id=question_answer_0
-${locator.value.currency}                                      id=id_UAH
+${locator.items[0].classification.scheme}                      xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[2]/div[1]/p
+${locator.items[0].classification.id}                          xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[2]/div[2]/p
+# ${locator.items[0].classification.description}                 xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[10]//span[2]
+${locator.items[0].additionalClassifications[0].scheme}        xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[3]/div[1]/p
+${locator.items[0].additionalClassifications[0].id}            xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[3]/div[2]/p
+# ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
+# ${locator.items[0].unit.code}                                  id=item_unit_symb0
+${locator.items[0].quantity}                                   xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[5]/div[2]/p
+${locator.questions[0].title}                                  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[2]/div[2]/span
+${locator.questions[0].description}                            xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[3]/div[2]/span
+${locator.questions[0].date}                                   xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[1]/div[2]/span
+${locator.questions[0].answer}                                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[5]/pre
 ${locator.value.valueAddedTaxIncluded}                         xpath=//div[2]/p/i
-${locator.items[0].unit.name}                                  id=item_unit_symb0
+${locator.items[0].unit.name}                                  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[4]/div[2]/p
 ${locator.bids}                                                id=ParticipiantInfo_0
 
 
@@ -49,7 +48,7 @@ ${locator.bids}                                                id=ParticipiantIn
   Open Browser  ${USERS.users['${ARGUMENTS[0]}'].homepage}  ${USERS.users['${ARGUMENTS[0]}'].browser}  alias=${ARGUMENTS[0]}
   Set Window Size  @{USERS.users['${ARGUMENTS[0]}'].size}
   Set Window Position  @{USERS.users['${ARGUMENTS[0]}'].position}
-  Run Keyword If  '${ARGUMENTS[0]}' != 'E-tender_Viewer'  Login  ${ARGUMENTS[0]}
+  Run Keyword If  '${ARGUMENTS[0]}' != 'Etender_Viewer'  Login  ${ARGUMENTS[0]}
 
 
 Підготувати дані для оголошення тендера
@@ -61,9 +60,9 @@ ${locator.bids}                                                id=ParticipiantIn
 
 Login
   [Arguments]  @{ARGUMENTS}
-  Wait Until Page Contains Element   id=btnLogin    180
+  Wait Until Page Contains Element   jquery=a[href^="#/login"]    10
   Sleep    1
-  Click Link    id=btnLogin
+  Click Link    jquery=a[href^="#/login"]
   Sleep    1
   Wait Until Page Contains Element   id=inputUsername   180
   Sleep  1
@@ -103,56 +102,60 @@ Login
 
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'btnProfile')]
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої закупівлі']
-  Sleep  10
+  Sleep  5
+  Click Element                     jquery=a[href^="#/profile"]
+  Sleep  5
+  Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  Sleep  5
   Click Element                     xpath=//a[contains(@class, 'btn btn-info')]
   Sleep  3
-  Click Element                     id=goToCreate
-  Sleep   3
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
-  Wait Until Page Contains Element  xpath=//input[@id="enquiryPeriod_endDate_day"]
-  Input text    xpath=//input[@id="enquiryPeriod_endDate_day"]   ${enquiry_end_date}
+  Wait Until Page Contains Element  xpath=//input[@ng-model="data.enquiryPeriod.endDate"]
+  Input text    xpath=//*[@id="myform"]/tender-form/div[5]/div/div[2]/div[1]/input   ${enquiry_end_date}
   Sleep   1
-  Input text    xpath=//input[@id="enquiryPeriod_endDate_time"]   ${enquiry_end_time}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[5]/div/div[2]/div[2]/input   ${enquiry_end_time}
   Sleep   1
-  Input text    xpath=//input[@id="tenderPeriod_startDate_day"]   ${start_date}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[1]/input   ${start_date}
   Sleep   1
-  Input text    xpath=//input[@id="tenderPeriod_startDate_time"]   ${start_time}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[2]/input   ${start_time}
   Sleep   1
-  Input text    xpath=//input[@id="tenderPeriod_endDate_day"]   ${end_date}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[3]/input   ${end_date}
   Sleep   1
-  Input text    xpath=//input[@id="tenderPeriod_endDate_time"]   ${end_time}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[4]/input   ${end_time}
   Sleep   1
-  Click Element    id=addLot_        ##click to button addLot
-  Sleep     2
-  Input text    id=lotTitle          ${title}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[1]/input   ${start_date}
   Sleep   1
-  Input text    id=lotDescription    ${description}
+  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[2]/input   ${start_time}
+  # Sleep   1
+  # Click Element    id=addLot_        ##click to button addLot
+  # Sleep     2
+  # Input text    id=lotTitle          ${title}
+  # Sleep   1
+  # Input text    id=lotDescription    ${description}
   Sleep   1
-  Input text    id=lotValue_0        ${budget}
+  ${budget}=  Convert To String  ${budget}
+  Input text    id=value        ${budget}
   Sleep   1
   Click Element    id=valueAddedTaxIncluded
-  Input text    id=minimalStep_0        ${step_rate}
-  Sleep   1
-  #Input text    name=minimalStepPer_0     1
-  Sleep   1
-  Click Element    id=addLotItem_0
-  Sleep    2
+  ${step_rate}=  Convert To String  ${step_rate}
+  Input text    id=minimalStep        ${step_rate}
+  # Sleep   1
+  # Input text    name=minimalStepPer_0     1
+  # Sleep   1
+  # Click Element    id=addLotItem_0
+  Sleep    1
   Input text    id=itemsDescription0      ${items_description}
   Sleep   1
   Input text    id=itemsQuantity0         ${quantity}
   Click Element   xpath=//select[@id='itemsUnit0']//option[@label='кг.']
   Sleep  2
-  Click Element   xpath=//select[@id='region']//option[@label='Київська область']
+  Click Element   xpath=//select[@name='region']//option[@label='Київська']
   Sleep  2
-  Click Element   xpath=//select[@id='city']//option[@label='м. Київ']
-  Input text    id=addressStr   ${streetAddress}
+  Click Element   xpath=//select[@name='city']//option[@label='Київ']
+  Input text    name=addressStr   ${streetAddress}
   Sleep   1
-  Input text    id=postIndex    ${postalCode}
+  Input text    name=postIndex    ${postalCode}
   Sleep   1
 #  Input text    id=latitude0    ${latitude}
 #  Sleep   1
@@ -182,7 +185,8 @@ Login
   Sleep  10
   Click Element   xpath=//*[text()='${title}']
   Sleep   5
-  ${tender_UAid}=  Get Text  id=tenderidua
+  ${tender_UAid}=  Get Text  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[1]/h3
+  ${_}  ${tender_UAid}=  Split String  ${tender_UAid}
   Sleep  1
   Log   ${tender_UAid}
   ${Ids}=   Convert To String   ${tender_UAid}
@@ -248,7 +252,7 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  Wait Until Page Contains   Прозорі закупівлі    10
+  Wait Until Page Contains   Прозорі аукціони    10
   sleep  1
   Wait Until Page Contains Element    xpath=//input[@type='text']    10
   sleep  1
@@ -417,29 +421,31 @@ Login
 
 Отримати інформацію про minimalStep.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці   minimalStep.amount
-  ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
+  ${return_value}=  Catenate  @{return_value.split(' ')[:-1]}
+  ${return_value}=   Convert To Number   ${return_value}
   ${return_value}=   convert_etender_string_to_common_string      ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про value.amount
-  ${return_value}=   Отримати текст із поля і показати на сторінці  value.amount
+  ${return_value}=   Отримати текст із поля і показати на сторінці  value
+  ${return_value}=  Catenate  @{return_value.split(' ')[:-3]}
   ${return_value}=   Convert To Number   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.latitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.latitude
-  ${return_value}=   string_to_float   ${return_value}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation
+  ${return_value}=   string_to_float   ${return_value.split(',')[0]}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.longitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.longitude
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation
   #${return_value}=   Convert To Number   ${return_value}
-  ${return_value}=   string_to_float   ${return_value}
+  ${return_value}=   string_to_float   ${return_value.split(',')[1]}
   [return]  ${return_value}
 
 Отримати інформацію про value.currency
-  ${return_value}=   Отримати текст із поля і показати на сторінці   value.currency
-  [return]  ${return_value}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   value
+  [return]  ${return_value.split(' ')[-3]}
 
 Отримати інформацію про value.valueAddedTaxIncluded
   ${return_value}=   Отримати текст із поля і показати на сторінці   value.valueAddedTaxIncluded
@@ -451,8 +457,8 @@ Login
 
 
 Отримати інформацію про items[0].unit.name
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.name
-  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   quantity
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value.split(' ')[-1]}
   [return]  ${return_value}
 
 
@@ -463,9 +469,9 @@ Login
   sleep  1
   Remove element   ${last_note_id}
 
-Отримати інформацію про tenderId
-  ${return_value}=   Отримати текст із поля і показати на сторінці   tenderId
-  [return]  ${return_value}
+Отримати інформацію про auctionId
+  ${return_value}=   Отримати текст із поля і показати на сторінці   auctionId
+  [return]  ${return_value.split(' ')[1]}
 
 Отримати інформацію про procuringEntity.name
   ${return_value}=   Отримати текст із поля і показати на сторінці   procuringEntity.name
@@ -506,17 +512,17 @@ Change_date_to_month
   [return]  ${return_value}
 
 Отримати інформацію про items[0].unit.code
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.code
-  Run Keyword And Return If  '${return_value}'== 'кг.'   Convert To String  KGM
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
+  Run Keyword And Return If  '${return_value.split(' ')[1]}'== 'кг.'   Convert To String  KGM
 
 Отримати інформацію про items[0].quantity
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
-  ${return_value}=   Convert To Number   ${return_value}
+  ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].classification.id
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
-  [return]  ${return_value}
+  [return]  ${return_value.split(' ')[0]}
 
 Отримати інформацію про items[0].classification.scheme
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
@@ -524,7 +530,8 @@ Change_date_to_month
   [return]  ${return_value.split(' ')[1]}
 
 Отримати інформацію про items[0].classification.description
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
+  ${return_value}=  Catenate  @{return_value.split(' ')[1:]}
   Run Keyword And Return  convert_etender_string_to_common_string  ${return_value}
 
 Отримати інформацію про items[0].additionalClassifications[0].id
@@ -537,7 +544,8 @@ Change_date_to_month
   [return]  ${return_value.split(' ')[1]}
 
 Отримати інформацію про items[0].additionalClassifications[0].description
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].description
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].id
+  ${return_value}=  Catenate  @{return_value.split(' ')[1:]}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryAddress.postalCode
@@ -550,7 +558,7 @@ Change_date_to_month
 
 Отримати інформацію про items[0].deliveryAddress.region
   ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.region
-  ${return_value}=    convert_etender_string_to_common_string     ${return_value}
+  ${return_value}=    convert_etender_string_to_common_string     ${return_value[:-1]}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryAddress.locality
@@ -573,19 +581,15 @@ Change_date_to_month
 
 Отримати інформацію про questions[0].title
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].title
-  Sleep   3
-  ${return_value}=    Get text   id=quest_title_0
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].description
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].description
-  Sleep   3
-  ${return_value}=    Get text   id=quest_descr_0
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].date
-  Sleep   3
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].date
+  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
 
@@ -598,6 +602,11 @@ Change_date_to_month
   ${return_value}=    Get text   xpath=//div[@textarea='question.answer']
   [return]  ${return_value}
   Capture Page Screenshot
+
+Отримати інформацію про status
+  ${return_value}=   Отримати текст із поля і показати на сторінці   status
+  ${return_value}=   Run Keyword If  '${return_value}' == "Період аукціону"  Set Variable  "active.auction"
+  [return]    ${return_value}
 
 
 Отримати посилання на аукціон для глядача

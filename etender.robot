@@ -17,11 +17,11 @@ ${locator.tenderPeriod.endDate}                                xpath=(//div[@cla
 ${locator.enquiryPeriod.startDate}                             xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[1]
 ${locator.enquiryPeriod.endDate}                               xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[2]
 ${locator.items[0].description}                                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[4]/div[2]/p
-${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
-${locator.items[0].deliveryLocation}                           xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[8]/div[2]/p
-${locator.items[0].deliveryAddress.postalCode}                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p/span[1]
-${locator.items[0].deliveryAddress.countryName}                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p/span[2]
-${locator.items[0].deliveryAddress.region}                     xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p/span[3]
+${locator.items[0].deliveryDate.endDate}                       xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[5]/div[2]/p
+${locator.items[0].deliveryLocation}                           xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p
+${locator.items[0].deliveryAddress.postalCode}                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[6]/div[2]/p/span[1]
+${locator.items[0].deliveryAddress.countryName}                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[6]/div[2]/p/span[2]
+${locator.items[0].deliveryAddress.region}                     xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[6]/div[2]/p/span[3]
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
 ${locator.items[0].classification.scheme}                      xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[2]/div[1]/p
@@ -33,7 +33,7 @@ ${locator.items[0].additionalClassifications[0].id}            xpath=/html/body/
 # ${locator.items[0].unit.code}                                  id=item_unit_symb0
 ${locator.items[0].quantity}                                   xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[5]/div[2]/p
 ${locator.questions[0].title}                                  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[2]/div[2]/span
-${locator.questions[0].description}                            xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[3]/div[2]/span
+${locator.questions[0].description}                            xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[3]/div[2]/p
 ${locator.questions[0].date}                                   xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[1]/div[2]/span
 ${locator.questions[0].answer}                                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[5]/pre
 ${locator.value.valueAddedTaxIncluded}                         xpath=//div[2]/p/i
@@ -307,11 +307,11 @@ Login
   sleep  60
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   sleep  15
-  Input text    xpath=//input[@name='amount0']                  ${amount}
-  Click Element                     xpath=//div[@id='addBidDiv']//button[@class="btn btn-success"][contains(text(), 'Реєстрація пропозиції')]
+  Input text    xpath=//input[@name='amount']                  ${amount}
+  Click Element                     xpath=/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div/tender-bids/div[2]/div/form/div[3]/div[2]/button
   sleep  3
-  Click Element    xpath=//div[@id='modalAddBidWarning']//button[@class='btn btn-success']
-  sleep  10
+  # Click Element    xpath=//*[@id="modalAddBidWarning"]/div/div/div[3]/div[2]/button[1]
+  # sleep  5
   Capture Page Screenshot
 
 Змінити цінову пропозицію
@@ -360,7 +360,7 @@ Login
   Wait Until Page Contains Element   id=title
   Sleep  2
   Input text                         id=title                 ${title}
-  Input text                         id=description           ${description}
+  Input text                         xpath=//*[@id=" description"]           ${description}
   Click Element                      xpath=//button[@type='submit']
 
 Відповісти на питання
@@ -457,7 +457,7 @@ Login
 
 
 Отримати інформацію про items[0].unit.name
-  ${return_value}=   Отримати текст із поля і показати на сторінці   quantity
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
   ${return_value}=   convert_etender_string_to_common_string   ${return_value.split(' ')[-1]}
   [return]  ${return_value}
 
@@ -604,8 +604,10 @@ Change_date_to_month
   Capture Page Screenshot
 
 Отримати інформацію про status
-  ${return_value}=   Отримати текст із поля і показати на сторінці   status
-  ${return_value}=   Run Keyword If  '${return_value}' == "Період аукціону"  Set Variable  "active.auction"
+  ${status}=   Отримати текст із поля і показати на сторінці   status
+  ${return_value}=   Run Keyword If  '${status}' == "Період аукціону"  Set Variable  active.auction
+  ${return_value}=   Run Keyword If  '${status}' == "Період уточнень"  Set Variable  active.enquiry
+  ${return_value}=   Run Keyword If  '${status}' == "Очікування пропозицій"  Set Variable  active.tendering
   [return]    ${return_value}
 
 

@@ -59,8 +59,15 @@ def convert_etender_string_to_common_string(string):
     return {
         u"Київська область": u"м. Київ",
         u"Київ": u"м. Київ",
-        u"кг.": u"кілограм",
+        u"кг.": u"кілограми",
         u"грн.": u"UAH",
         u"(включаючи ПДВ)": True,
-        500.01: 100.1,
+        u"Період уточнень":         u"active.enquiries",
+        u"Очікування пропозицій":   u"active.tendering",
+        u"Період аукціону":         u"active.auction",
+        u"Кваліфікація переможця":  u"active.qualification",
+        u"Пропозиції розглянуто":   u"active.awarded",
+        u"Закупівля не відбулась":  u"unsuccessfull",
+        u"Відмінена закупівля":     u"cancelled",
+        u"Завершена закупівля":     u"complete",
     }.get(string, string)

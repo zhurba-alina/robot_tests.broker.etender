@@ -377,7 +377,9 @@ Login
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
-  Wait Until Page Contains Element    ${locator.${fieldname}}    1
+  Reload Page
+  sleep  5
+  Wait Until Page Contains Element    ${locator.${fieldname}}    5
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}
 
@@ -391,31 +393,29 @@ Login
 
 Отримати інформацію про minimalStep.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці   minimalStep.amount
-  ${return_value}=  Catenate  @{return_value.split(' ')[:-1]}
-  ${return_value}=   Convert To Number   ${return_value}
+  ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
   ${return_value}=   convert_etender_string_to_common_string      ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про value.amount
-  ${return_value}=   Отримати текст із поля і показати на сторінці  value
-  ${return_value}=  Catenate  @{return_value.split(' ')[:-3]}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  value.amount
   ${return_value}=   Convert To Number   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.latitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation
-  ${return_value}=   string_to_float   ${return_value.split(',')[0]}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.latitude
+  ${return_value}=   string_to_float   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.longitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.longitude
   #${return_value}=   Convert To Number   ${return_value}
-  ${return_value}=   string_to_float   ${return_value.split(',')[1]}
+  ${return_value}=   string_to_float   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про value.currency
-  ${return_value}=   Отримати текст із поля і показати на сторінці   value
-  [return]  ${return_value.split(' ')[-3]}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   value.currency
+  [return]  ${return_value}
 
 Отримати інформацію про value.valueAddedTaxIncluded
   ${return_value}=   Отримати текст із поля і показати на сторінці   value.valueAddedTaxIncluded
@@ -427,8 +427,8 @@ Login
 
 
 Отримати інформацію про items[0].unit.name
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
-  ${return_value}=   convert_etender_string_to_common_string   ${return_value.split(' ')[-1]}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.name
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   [return]  ${return_value}
 
 
@@ -439,9 +439,9 @@ Login
   sleep  1
   Remove element   ${last_note_id}
 
-Отримати інформацію про auctionId
-  ${return_value}=   Отримати текст із поля і показати на сторінці   auctionId
-  [return]  ${return_value.split(' ')[1]}
+Отримати інформацію про auctionID
+  ${return_value}=   Отримати текст із поля і показати на сторінці   auctionID
+  [return]  ${return_value}
 
 Отримати інформацію про procuringEntity.name
   ${return_value}=   Отримати текст із поля і показати на сторінці   procuringEntity.name
@@ -482,17 +482,17 @@ Change_date_to_month
   [return]  ${return_value}
 
 Отримати інформацію про items[0].unit.code
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
-  Run Keyword And Return If  '${return_value.split(' ')[1]}'== 'кг.'   Convert To String  KGM
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.code
+  Run Keyword And Return If  '${return_value}'== 'кг.'   Convert To String  KGM
 
 Отримати інформацію про items[0].quantity
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
-  ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
+  ${return_value}=   Convert To Number   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].classification.id
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
-  [return]  ${return_value.split(' ')[0]}
+  [return]  ${return_value}
 
 Отримати інформацію про items[0].classification.scheme
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
@@ -500,8 +500,7 @@ Change_date_to_month
   [return]  ${return_value.split(' ')[1]}
 
 Отримати інформацію про items[0].classification.description
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
-  ${return_value}=  Catenate  @{return_value.split(' ')[1:]}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
   Run Keyword And Return  convert_etender_string_to_common_string  ${return_value}
 
 Отримати інформацію про items[0].additionalClassifications[0].id
@@ -514,8 +513,7 @@ Change_date_to_month
   [return]  ${return_value.split(' ')[1]}
 
 Отримати інформацію про items[0].additionalClassifications[0].description
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].id
-  ${return_value}=  Catenate  @{return_value.split(' ')[1:]}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].description
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryAddress.postalCode
@@ -528,7 +526,7 @@ Change_date_to_month
 
 Отримати інформацію про items[0].deliveryAddress.region
   ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.region
-  ${return_value}=    convert_etender_string_to_common_string     ${return_value[:-1]}
+  ${return_value}=    convert_etender_string_to_common_string     ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryAddress.locality
@@ -551,15 +549,19 @@ Change_date_to_month
 
 Отримати інформацію про questions[0].title
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].title
+  Sleep   3
+  ${return_value}=    Get text   id=quest_title_0
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].description
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].description
+  Sleep   3
+  ${return_value}=    Get text   id=quest_descr_0
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].date
+  Sleep   3
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].date
-  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
 
@@ -575,9 +577,7 @@ Change_date_to_month
 
 Отримати інформацію про status
   ${status}=   Отримати текст із поля і показати на сторінці   status
-  ${return_value}=   Run Keyword If  '${status}' == "Період аукціону"  Set Variable  active.auction
-  ${return_value}=   Run Keyword If  '${status}' == "Період уточнень"  Set Variable  active.enquiry
-  ${return_value}=   Run Keyword If  '${status}' == "Очікування пропозицій"  Set Variable  active.tendering
+  ${return_value}=   convert_etender_string_to_common_string      ${status}
   [return]    ${return_value}
 
 

@@ -62,9 +62,9 @@ ${locator.status}                                              xpath=//div[@clas
 
 Login
   [Arguments]  @{ARGUMENTS}
-  Wait Until Page Contains Element   jquery=a[href^="#/login"]    10
+  Wait Until Page Contains Element   xpath=//a[@href='#/login']    180
   Sleep    1
-  Click Link    jquery=a[href^="#/login"]
+  Click Link    xpath=//a[@href='#/login']
   Sleep    1
   Wait Until Page Contains Element   id=inputUsername   180
   Sleep  1
@@ -87,7 +87,7 @@ Login
   ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
   ${items_description}=   Get From Dictionary   ${items[0]}         description
   ${quantity}=          Get From Dictionary     ${items[0]}                        quantity
-  ${cpv}=               Get From Dictionary     ${items[0].classification}         id
+  ${cav}=               Get From Dictionary     ${items[0].classification}         id
   ${unit}=              Get From Dictionary     ${items[0].unit}                   name
   ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
   ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
@@ -104,91 +104,64 @@ Login
 
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  Sleep  5
-  Click Element                     jquery=a[href^="#/profile"]
-  Sleep  5
+  Sleep  3
+  Click Element                     xpath=//a[@href='#/profile']
+  Sleep  3
   Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
-  Sleep  5
+  Sleep  3
   Click Element                     xpath=//a[contains(@class, 'btn btn-info')]
   Sleep  3
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
-  Wait Until Page Contains Element  xpath=//input[@ng-model="data.enquiryPeriod.endDate"]
-  Input text    xpath=//*[@id="myform"]/tender-form/div[5]/div/div[2]/div[1]/input   ${enquiry_end_date}
+  Wait Until Page Contains Element  id=enquiryPeriod_endDate_day
+  Input text    id=enquiryPeriod_endDate_day   ${enquiry_end_date}
   Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[5]/div/div[2]/div[2]/input   ${enquiry_end_time}
+  Input text    id=enquiryPeriod_endDate_time   ${enquiry_end_time}
   Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[1]/input   ${start_date}
+  Input text    xpath=//input[@name='startDate']   ${start_date}
   Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[2]/input   ${start_time}
+  Input text    xpath=//input[@name='startDate']/parent::div/following-sibling::div[1]/input   ${start_time}
   Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[3]/input   ${end_date}
+  Input text    xpath=//input[@name='startDate']   ${start_date}                        #Повторный ввод т.к. баг в календаре
   Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[4]/input   ${end_time}
+  Input text    xpath=//input[@name='endDate']   ${end_date}
   Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[1]/input   ${start_date}
-  Sleep   1
-  Input text    xpath=//*[@id="myform"]/tender-form/div[6]/div/div[2]/div[2]/input   ${start_time}
-  # Sleep   1
-  # Click Element    id=addLot_        ##click to button addLot
-  # Sleep     2
-  # Input text    id=lotTitle          ${title}
-  # Sleep   1
-  # Input text    id=lotDescription    ${description}
-  Sleep   1
-  ${budget}=  Convert To String  ${budget}
-  Input text    id=value        ${budget}
+  Input text    xpath=//input[@name='endDate']/parent::div/following-sibling::div/input   ${end_time}
+  Sleep   5
+  ${budgetStr}=  Convert To String   ${budget}
+  Input text    id=lotValue_0     ${budgetStr}
   Sleep   1
   Click Element    id=valueAddedTaxIncluded
-  ${step_rate}=  Convert To String  ${step_rate}
-  Input text    id=minimalStep        ${step_rate}
-  # Sleep   1
-  # Input text    name=minimalStepPer_0     1
-  # Sleep   1
-  # Click Element    id=addLotItem_0
-  Sleep    1
+  ${step_rateStr}=  Convert To String  ${step_rate}
+  Input text    id=minimalStep_0    ${step_rateStr}
+  Sleep   1
+  Sleep    2
   Input text    id=itemsDescription0      ${items_description}
   Sleep   1
   Input text    id=itemsQuantity0         ${quantity}
   Click Element   xpath=//select[@id='itemsUnit0']//option[@label='кг.']
   Sleep  2
-  Click Element   xpath=//select[@name='region']//option[@label='Київська']
-  Sleep  2
-  Click Element   xpath=//select[@name='city']//option[@label='Київ']
-  Input text    name=addressStr   ${streetAddress}
-  Sleep   1
-  Input text    name=postIndex    ${postalCode}
-  Sleep   1
-#  Input text    id=latitude0    ${latitude}
-#  Sleep   1
-#  Input text    id=longitude0   ${longitude}
-#  Sleep   1
-  Input text    id=deliveryDate0        ${deliveryDate}
-  Sleep  2
-  Input text    id=deliveryDate_endDate          ${deliveryDate}
   Sleep   1
   Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
   Sleep  1
-  Input text     xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cpv}
-  Wait Until Element Is Visible  xpath=//td[contains(., '${cpv}')]
+  Input text     xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible  xpath=//td[contains(., '${cav}')]
   Sleep  2
-  Click Element  xpath=//td[contains(., '${cpv}')]
+  Click Element  xpath=//td[contains(., '${cav}')]
   Sleep  1
-  Click Element  xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element  xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
   Sleep  1
-  Додати предмет   ${items[0]}   0
   Sleep   2
   Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
   Sleep  1
-  Wait Until Page Contains Element   xpath=//div[contains(@class, 'form-actions')]//button[@type='submit']
-  Click Element   xpath=//div[contains(@class, 'form-actions')]//button[@type='submit']
+  Wait Until Page Contains Element   xpath=//*[@id='CreateTenderE']
+  Click Element   xpath=//*[@id='CreateTenderE']
   Sleep   60
   Reload Page
   Sleep  10
   Click Element   xpath=//*[text()='${title}']
-  Sleep   5
-  ${tender_UAid}=  Get Text  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[1]/h3
-  ${_}  ${tender_UAid}=  Split String  ${tender_UAid}
+  Sleep   10
+  ${tender_UAid}=  Get Text  id=tenderidua
   Sleep  1
   Log   ${tender_UAid}
   ${Ids}=   Convert To String   ${tender_UAid}

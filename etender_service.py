@@ -51,11 +51,7 @@ def string_to_float(string):
 
 
 def change_data(initial_data):
-    initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
-    initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
-    initial_data['data']['items'][0]['classification']['description'] = u"Картонні коробки"
-    initial_data['data']['procuringEntity']['name'] = u"Степанов-Зайцева"
-    initial_data['data']['minimalStep']['amount'] = 750.11
+    initial_data['data']['procuringEntity']['name'] = u"ПП ГО Організатор X"
     return initial_data
 
 

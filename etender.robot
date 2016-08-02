@@ -223,6 +223,7 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Reload Page
   Wait Until Page Contains   Прозорі аукціони    10
   sleep  1
   Wait Until Page Contains Element    xpath=//input[@type='text']    10

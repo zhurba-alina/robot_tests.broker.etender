@@ -330,7 +330,7 @@ Login
   Wait Until Page Contains Element   id=title
   Sleep  2
   Input text                         id=title                 ${title}
-  Input text                         xpath=//*[@id=" description"]           ${description}
+  Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']
 
 Відповісти на питання

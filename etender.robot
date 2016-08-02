@@ -177,13 +177,9 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  file
   ...      ${ARGUMENTS[2]} ==  tender_uaid
-  sleep   2
-  Execute Javascript     $('#lot_doc_add:first').removeAttr('disabled','false');
-  Sleep   10
   Log   Multiple docType dropdowns on page   WARN
-  Select From List By Index  id=docType  1
   Sleep   10
-  Choose File     id=lot_doc_add     ${ARGUMENTS[1]}
+  Choose File     id=tend_doc_add     ${ARGUMENTS[1]}
   Sleep   4
   Capture Page Screenshot
 
@@ -253,8 +249,9 @@ Login
     ...    ${ARGUMENTS[1]} ==  file
     ...    ${ARGUMENTS[2]} ==  tenderId
   Selenium2Library.Switch Browser     ${ARGUMENTS[0]}
+  Reload Page
   sleep   4
- # Choose File     xpath=(//button[@name='file'][contains(text(), 'Додати файл')])[2]      ${ARGUMENTS[1]}
+  Wait Until Element Is Visible   id=addNewDocToExistingBid_0   5
   Choose File                 id=addNewDocToExistingBid_0          ${ARGUMENTS[1]}
   sleep  10
 
@@ -269,7 +266,7 @@ Login
   Sleep    3
   Click Element     id=changeDoc_0
   Sleep    3
-  Choose File       id=updatebid_doc_add     ${ARGUMENTS[1]}
+  Choose File       id=updateBidDoc_0     ${ARGUMENTS[1]}
   Sleep   2
 
 Подати цінову пропозицію

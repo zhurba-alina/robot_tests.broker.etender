@@ -279,11 +279,9 @@ Login
   sleep  60
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   sleep  15
-  Input text    xpath=//input[@name='amount']                  ${amount}
-  Click Element                     xpath=/html/body/div[2]/div/div[2]/div[2]/div/div/div/div[2]/div/tender-bids/div[2]/div/form/div[3]/div[2]/button
-  sleep  3
-  # Click Element    xpath=//*[@id="modalAddBidWarning"]/div/div/div[3]/div[2]/button[1]
-  # sleep  5
+  Input text    xpath=//input[@name='amount0']          ${amount}
+  Click Element                     xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
+  sleep  10
   Capture Page Screenshot
 
 Змінити цінову пропозицію
@@ -294,9 +292,9 @@ Login
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep    5
-  Input text    xpath=//input[@name='amount']        510
+  Input text    xpath=//input[@name='amount' or @name='amount0']        ${ARGUMENTS[3]}
   Sleep    3
-  Click Element                      xpath=//div[3]/button
+  Click Element                      xpath=//button[@click-and-block='updateBid(bid)']  # Зберегти зміни
 
 Скасувати цінову пропозицію
   [Arguments]  @{ARGUMENTS}

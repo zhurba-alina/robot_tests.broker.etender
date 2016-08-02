@@ -5,40 +5,42 @@ Library  DateTime
 Library  etender_service.py
 
 *** Variables ***
-${locator.auctionId}                                           xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[1]/h3
-${locator.status}                                              xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[1]/div[2]/p
-${locator.title}                                               jquery=tender-subject-info>div.row:contains("Назва аукціону:")>:eq(1)>
-${locator.description}                                         jquery=tender-subject-info>div.row:contains("Детальний опис аукціону:")>:eq(1)>
-${locator.minimalStep.amount}                                  xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[9]
+${locator.auctionID}                                           id=tenderidua
+${locator.title}                                               jquery=tender-subject-info>div.row:contains('Назва аукціону:')>:eq(1)>
+${locator.description}                                         jquery=tender-subject-info>div.row:contains('Детальний опис аукціону:')>:eq(1)>
+${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
-${locator.value}                                               xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[4]/div[2]/p
+${locator.value.amount}                                        id=totalvalue
 ${locator.tenderPeriod.startDate}                              xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[3]
 ${locator.tenderPeriod.endDate}                                xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[4]
 ${locator.enquiryPeriod.startDate}                             xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[1]
 ${locator.enquiryPeriod.endDate}                               xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[2]
-${locator.items[0].description}                                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[4]/div[2]/p
-${locator.items[0].deliveryDate.endDate}                       xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[5]/div[2]/p
-${locator.items[0].deliveryLocation}                           xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[7]/div[2]/p
-${locator.items[0].deliveryAddress.postalCode}                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[6]/div[2]/p/span[1]
-${locator.items[0].deliveryAddress.countryName}                xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[6]/div[2]/p/span[2]
-${locator.items[0].deliveryAddress.region}                     xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[6]/div[2]/p/span[3]
+${locator.items[0].description}                                jquery=tender-subject-info * div.row:contains('Конкретна назва предмету аукціону:')>:eq(1)>
+${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
+${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
+${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
+${locator.items[0].deliveryAddress.postalCode}                 id=delivery_postIndex_0
+${locator.items[0].deliveryAddress.countryName}                id=delivery_country_0
+${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[2]/div[1]/p
-${locator.items[0].classification.id}                          xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[2]/div[2]/p
-# ${locator.items[0].classification.description}                 xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[10]//span[2]
-${locator.items[0].additionalClassifications[0].scheme}        xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[3]/div[1]/p
-${locator.items[0].additionalClassifications[0].id}            xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[3]/div[2]/p
-# ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
-# ${locator.items[0].unit.code}                                  id=item_unit_symb0
-${locator.items[0].quantity}                                   xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[5]/div[2]/p
-${locator.questions[0].title}                                  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[2]/div[2]/span
-${locator.questions[0].description}                            xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[3]/div[2]/p
-${locator.questions[0].date}                                   xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[1]/div[2]/span
-${locator.questions[0].answer}                                 xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-questions/div[2]/div[5]/pre
+${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
+${locator.items[0].classification.id}                          id=item_classification0
+${locator.items[0].classification.description}                 id=item_class_descr0
+${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
+${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
+${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
+${locator.items[0].unit.code}                                  id=item_unit_symb0
+${locator.items[0].quantity}                                   id=item_quantity0
+${locator.questions[0].title}                                  id=quest_title_0
+${locator.questions[0].description}                            id=quest_descr_0
+${locator.questions[0].date}                                   id=quest_date_0
+${locator.questions[0].answer}                                 id=question_answer_0
+${locator.value.currency}                                      xpath=//div[@class = 'row']/div/p[text() = 'Повний доступний бюджет закупівлі:']/parent::div/following-sibling::div/p/span[2]
 ${locator.value.valueAddedTaxIncluded}                         xpath=//div[2]/p/i
-${locator.items[0].unit.name}                                  xpath=/html/body/div[2]/div/div[2]/div/div/div/div/div[2]/div/tender-subject-info/div[6]/div[4]/div[2]/p
+${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
+${locator.status}                                              xpath=//div[@class = 'row']/div/p[text() = 'Статус:']/parent::div/following-sibling::div/p
 
 
 *** Keywords ***

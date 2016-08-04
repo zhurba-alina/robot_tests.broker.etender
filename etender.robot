@@ -55,7 +55,7 @@ ${locator.status}                                              xpath=//div[@clas
 
 Підготувати дані для оголошення тендера
   [Arguments]  ${username}  ${tender_data}
-  ${tender_data}=  change_data  ${tender_data}
+  ${tender_data}=  adapt_data  ${tender_data}
   Log  ${tender_data}
   [return]  ${tender_data}
 

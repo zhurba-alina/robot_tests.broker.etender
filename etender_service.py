@@ -50,7 +50,7 @@ def string_to_float(string):
     return float(string)
 
 
-def change_data(initial_data):
+def adapt_data(initial_data):
     initial_data['data']['procuringEntity']['name'] = u"ПП ГО Організатор X"
     return initial_data
 

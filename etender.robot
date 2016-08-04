@@ -24,7 +24,7 @@ ${locator.items[0].deliveryAddress.countryName}                id=delivery_count
 ${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
+${locator.items[0].classification.scheme}                      xpath=//div[@ng-repeat='item in lot.items']/div[@class='row']/div/p[contains(text(),'Класифікатор')]
 ${locator.items[0].classification.id}                          id=item_classification0
 ${locator.items[0].classification.description}                 id=item_class_descr0
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
@@ -36,11 +36,11 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
-${locator.value.currency}                                      xpath=//div[@class = 'row']/div/p[text() = 'Повний доступний бюджет закупівлі:']/parent::div/following-sibling::div/p/span[2]
-${locator.value.valueAddedTaxIncluded}                         xpath=//div[2]/p/i
+${locator.value.currency}                                      xpath=//p[text() = 'Повний доступний бюджет закупівлі:']/parent::div/following-sibling::div/p/span[2]
+${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
-${locator.status}                                              xpath=//div[@class = 'row']/div/p[text() = 'Статус:']/parent::div/following-sibling::div/p
+${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 
 
 *** Keywords ***

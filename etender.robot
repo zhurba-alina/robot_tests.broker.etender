@@ -135,7 +135,6 @@ Login
   ${step_rateStr}=  Convert To String  ${step_rate}
   Input text    id=minimalStep_0    ${step_rateStr}
   Sleep   1
-  Sleep    2
   Input text    id=itemsDescription0      ${items_description}
   Sleep   1
   Input text    id=itemsQuantity0         ${quantity}
@@ -156,9 +155,9 @@ Login
   Sleep  1
   Wait Until Page Contains Element   xpath=//*[@id='CreateTenderE']
   Click Element   xpath=//*[@id='CreateTenderE']
-  Sleep   60
+  Sleep   30
   Reload Page
-  Sleep  10
+  Wait Until Page Contains Element  xpath=//*[text()='${title}']  10
   Click Element   xpath=//*[text()='${title}']
   Sleep   10
   ${tender_UAid}=  Get Text  id=tenderidua
@@ -177,7 +176,7 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  file
   ...      ${ARGUMENTS[2]} ==  tender_uaid
-  Sleep   10
+  Wait Until Element Is Visible  id=tend_doc_add
   Choose File     id=tend_doc_add     ${ARGUMENTS[1]}
   Sleep   4
   Capture Page Screenshot
@@ -276,13 +275,13 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}         amount
-  sleep  60
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   sleep  15
   Input text    xpath=//input[@name='amount0']          ${amount}
   Click Element                     xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
-  sleep  10
+  sleep  1
   Capture Page Screenshot
+  sleep  9
 
 Змінити цінову пропозицію
   [Arguments]  @{ARGUMENTS}
@@ -325,10 +324,8 @@ Login
   ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  20
   Click Element                      xpath=//a[contains(@href,'#/addQuestion/')]
   Wait Until Page Contains Element   id=title
-  Sleep  2
   Input text                         id=title                 ${title}
   Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']
@@ -343,7 +340,7 @@ Login
   ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  sleep   10
+  Wait Until Element Is Visible  id=addAnswer_0  10
   Click Element                      id=addAnswer_0
   Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer}
   sleep   2
@@ -378,7 +375,6 @@ Login
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
   Reload Page
-  sleep  5
   Wait Until Page Contains Element    ${locator.${fieldname}}    5
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}
@@ -567,9 +563,8 @@ Change_date_to_month
 
 
 Отримати інформацію про questions[0].answer
-  Sleep   3
   Reload Page
-  Sleep   10
+  Wait Until Element Is Visible  ${locator.questions[0].answer}
   ${return_value}=     Отримати текст із поля і показати на сторінці     questions[0].answer
   Sleep   4
   ${return_value}=    Get text   xpath=//div[@textarea='question.answer']

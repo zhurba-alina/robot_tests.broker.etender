@@ -158,6 +158,7 @@ Login
   Sleep   30
   Reload Page
   Wait Until Page Contains Element  xpath=//*[text()='${title}']  10
+  Sleep  5
   Click Element   xpath=//*[text()='${title}']
   Sleep   10
   ${tender_UAid}=  Get Text  id=tenderidua
@@ -375,6 +376,7 @@ Login
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
   Reload Page
+  Sleep  4
   Wait Until Page Contains Element    ${locator.${fieldname}}    5
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}

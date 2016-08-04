@@ -563,6 +563,7 @@ Change_date_to_month
 Отримати інформацію про questions[0].date
   Sleep   3
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].date
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
   [return]  ${return_value}
 
 

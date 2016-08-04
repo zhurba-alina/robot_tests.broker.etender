@@ -2,6 +2,7 @@
 
 from iso8601 import parse_date
 import dateutil.parser
+from datetime import datetime, date, time
 
 
 def get_all_etender_dates(initial_tender_data, key, subkey=None):
@@ -26,6 +27,12 @@ def get_all_etender_dates(initial_tender_data, key, subkey=None):
     }
     dt = data.get(key, {})
     return dt.get(subkey) if subkey else dt
+
+
+def convert_etender_date_to_iso_format(date_time_from_ui):
+    new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y, %H:%M')
+    new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
+    return new_date_time_string
 
 
 def convert_date_to_etender_format(isodate):

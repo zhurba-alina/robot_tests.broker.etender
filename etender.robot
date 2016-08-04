@@ -177,7 +177,6 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  file
   ...      ${ARGUMENTS[2]} ==  tender_uaid
-  Log   Multiple docType dropdowns on page   WARN
   Sleep   10
   Choose File     id=tend_doc_add     ${ARGUMENTS[1]}
   Sleep   4

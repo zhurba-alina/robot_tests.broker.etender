@@ -2,6 +2,7 @@
 
 from iso8601 import parse_date
 import dateutil.parser
+from datetime import datetime, date, time
 
 
 def get_all_etender_dates(initial_tender_data, key, subkey=None):
@@ -28,6 +29,12 @@ def get_all_etender_dates(initial_tender_data, key, subkey=None):
     return dt.get(subkey) if subkey else dt
 
 
+def convert_etender_date_to_iso_format(date_time_from_ui):
+    new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y, %H:%M')
+    new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
+    return new_date_time_string
+
+
 def convert_date_to_etender_format(isodate):
     iso_dt = parse_date(isodate)
     date_string = iso_dt.strftime("%d-%m-%Y")
@@ -50,12 +57,8 @@ def string_to_float(string):
     return float(string)
 
 
-def change_data(initial_data):
-    initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
-    initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
-    initial_data['data']['items'][0]['classification']['description'] = u"Картонні коробки"
-    initial_data['data']['procuringEntity']['name'] = u"Степанов-Зайцева"
-    initial_data['data']['minimalStep']['amount'] = 750.11
+def adapt_data(initial_data):
+    initial_data['data']['procuringEntity']['name'] = u"ПП ГО Організатор X"
     return initial_data
 
 
@@ -63,8 +66,15 @@ def convert_etender_string_to_common_string(string):
     return {
         u"Київська область": u"м. Київ",
         u"Київ": u"м. Київ",
-        u"кг.": u"кілограм",
+        u"кг.": u"кілограми",
         u"грн.": u"UAH",
         u"(включаючи ПДВ)": True,
-        500.01: 100.1,
+        u"Період уточнень":         u"active.enquiries",
+        u"Очікування пропозицій":   u"active.tendering",
+        u"Період аукціону":         u"active.auction",
+        u"Кваліфікація переможця":  u"active.qualification",
+        u"Пропозиції розглянуто":   u"active.awarded",
+        u"Закупівля не відбулась":  u"unsuccessfull",
+        u"Відмінена закупівля":     u"cancelled",
+        u"Завершена закупівля":     u"complete",
     }.get(string, string)

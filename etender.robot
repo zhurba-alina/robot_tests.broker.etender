@@ -73,6 +73,7 @@ Login
   Sleep  1
   Input text   id=inputPassword      ${USERS.users['${ARGUMENTS[0]}'].password}
   Click Button   id=btn_submit
+  Wait Until Page Does Not Contain  Авторизація  30
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
 
 Створити тендер
@@ -232,7 +233,7 @@ Login
   Input Text    xpath=//input[@type='text']    ${ARGUMENTS[1]}
   sleep  2
   ${timeout_on_wait}=  Get Broker Property By Username  ${ARGUMENTS[0]}  timeout_on_wait
-  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  0 s  Шукати і знайти
+  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  5 s  Шукати і знайти
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
   sleep  3
   Wait Until Page Contains Element    jquery=a[href^="#/tenderDetailes"]    10
@@ -325,8 +326,13 @@ Login
   ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]
+  Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]
+  Sleep  1
   Click Element                      xpath=//a[contains(@href,'#/addQuestion/')]
   Wait Until Page Contains Element   id=title
+  Wait Until Element Is Visible      id=title
+  Sleep  1
   Input text                         id=title                 ${title}
   Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']

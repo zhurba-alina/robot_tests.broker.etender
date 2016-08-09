@@ -11,10 +11,10 @@ ${locator.description}                                         jquery=tender-sub
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
 ${locator.value.amount}                                        id=totalvalue
-${locator.tenderPeriod.startDate}                              xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[3]
-${locator.tenderPeriod.endDate}                                xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[4]
-${locator.enquiryPeriod.startDate}                             xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[1]
-${locator.enquiryPeriod.endDate}                               xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[2]
+${locator.tenderPeriod.startDate}                              xpath=//div[@class = 'row']/div/p[text() = 'Початок прийому пропозицій:']/parent::div/following-sibling::div/p
+${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
+${locator.enquiryPeriod.startDate}                             xpath=//div[@class = 'row']/div/p[text() = 'Початок періоду уточнень:']/parent::div/following-sibling::div/p
+${locator.enquiryPeriod.endDate}                               xpath=//div[@class = 'row']/div/p[text() = 'Завершення періоду уточнень:']/parent::div/following-sibling::div/p
 ${locator.items[0].description}                                jquery=tender-subject-info * div.row:contains('Конкретна назва предмету аукціону:')>:eq(1)>
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
@@ -41,6 +41,7 @@ ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id=
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
+${huge_timeout_for_visibility}  300
 
 
 *** Keywords ***
@@ -303,9 +304,9 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  3
+  Wait Until Element Is Visible  xpath=//button[contains(@class, 'btn-sm btn-danger')]  ${huge_timeout_for_visibility}
   Click Element               xpath=//button[contains(@class, 'btn-sm btn-danger')]
-  sleep  5
+  Wait Until Page Does Not Contain  Скасувати${SPACE}пропозицію  ${huge_timeout_for_visibility}
 
 Оновити сторінку з тендером
   [Arguments]  @{ARGUMENTS}
@@ -326,16 +327,17 @@ Login
   ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]
-  Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]
+  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
+  Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
   Sleep  1
   Click Element                      xpath=//a[contains(@href,'#/addQuestion/')]
-  Wait Until Page Contains Element   id=title
-  Wait Until Element Is Visible      id=title
+  Wait Until Page Contains Element   id=title  ${huge_timeout_for_visibility}
+  Wait Until Element Is Visible      id=title  ${huge_timeout_for_visibility}
   Sleep  1
   Input text                         id=title                 ${title}
   Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']
+  Wait Until Page Does Not Contain   xpath=//button[@type='submit']  ${huge_timeout_for_visibility}
 
 Відповісти на питання
   [Arguments]  @{ARGUMENTS}
@@ -347,12 +349,14 @@ Login
   ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Wait Until Element Is Visible  id=addAnswer_0  10
+  Wait Until Element Is Visible      id=addAnswer_0  ${huge_timeout_for_visibility}
+  Wait Until Element Is Enabled      id=addAnswer_0  ${huge_timeout_for_visibility}
   Click Element                      id=addAnswer_0
+  Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea  ${huge_timeout_for_visibility}
   Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer}
-  sleep   2
+  Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]  ${huge_timeout_for_visibility}
   Click Element                      xpath=//*[@id="questionContainer"]/form/div/span/button[1]
-  sleep  5
+  Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]  ${huge_timeout_for_visibility}
 
 Внести зміни в тендер
   [Arguments]  @{ARGUMENTS}
@@ -382,10 +386,17 @@ Login
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
   Reload Page
-  Sleep  4
-  Wait Until Page Contains Element    ${locator.${fieldname}}    5
+  Wait Until Page Contains Element    ${locator.${fieldname}}  ${huge_timeout_for_visibility}
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  5  Check Is Element Loaded  ${locator.${fieldname}}
   ${return_value}=   Get Text  ${locator.${fieldname}}
   [return]  ${return_value}
+
+Check Is Element Loaded
+  [Arguments]  ${locator}
+  ${text_value}=   Get Text  ${locator}
+  Log  ${text_value}
+  Should Not Be Empty  ${text_value}
+  Should Not Be Equal  ${text_value}  -
 
 Отримати інформацію про title
   ${return_value}=   Отримати текст із поля і показати на сторінці   title

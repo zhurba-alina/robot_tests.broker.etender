@@ -159,7 +159,7 @@ Login
   Click Element   xpath=//*[@id='CreateTenderE']
   Sleep   30
   Reload Page
-  Wait Until Page Contains Element  xpath=//*[text()='${title}']  10
+  Wait Until Page Contains Element  xpath=//*[text()='${title}']  ${huge_timeout_for_visibility}
   Sleep  5
   Click Element   xpath=//*[text()='${title}']
   Sleep   10
@@ -225,11 +225,11 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Reload Page
-  Wait Until Page Contains   Прозорі аукціони    10
+  Wait Until Page Contains   Прозорі аукціони    ${huge_timeout_for_visibility}
   sleep  1
-  Wait Until Page Contains Element    xpath=//input[@type='text']    10
+  Wait Until Page Contains Element    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
   sleep  1
-  Wait Until Element Is Visible    xpath=//input[@type='text']    10
+  Wait Until Element Is Visible    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
   sleep  3
   Input Text    xpath=//input[@type='text']    ${ARGUMENTS[1]}
   sleep  2
@@ -237,10 +237,10 @@ Login
   ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  5 s  Шукати і знайти
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
   sleep  3
-  Wait Until Page Contains Element    jquery=a[href^="#/tenderDetailes"]    10
+  Wait Until Page Contains Element    jquery=a[href^="#/tenderDetailes"]    ${huge_timeout_for_visibility}
   sleep  1
   Click Link    jquery=a[href^="#/tenderDetailes"]
-  Wait Until Page Contains    ${ARGUMENTS[1]}   10
+  Wait Until Page Contains    ${ARGUMENTS[1]}   ${huge_timeout_for_visibility}
   sleep  1
 
 
@@ -368,7 +368,7 @@ Login
   ${description}=   Convert To String    новое описание тендера
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Wait Until Page Contains Element   xpath=//a[@class='btn btn-primary ng-scope']   10
+  Wait Until Page Contains Element   xpath=//a[@class='btn btn-primary ng-scope']   ${huge_timeout_for_visibility}
   Click Element              xpath=//a[@class='btn btn-primary ng-scope']
   Sleep  2
   Input text               id=description    ${description}

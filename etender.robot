@@ -328,12 +328,12 @@ Login
   ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Run Keyword And Ignore Error  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]  20
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Reload and wait for addQuestion
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+#  Run Keyword And Ignore Error  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]  20
+#  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Reload and wait for addQuestion
   Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
   Sleep  1
   Click Element                      xpath=//a[contains(@href,'#/addQuestion/')]
-  Wait Until Page Contains Element   id=title  ${huge_timeout_for_visibility}
   Wait Until Element Is Visible      id=title  ${huge_timeout_for_visibility}
   Sleep  1
   Input text                         id=title                 ${title}

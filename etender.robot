@@ -329,8 +329,6 @@ Login
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
-#  Run Keyword And Ignore Error  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]  20
-#  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Reload and wait for addQuestion
   Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
   Sleep  1
   Click Element                      xpath=//a[contains(@href,'#/addQuestion/')]
@@ -340,10 +338,6 @@ Login
   Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']
   Wait Until Page Does Not Contain   xpath=//button[@type='submit']  ${huge_timeout_for_visibility}
-
-Reload and wait for addQuestion
-  Reload Page
-  Wait Until Page Contains Element   xpath=//a[contains(@href,'#/addQuestion/')]  20
 
 Відповісти на питання
   [Arguments]  @{ARGUMENTS}

@@ -276,11 +276,13 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}         amount
+  ${amount}=    float_to_string_2f      ${amount}
+  sleep  60
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   sleep  15
   Input text    xpath=//input[@name='amount0']          ${amount}
   Click Element                     xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
-  sleep  1
+  sleep  10
   Capture Page Screenshot
   sleep  9
 
@@ -373,12 +375,13 @@ Login
 
 
 Отримати інформацію із тендера
-  [Arguments]  @{ARGUMENTS}
+  [Arguments]  ${user}  ${tender_id}  ${fieldname}
   [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  fieldname
-  Switch browser   ${ARGUMENTS[0]}
-  Run Keyword And Return  Отримати інформацію про ${ARGUMENTS[1]}
+  ...      ${user} ==  username
+  ...      ${tender_id} ==  tender_id
+  ...      ${fieldname} ==  fieldname
+  Switch browser   ${user}
+  Run Keyword And Return  Отримати інформацію про ${fieldname}
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
@@ -405,13 +408,17 @@ Check Is Element Loaded
 
 Отримати інформацію про minimalStep.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці   minimalStep.amount
-  ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
+  @{pattern_to_remove}=   Create List  [^0-9 ,]+
+  ${return_value}=   Remove String Using Regexp  ${return_value}  @{pattern_to_remove}
+  ${return_value}=   Set Variable  ${return_value.replace(' ','')}
+  ${return_value}=   Convert To Number   ${return_value.replace(',','.')}
   ${return_value}=   convert_etender_string_to_common_string      ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про value.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці  value.amount
-  ${return_value}=   Convert To Number   ${return_value}
+  ${return_value}=   Set Variable  ${return_value.replace(' ','')}
+  ${return_value}=   Convert To Number   ${return_value.replace(',','.')}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.latitude
@@ -495,7 +502,9 @@ Change_date_to_month
 
 Отримати інформацію про items[0].unit.code
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.code
-  Run Keyword And Return If  '${return_value}'== 'кг.'   Convert To String  KGM
+  ${return_value}=   convert_etender_string_to_common_string      ${return_value}
+  ${return_value}=   convert_unit_name_to_unit_code  ${return_value}
+  [return]  ${return_value}
 
 Отримати інформацію про items[0].quantity
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
@@ -610,3 +619,26 @@ Change_date_to_month
   Sleep  3
   ${url}=  Get Element Attribute  xpath=//*[@id="participationUrl_0"]@href
   [return]  ${url}
+
+Отримати інформацію із предмету
+  [Arguments]    ${user}    ${tender_uaid}    ${item_id}    ${fieldname}
+  Switch browser   ${user}
+  ${prepared_locator}=  Set Variable  ${locator_item_${fieldname}}
+  log  ${prepared_locator}
+  Wait Until Page Contains Element  ${prepared_locator}  1
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із предмету про ${fieldname}  ${raw_value}
+
+Конвертувати інформацію із предмету про description
+  [Arguments]  ${raw_value}
+  [return]  ${raw_value}
+
+Конвертувати інформацію із предмету про unit.code
+  [Arguments]  ${raw_value}
+  ${return_value}=   convert_etender_string_to_common_string      ${return_value}
+  ${return_value}=  convert_unit_name_to_unit_code  ${raw_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із предмету про classification.description
+  [Arguments]  ${raw_value}
+  [return]  ${raw_value}

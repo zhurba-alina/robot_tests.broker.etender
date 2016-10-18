@@ -6,8 +6,8 @@ Library  etender_service.py
 
 *** Variables ***
 ${locator.auctionID}                                           id=tenderidua
-${locator.title}                                               jquery=tender-subject-info>div.row:contains('Назва аукціону:')>:eq(1)>
-${locator.description}                                         jquery=tender-subject-info>div.row:contains('Детальний опис аукціону:')>:eq(1)>
+${locator.title}                                               jquery=tender-subject-info>div.row:contains('Номер лоту в ФГВ:')>:eq(1)>
+${locator.description}                                         jquery=tender-subject-info>div.row:contains('Лот виставляється на торги:')>:eq(1)>
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
 ${locator.value.amount}                                        id=totalvalue
@@ -15,7 +15,8 @@ ${locator.tenderPeriod.startDate}                              xpath=//div[@clas
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.enquiryPeriod.startDate}                             xpath=//div[@class = 'row']/div/p[text() = 'Початок періоду уточнень:']/parent::div/following-sibling::div/p
 ${locator.enquiryPeriod.endDate}                               xpath=//div[@class = 'row']/div/p[text() = 'Завершення періоду уточнень:']/parent::div/following-sibling::div/p
-${locator.items[0].description}                                jquery=tender-subject-info * div.row:contains('Конкретна назва предмету аукціону:')>:eq(1)>
+${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
+${locator.items[0].description}                                xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
 ${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
@@ -24,24 +25,27 @@ ${locator.items[0].deliveryAddress.countryName}                id=delivery_count
 ${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div[@ng-repeat='item in lot.items']/div[@class='row']/div/p[contains(text(),'Класифікатор')]
+${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
 ${locator.items[0].classification.id}                          id=item_classification0
+${locator_item_classification.description}                     id=item_class_descr0
 ${locator.items[0].classification.description}                 id=item_class_descr0
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
 ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
+${locator_item_unit.code}                                  id=item_unit_symb0
 ${locator.items[0].quantity}                                   id=item_quantity0
 ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
-${locator.value.currency}                                      xpath=//p[text() = 'Повний доступний бюджет закупівлі:']/parent::div/following-sibling::div/p/span[2]
+${locator.value.currency}                                      xpath=//span[@id='totalvalue']/following-sibling::span
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 ${huge_timeout_for_visibility}  300
+${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
 
 
 *** Keywords ***
@@ -55,8 +59,9 @@ ${huge_timeout_for_visibility}  300
 
 
 Підготувати дані для оголошення тендера
-  [Arguments]  ${username}  ${tender_data}
-  ${tender_data}=  adapt_data  ${tender_data}
+  [Arguments]  ${username}  ${tender_data}  ${role_name}
+  ${tender_data}=  Run Keyword IF  '${username}' != 'Etender_Viewer'   adapt_data   ${tender_data}
+  ...             ELSE  Set Variable  ${tender_data}
   Log  ${tender_data}
   [return]  ${tender_data}
 
@@ -87,7 +92,11 @@ Login
   ${title}=             Get From Dictionary     ${ARGUMENTS[1].data}               title
   ${description}=       Get From Dictionary     ${ARGUMENTS[1].data}               description
   ${budget}=            Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
+  ${budgetToStr}=         float_to_string_2f    ${budget}      # at least 2 fractional point precision, avoid rounding
   ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
+  ${step_rateToStr}=      float_to_string_2f    ${step_rate}   # at least 2 fractional point precision, avoid rounding
+  ${lotGuarantee}=      Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
+  ${lotGuaranteeToStr}=   float_to_string_2f    ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
   ${items_description}=   Get From Dictionary   ${items[0]}         description
   ${quantity}=          Get From Dictionary     ${items[0]}                        quantity
   ${cav}=               Get From Dictionary     ${items[0].classification}         id
@@ -98,52 +107,42 @@ Login
   ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
   ${deliveryDate}=      Get From Dictionary     ${items[0].deliveryDate}          endDate
   ${deliveryDate}=      convert_date_to_etender_format        ${deliveryDate}
-  ${enquiry_end_date}=   get_all_etender_dates   ${ARGUMENTS[1]}         EndPeriod          date
-  ${enquiry_end_time}=   get_all_etender_dates   ${ARGUMENTS[1]}         EndPeriod          time
   ${start_date}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
-  ${end_date}=           get_all_etender_dates   ${ARGUMENTS[1]}         EndDate            date
-  ${end_time}=           get_all_etender_dates   ${ARGUMENTS[1]}         EndDate            time
 
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  Sleep  3
-  Click Element                     xpath=//a[@href='#/profile']
-  Sleep  3
+  Sleep  15
+  Click Element                     xpath=//a[contains(@class, 'btnProfile')]
+  Sleep  15
   Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  Sleep  10
+  Click Element                     xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
   Sleep  3
-  Click Element                     xpath=//a[contains(@class, 'btn btn-info')]
-  Sleep  3
+  Click Element                     id=goToCreate
+  Sleep   3
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
-  Wait Until Page Contains Element  id=enquiryPeriod_endDate_day
-  Input text    id=enquiryPeriod_endDate_day   ${enquiry_end_date}
+  Wait Until Page Contains Element  xpath=//input[@id="auctionPeriod_startDate_day"]
   Sleep   1
-  Input text    id=enquiryPeriod_endDate_time   ${enquiry_end_time}
+  Input text    xpath=//input[@id="auctionPeriod_startDate_day"]   ${start_date}
   Sleep   1
-  Input text    xpath=//input[@name='startDate']   ${start_date}
+  Input text    xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
   Sleep   1
-  Input text    xpath=//input[@name='startDate']/parent::div/following-sibling::div[1]/input   ${start_time}
+  Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
-  Input text    xpath=//input[@name='startDate']   ${start_date}                        #Повторный ввод т.к. баг в календаре
+  Click Element    xpath=(//*[@id='valueAddedTaxIncluded'])[2]
+  Input text    id=minimalStep_0        ${step_rateToStr}
   Sleep   1
-  Input text    xpath=//input[@name='endDate']   ${end_date}
-  Sleep   1
-  Input text    xpath=//input[@name='endDate']/parent::div/following-sibling::div/input   ${end_time}
-  Sleep   5
-  ${budgetStr}=  Convert To String   ${budget}
-  Input text    id=lotValue_0     ${budgetStr}
-  Sleep   1
-  Click Element    id=valueAddedTaxIncluded
-  ${step_rateStr}=  Convert To String  ${step_rate}
-  Input text    id=minimalStep_0    ${step_rateStr}
+  Capture Page Screenshot
+  Input text    name=lotGuarantee0      ${lotGuaranteeToStr}
   Sleep   1
   Input text    id=itemsDescription0      ${items_description}
   Sleep   1
   Input text    id=itemsQuantity0         ${quantity}
-  Click Element   xpath=//select[@id='itemsUnit0']//option[@label='кг.']
+  ${unit_etender}=                  convert_common_string_to_etender_string  ${unit}
+  Select From List By Label         ${locator.lot_items_unit}            ${unit_etender}
   Sleep  2
-  Sleep   1
   Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
   Sleep  1
   Input text     xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
@@ -152,19 +151,17 @@ Login
   Click Element  xpath=//td[contains(., '${cav}')]
   Sleep  1
   Click Element  xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
-  Sleep  1
   Sleep   2
   Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
   Sleep  1
-  Wait Until Page Contains Element   xpath=//*[@id='CreateTenderE']
-  Click Element   xpath=//*[@id='CreateTenderE']
-  Sleep   30
+  Wait Until Page Contains Element   id=CreateTenderE
+  Click Element   id=CreateTenderE
+  Sleep   60
   Reload Page
-  Wait Until Page Contains Element  xpath=//*[text()='${title}']  ${huge_timeout_for_visibility}
-  Sleep  5
+  Sleep  10
   Click Element   xpath=//*[text()='${title}']
-  Sleep   10
-  ${tender_UAid}=  Get Text  id=tenderidua
+  Sleep   5
+  ${tender_UAid}=  Get Text  ${locator.auctionID}
   Sleep  1
   Log   ${tender_UAid}
   ${Ids}=   Convert To String   ${tender_UAid}

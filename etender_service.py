@@ -6,23 +6,12 @@ from datetime import datetime, date, time
 
 
 def get_all_etender_dates(initial_tender_data, key, subkey=None):
-    tender_period = initial_tender_data.data.tenderPeriod
-    enquiry_period = initial_tender_data.data.enquiryPeriod
-    end_period = dateutil.parser.parse(enquiry_period['endDate'])
+    tender_period = initial_tender_data.data.auctionPeriod
     start_dt = dateutil.parser.parse(tender_period['startDate'])
-    end_dt = dateutil.parser.parse(tender_period['endDate'])
     data = {
-        'EndPeriod': {
-            'date': end_period.strftime("%d-%m-%Y"),
-            'time': end_period.strftime("%H:%M"),
-        },
         'StartDate': {
             'date': start_dt.strftime("%d-%m-%Y"),
             'time': start_dt.strftime("%H:%M"),
-        },
-        'EndDate': {
-            'date': end_dt.strftime("%d-%m-%Y"),
-            'time': end_dt.strftime("%H:%M"),
         },
     }
     dt = data.get(key, {})
@@ -56,19 +45,49 @@ def convert_time_to_etender_format(isodate):
 def string_to_float(string):
     return float(string)
 
+def float_to_string_2f(value):
+    return '{:.2f}'.format(value)
 
 def adapt_data(initial_data):
-    initial_data['data']['procuringEntity']['name'] = u"ПП ГО Організатор X"
+    initial_data['data']['procuringEntity']['name'] = u"Likvidator3"
     return initial_data
 
 
 def convert_etender_string_to_common_string(string):
+    dict = get_helper_dictionary()
+    return dict.get(string, string)
+
+def convert_common_string_to_etender_string(string):
+    dict = get_helper_dictionary()
+    for key, val in dict.iteritems():
+        if val == string:
+            return key
+    return string
+
+def get_helper_dictionary():
     return {
-        u"Київська область": u"м. Київ",
-        u"Київ": u"м. Київ",
+        u"ящ.": u"ящик",
+        u"Гкал": u"Гігакалорія",
+        u"посл.": u"послуга",
+        u"роб.": u"роботи",
+        u"шт.": u"штуки",
+        u"га.": u"гектар",
         u"кг.": u"кілограми",
-        u"грн.": u"UAH",
-        u"(включаючи ПДВ)": True,
+        u"км": u"кілометри",
+        u"комп.": u"комплект",
+        u"кВт⋅год": u"Кіловат-година",
+        u"пог.м.": u"Погонний метр",
+        u"л.": u"літр",
+        u"м.кв.": u"метри квадратні",
+        u"м.куб.": u"метри кубічні",
+        u"м": u"метри",
+        u"пач.": u"пачок",
+        u"упак.": u"упаковка",
+        u"пар.": u"пара",
+        u"т.м.куб": u"тисяча кубічних метрів",
+        u"наб.": u"набір",
+        u"т.": u"тони",
+
         u"Період уточнень":         u"active.enquiries",
         u"Очікування пропозицій":   u"active.tendering",
         u"Період аукціону":         u"active.auction",
@@ -77,4 +96,34 @@ def convert_etender_string_to_common_string(string):
         u"Закупівля не відбулась":  u"unsuccessfull",
         u"Відмінена закупівля":     u"cancelled",
         u"Завершена закупівля":     u"complete",
+    }
+
+def convert_unit_name_to_unit_code(string):
+    return {
+        u"ящик": u"BX",
+        u"блок": u"D64",
+        u"Гігакалорія": u"E11",
+        u"послуга": u"E48",
+        u"роботи": u"E51",
+        u"рейс": u"E54",
+        u"штуки": u"H87",
+        u"гектар": u"HAR",
+        u"кілограми": u"KGM",
+        u"кілометри": u"KMT",
+        u"комплект": u"KT",
+        u"Кіловат-година": u"KWH",
+        u"Погонний метр": u"LM",
+        u"лот": u"LO",
+        u"літр": u"LTR",
+        u"місяць": u"MON",
+        u"метри квадратні": u"MTK",
+        u"метри кубічні": u"MTQ",
+        u"метри": u"MTR",
+        u"пачок": u"NMP",
+        u"упаковка": u"PK",
+        u"пара": u"PR",
+        u"тисяча кубічних метрів": u"R9",
+        u"пачка": u"RM",
+        u"набір": u"SET",
+        u"тони": u"TNE",
     }.get(string, string)

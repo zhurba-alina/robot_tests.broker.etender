@@ -68,10 +68,9 @@ ${locator.lot_items_unit}                                      id=itemsUnit0    
 
 Login
   [Arguments]  @{ARGUMENTS}
-  Wait Until Page Contains Element   xpath=//a[@href='#/login']    180
-  Wait Until Element Is Visible      xpath=//a[@href='#/login']    180
+  Wait Until Page Contains Element   id=btnLogin    180
   Sleep    1
-  Click Link    xpath=//a[@href='#/login']
+  Click Link    id=btnLogin
   Sleep    1
   Wait Until Page Contains Element   id=inputUsername   180
   Sleep  1
@@ -80,8 +79,9 @@ Login
   Sleep  1
   Input text   id=inputPassword      ${USERS.users['${ARGUMENTS[0]}'].password}
   Click Button   id=btn_submit
-  Wait Until Page Does Not Contain  Авторизація  30
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Reload Page
+  Sleep  10
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}
@@ -223,7 +223,7 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Reload Page
-  Wait Until Page Contains   Прозорі аукціони    ${huge_timeout_for_visibility}
+  Wait Until Page Contains   ProZorro.продажі    ${huge_timeout_for_visibility}
   sleep  1
   Wait Until Page Contains Element    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
   sleep  1

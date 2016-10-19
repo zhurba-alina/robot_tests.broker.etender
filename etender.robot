@@ -11,10 +11,7 @@ ${locator.description}                                         jquery=tender-sub
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
 ${locator.value.amount}                                        id=totalvalue
-${locator.tenderPeriod.startDate}                              xpath=//div[@class = 'row']/div/p[text() = 'Початок прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
-${locator.enquiryPeriod.startDate}                             xpath=//div[@class = 'row']/div/p[text() = 'Початок періоду уточнень:']/parent::div/following-sibling::div/p
-${locator.enquiryPeriod.endDate}                               xpath=//div[@class = 'row']/div/p[text() = 'Завершення періоду уточнень:']/parent::div/following-sibling::div/p
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
 ${locator.items[0].description}                                xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
@@ -467,9 +464,8 @@ Check Is Element Loaded
   [return]  ${return_value}
 
 Отримати інформацію про tenderPeriod.startDate
-  ${return_value}=   Отримати текст із поля і показати на сторінці  tenderPeriod.startDate
-  ${return_value}=   Change_date_to_month   ${return_value}
-  [return]  ${return_value}
+  log  це поле не актуальне для поточної версії аукціонів. Повертати значення потрібно лише для того, щоб не було помилки
+  [return]  ${EMPTY}
 
 Отримати інформацію про tenderPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  tenderPeriod.endDate
@@ -477,14 +473,12 @@ Check Is Element Loaded
   [return]  ${return_value}
 
 Отримати інформацію про enquiryPeriod.startDate
-  ${return_value}=   Отримати текст із поля і показати на сторінці  enquiryPeriod.startDate
-  ${return_value}=   Change_date_to_month   ${return_value}
-  [return]  ${return_value}
+  log  це поле не актуальне для поточної версії аукціонів. Повертати значення потрібно лише для того, щоб не було помилки
+  [return]  ${EMPTY}
 
 Отримати інформацію про enquiryPeriod.endDate
-  ${return_value}=   Отримати текст із поля і показати на сторінці  enquiryPeriod.endDate
-  ${return_value}=   Change_date_to_month   ${return_value}
-  [return]  ${return_value}
+  log  це поле не актуальне для поточної версії аукціонів. Повертати значення потрібно лише для того, щоб не було помилки
+  [return]  ${EMPTY}
 
 Change_date_to_month
   [Arguments]  @{ARGUMENTS}

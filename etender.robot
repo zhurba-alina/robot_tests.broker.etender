@@ -43,6 +43,10 @@ ${locator.bids}                                                id=ParticipiantIn
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 ${huge_timeout_for_visibility}  300
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
+${locator_document_title}                                      xpath=//tender-documents//a[contains(text(),'XX_doc_id_XX')]
+${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
+${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
+${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
 
 
 *** Keywords ***
@@ -636,3 +640,38 @@ Change_date_to_month
 Конвертувати інформацію із предмету про classification.description
   [Arguments]  ${raw_value}
   [return]  ${raw_value}
+
+Отримати інформацію із документа
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
+  Switch browser   ${username}
+  ${prepared_locator}=  Set Variable  ${locator_document_${field}.replace('XX_doc_id_XX','${doc_id}')}
+  log  ${prepared_locator}
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із документа про ${field}  ${raw_value}
+
+Конвертувати інформацію із документа про title
+  [Arguments]  ${raw_value}
+  ${return_value}=  Set Variable  ${raw_value.split(',')[0]}
+  [return]  ${return_value}
+
+Отримати інформацію із запитання
+  [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}
+  Switch browser   ${username}
+  ${prepared_locator}=  Set Variable  ${locator_question_${field}.replace('XX_que_id_XX','${question_id}')}
+  log  ${prepared_locator}
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із запитання про ${field}  ${raw_value}
+
+Конвертувати інформацію із запитання про title
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із запитання про description
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із запитання про answer
+  [Arguments]  ${return_value}
+  [return]  ${return_value}

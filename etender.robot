@@ -69,20 +69,21 @@ ${locator_question_answer}                                     xpath=//span[cont
 
 Login
   [Arguments]  @{ARGUMENTS}
-  Wait Until Page Contains Element   id=btnLogin    180
-  Sleep    1
-  Click Link    id=btnLogin
-  Sleep    1
+  Wait Until Page Contains Element   id=btnLogin        180
+  Capture Page Screenshot
+  Sleep   10
+  Click Link                         id=btnLogin
+  Capture Page Screenshot
+  Sleep   10
   Wait Until Page Contains Element   id=inputUsername   180
-  Sleep  1
-  Input text   id=inputUsername      ${USERS.users['${ARGUMENTS[0]}'].login}
+  Input text                         id=inputUsername   ${USERS.users['${ARGUMENTS[0]}'].login}
   Wait Until Page Contains Element   id=inputPassword   180
-  Sleep  1
-  Input text   id=inputPassword      ${USERS.users['${ARGUMENTS[0]}'].password}
-  Click Button   id=btn_submit
-  Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Input text                         id=inputPassword   ${USERS.users['${ARGUMENTS[0]}'].password}
+  Wait Until Page Contains Element   id=btn_submit      180
+  Click Button                       id=btn_submit
+  Sleep   10
+  Go To                              ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Reload Page
-  Sleep  10
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}

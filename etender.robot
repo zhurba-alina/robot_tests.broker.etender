@@ -10,8 +10,9 @@ ${locator.title}                                               jquery=tender-sub
 ${locator.description}                                         jquery=tender-subject-info>div.row:contains('Лот виставляється на торги:')>:eq(1)>
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
-${locator.value.amount}                                        id=totalvalue
+${locator.value.amount}                                        id=lotvalue_0
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
+${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
 ${locator.items[0].description}                                xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
@@ -25,6 +26,7 @@ ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@clas
 ${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
 ${locator.items[0].classification.id}                          id=item_classification0
 ${locator_item_classification.description}                     id=item_class_descr0
+${locator_item_classification.scheme}                          xpath=//div[@ng-repeat='item in lot.items']//p[contains(text(),'Класифікатор')]
 ${locator.items[0].classification.description}                 id=item_class_descr0
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
@@ -36,7 +38,7 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
-${locator.value.currency}                                      xpath=//span[@id='totalvalue']/following-sibling::span
+${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
@@ -410,7 +412,7 @@ Check Is Element Loaded
 
 Отримати інформацію про minimalStep.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці   minimalStep.amount
-  @{pattern_to_remove}=   Create List  [^0-9 ,]+
+  @{pattern_to_remove}=   Create List  [^0-9 ,\.]+
   ${return_value}=   Remove String Using Regexp  ${return_value}  @{pattern_to_remove}
   ${return_value}=   Set Variable  ${return_value.replace(' ','')}
   ${return_value}=   Convert To Number   ${return_value.replace(',','.')}
@@ -436,6 +438,9 @@ Check Is Element Loaded
 
 Отримати інформацію про value.currency
   ${return_value}=   Отримати текст із поля і показати на сторінці   value.currency
+  @{pattern_to_remove}=   Create List  [0-9 ,\.]+
+  ${return_value}=   Remove String Using Regexp  ${return_value}  @{pattern_to_remove}
+  ${return_value}=   Set Variable  ${return_value.split('(')[0]}
   [return]  ${return_value}
 
 Отримати інформацію про value.valueAddedTaxIncluded
@@ -474,7 +479,8 @@ Check Is Element Loaded
 
 Отримати інформацію про tenderPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  tenderPeriod.endDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
+  ${return_value}=   add_timezone_to_date   ${return_value.split('.')[0]}
   [return]  ${return_value}
 
 Отримати інформацію про enquiryPeriod.startDate
@@ -484,6 +490,12 @@ Check Is Element Loaded
 Отримати інформацію про enquiryPeriod.endDate
   log  це поле не актуальне для поточної версії аукціонів. Повертати значення потрібно лише для того, щоб не було помилки
   [return]  ${EMPTY}
+
+Отримати інформацію про auctionPeriod.startDate
+  ${return_value}=   Отримати текст із поля і показати на сторінці  auctionPeriod.startDate
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
+  ${return_value}=   add_timezone_to_date   ${return_value.split('.')[0]}
+  [return]  ${return_value}
 
 Change_date_to_month
   [Arguments]  @{ARGUMENTS}
@@ -641,6 +653,12 @@ Change_date_to_month
 Конвертувати інформацію із предмету про classification.description
   [Arguments]  ${raw_value}
   [return]  ${raw_value}
+
+Конвертувати інформацію із предмету про classification.scheme
+  [Arguments]  ${raw_value}
+  ${return_value}=   Set Variable  ${raw_value.split(' ')[1]}
+  ${return_value}=   Set Variable  ${return_value.split(':')[0]}
+  [return]  ${return_value}
 
 Отримати інформацію із документа
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}

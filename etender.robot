@@ -694,3 +694,60 @@ Change_date_to_month
 Конвертувати інформацію із запитання про answer
   [Arguments]  ${return_value}
   [return]  ${return_value}
+
+Підтвердити постачальника
+  [Documentation]
+  ...      [Arguments] Username, tender uaid and number of the award to confirm
+  ...      [Return] Nothing
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//a[@data-target='#modalGetAwards']
+  sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//button[@ng-click='getAwardsNextStep()']
+  sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//button[@click-and-block='setDecision(1)']
+  sleep  5
+  Capture Page Screenshot
+
+Завантажити угоду до тендера
+  [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
+  log  ${username}
+  log  ${tender_uaid}
+  log  ${contract_num}
+  log  ${filepath}
+  sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//a[text()='Контракт']
+  sleep  5
+  Capture Page Screenshot
+  Choose File  xpath=//button[@ng-model='documentsToAdd']  ${filepath}
+  sleep  240  #  wait till disappears "Поки не експортовано"
+  Reload Page
+  Sleep  20
+  Capture Page Screenshot
+  ${href}=  Get Element Attribute  xpath=(//div[@ng-show='!document.isDeleted']/a)@href
+  sleep  5
+  Capture Page Screenshot
+  ${contract_num_str}=  Convert To String  ${contract_num}
+  Input text  id=contractNumber  ${contract_num_str}
+  Capture Page Screenshot
+  sleep  20
+  [return]  ${href}
+
+Підтвердити підписання контракту
+  [Documentation]
+  ...      [Arguments] Username, tender uaid, contract number
+  ...      [Return] Nothing
+  [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
+    sleep  1
+  Capture Page Screenshot
+  sleep  20
+  Capture Page Screenshot
+  Click Element  xpath=//button[text()='Завершити аукціон']
+  sleep  1
+  Capture Page Screenshot
+  sleep  20
+  Capture Page Screenshot

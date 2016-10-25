@@ -491,6 +491,10 @@ Check Is Element Loaded
   log  це поле не актуальне для поточної версії аукціонів. Повертати значення потрібно лише для того, щоб не було помилки
   [return]  ${EMPTY}
 
+Отримати інформацію про auctionPeriod.endDate
+  ${return_value}=  Set Variable  Дане поле auctionPeriod.endDate не відображається на майданчику
+  [return]  ${return_value}
+
 Отримати інформацію про auctionPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  auctionPeriod.startDate
   ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
@@ -724,7 +728,11 @@ Change_date_to_month
   sleep  5
   Capture Page Screenshot
   Choose File  xpath=//button[@ng-model='documentsToAdd']  ${filepath}
+  Capture Page Screenshot
+  sleep  1
+  Capture Page Screenshot
   sleep  240  #  wait till disappears "Поки не експортовано"
+  Capture Page Screenshot
   Reload Page
   Sleep  20
   Capture Page Screenshot
@@ -742,7 +750,10 @@ Change_date_to_month
   ...      [Arguments] Username, tender uaid, contract number
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
-    sleep  1
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  sleep  10
+  Capture Page Screenshot
+  Click Element  xpath=//a[text()='Контракт']
   Capture Page Screenshot
   sleep  20
   Capture Page Screenshot

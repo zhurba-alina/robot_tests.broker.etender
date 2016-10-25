@@ -95,14 +95,21 @@ def get_helper_dictionary():
         u"наб.": u"набір",
         u"т.": u"тони",
 
-        u"Період уточнень":         u"active.enquiries",
         u"Очікування пропозицій":   u"active.tendering",
         u"Період аукціону":         u"active.auction",
         u"Кваліфікація переможця":  u"active.qualification",
+        u"Кандидат розглядається":  u"active.qualification",
         u"Пропозиції розглянуто":   u"active.awarded",
+        u"Переможця визначено":     u"active.awarded",
+        u"Оплачено, очікується підписання договору": u"active.awarded",
         u"Закупівля не відбулась":  u"unsuccessfull",
+        u"Аукціон не відбувся":     u"unsuccessfull",
+        u"Торги не відбулись":      u"unsuccessfull",
         u"Відмінена закупівля":     u"cancelled",
+        u"Відмінений аукціон":      u"cancelled",
+        u"Торги відмінено":         u"cancelled",
         u"Завершена закупівля":     u"complete",
+        u"Завершений аукціон":      u"complete",
     }
 
 def convert_unit_name_to_unit_code(string):

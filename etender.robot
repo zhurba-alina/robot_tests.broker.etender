@@ -11,6 +11,7 @@ ${locator.description}                                         jquery=tender-sub
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
 ${locator.value.amount}                                        id=lotvalue_0
+${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
@@ -698,6 +699,26 @@ Change_date_to_month
 Конвертувати інформацію із запитання про answer
   [Arguments]  ${return_value}
   [return]  ${return_value}
+
+Отримати пропозицію
+  [Arguments]  ${field}
+  Wait Until Page Contains Element    ${locator.proposition.${field}}            60
+  ${proposition_amount}=              Get Value                                  ${locator.proposition.${field}}
+  ${proposition_amount}=              Convert To Number                          ${proposition_amount}
+  log                                 ${proposition_amount}
+  ${data}=     Create Dictionary
+  ${bid}=      Create Dictionary
+  ${value}=    Create Dictionary
+  Set To Dictionary  ${bid}     data=${data}
+  Set To Dictionary  ${data}    value=${value}
+  Set To Dictionary  ${value}   amount=${proposition_amount}
+  [return]           ${bid}
+
+Отримати інформацію із пропозиції
+  [Arguments]  ${username}  ${tender_uaid}  ${field}
+  ${bid}=   etender.Отримати пропозицію  ${field}
+  [return]  ${bid.data.${field}}
+
 
 Підтвердити постачальника
   [Documentation]

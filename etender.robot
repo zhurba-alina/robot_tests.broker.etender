@@ -12,6 +12,7 @@ ${locator.minimalStep.amount}                                  xpath=//div[@clas
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
 ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
+${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
@@ -298,10 +299,15 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  Execute JavaScript                window.IzvDataSave=window.confirm;
+  Execute JavaScript                window.confirm = function(msg){return true;};  # DoTo: In the future will rewrite Alert Confirm with Selenium + Python
   Sleep    5
-  Input text    xpath=//input[@name='amount' or @name='amount0']        ${ARGUMENTS[3]}
-  Sleep    3
-  Click Element                      xpath=//button[@click-and-block='updateBid(bid)']  # Зберегти зміни
+  ${str_argument}=                  float to string           ${ARGUMENTS[3]}
+  Input text                        ${locator.proposition.value.amount}           ${str_argument}
+  Sleep    5
+  Wait Until Element Is Visible     ${locator.button.updateBid}
+  Click Element                     ${locator.button.updateBid}
+  Execute JavaScript                window.confirm = window.IzvDataSave;
 
 Скасувати цінову пропозицію
   [Arguments]  @{ARGUMENTS}

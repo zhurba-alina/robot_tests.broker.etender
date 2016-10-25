@@ -52,6 +52,9 @@ def convert_time_to_etender_format(isodate):
 def string_to_float(string):
     return float(string)
 
+def float_to_string(float):
+    return str(float)
+
 def float_to_string_2f(value):
     return '{:.2f}'.format(value)
 

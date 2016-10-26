@@ -653,7 +653,11 @@ Change_date_to_month
 
 Конвертувати інформацію із предмету про description
   [Arguments]  ${raw_value}
-  [return]  ${raw_value}
+  Log  Тимчасове рішення для обробки неточних даних із двома пробілами - надалі неточні має виправити prozorro
+  ${one_space}=  set variable  Житлова нерухомість
+  ${two_spaces}=  set variable  Житлова\ \ нерухомість
+  ${return_value}=  Set Variable  ${raw_value.replace(u'${one_space}', u'${two_spaces}')}
+  [return]  ${return_value}
 
 Конвертувати інформацію із предмету про unit.code
   [Arguments]  ${raw_value}

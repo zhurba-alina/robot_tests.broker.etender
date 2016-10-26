@@ -388,9 +388,7 @@ Login
 Отримати інформацію із тендера
   [Arguments]  ${user}  ${tender_id}  ${fieldname}
   [Documentation]
-  ...      ${user} ==  username
-  ...      ${tender_id} ==  tender_id
-  ...      ${fieldname} ==  fieldname
+  ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
   Switch browser   ${user}
   Run Keyword And Return  Отримати інформацію про ${fieldname}
 

@@ -94,89 +94,85 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  tender_data
-  ${items}=             Get From Dictionary     ${ARGUMENTS[1].data}               items
-  ${title}=             Get From Dictionary     ${ARGUMENTS[1].data}               title
-  ${description}=       Get From Dictionary     ${ARGUMENTS[1].data}               description
-  ${budget}=            Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
-  ${budgetToStr}=         float_to_string_2f    ${budget}      # at least 2 fractional point precision, avoid rounding
-  ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
-  ${step_rateToStr}=      float_to_string_2f    ${step_rate}   # at least 2 fractional point precision, avoid rounding
-  ${lotGuarantee}=      Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
-  ${lotGuaranteeToStr}=   float_to_string_2f    ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
-  ${items_description}=   Get From Dictionary   ${items[0]}         description
-  ${quantity}=          Get From Dictionary     ${items[0]}                        quantity
-  ${cav}=               Get From Dictionary     ${items[0].classification}         id
-  ${unit}=              Get From Dictionary     ${items[0].unit}                   name
-  ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
-  ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
-  ${postalCode}=        Get From Dictionary     ${items[0].deliveryAddress}       postalCode
-  ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
-  ${deliveryDate}=      Get From Dictionary     ${items[0].deliveryDate}          endDate
-  ${deliveryDate}=      convert_date_to_etender_format        ${deliveryDate}
-  ${start_date}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
-  ${start_time}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
+  ${items}=               Get From Dictionary     ${ARGUMENTS[1].data}               items
+  ${title}=               Get From Dictionary     ${ARGUMENTS[1].data}               title
+  ${description}=         Get From Dictionary     ${ARGUMENTS[1].data}               description
+  ${budget}=              Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
+  ${budgetToStr}=         float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
+  ${step_rate}=           Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
+  ${step_rateToStr}=      float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
+  ${lotGuarantee}=        Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
+  ${lotGuaranteeToStr}=   float_to_string_2f      ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
+  ${items_description}=   Get From Dictionary     ${items[0]}                        description
+  ${quantity}=            Get From Dictionary     ${items[0]}                        quantity
+  ${cav}=                 Get From Dictionary     ${items[0].classification}         id
+  ${unit}=                Get From Dictionary     ${items[0].unit}                   name
+  ${latitude}=            Get From Dictionary     ${items[0].deliveryLocation}       latitude
+  ${longitude}=           Get From Dictionary     ${items[0].deliveryLocation}       longitude
+  ${postalCode}=          Get From Dictionary     ${items[0].deliveryAddress}        postalCode
+  ${streetAddress}=       Get From Dictionary     ${items[0].deliveryAddress}        streetAddress
+  ${deliveryDate}=        Get From Dictionary     ${items[0].deliveryDate}           endDate
+  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
+  ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
+  ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
 
 
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'btnProfile')]
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
-  Sleep  10
-  Click Element                     xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
-  Sleep  3
-  Click Element                     id=goToCreate
-  Sleep   3
-  Input text    id=title                  ${title}
-  Input text    id=description            ${description}
-  Wait Until Page Contains Element  xpath=//input[@id="auctionPeriod_startDate_day"]
-  Sleep   1
-  Input text    xpath=//input[@id="auctionPeriod_startDate_day"]   ${start_date}
-  Sleep   1
-  Input text    xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
-  Sleep   1
-  Input text    id=lotValue_0        ${budgetToStr}
-  Sleep   1
-  Click Element    xpath=(//*[@id='valueAddedTaxIncluded'])[2]
-  Input text    id=minimalStep_0        ${step_rateToStr}
-  Sleep   1
-  Capture Page Screenshot
-  Input text    name=lotGuarantee0      ${lotGuaranteeToStr}
-  Sleep   1
-  Input text    id=itemsDescription0      ${items_description}
-  Sleep   1
-  Input text    id=itemsQuantity0         ${quantity}
-  ${unit_etender}=                  convert_common_string_to_etender_string  ${unit}
-  Select From List By Label         ${locator.lot_items_unit}            ${unit_etender}
-  Sleep  2
-  Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Sleep  1
-  Input text     xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
-  Wait Until Element Is Visible  xpath=//td[contains(., '${cav}')]
-  Sleep  2
-  Click Element  xpath=//td[contains(., '${cav}')]
-  Sleep  1
-  Click Element  xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
-  Sleep   2
-  Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
-  Sleep  1
-  Wait Until Page Contains Element   id=CreateTenderE
-  Click Element   id=CreateTenderE
+  Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
+  Wait Until Element Is Visible      xpath=//a[contains(@class, 'btnProfile')]
+  Click Element                      xpath=//a[contains(@class, 'btnProfile')]
+  Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  Wait Until Element Is Visible      xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
+  Click Element                      xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
+  Wait Until Element Is Visible      id=goToCreate
+  Click Element                      id=goToCreate
+  Wait Until Element Is Visible      id=title
+  Input text                         id=title                                            ${title}
+  Wait Until Element Is Visible      id=description
+  Input text                         id=description                                      ${description}
+  Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_day"]
+  Input text                         xpath=//input[@id="auctionPeriod_startDate_day"]    ${start_date}
+  Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_time"]
+  Input text                         xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
+  Wait Until Element Is Visible      id=lotValue_0
+  Input text                         id=lotValue_0                                       ${budgetToStr}
+  Wait Until Element Is Visible      xpath=(//*[@id='valueAddedTaxIncluded'])[2]
+  Click Element                      xpath=(//*[@id='valueAddedTaxIncluded'])[2]
+  Wait Until Element Is Visible      id=minimalStep_0
+  Input text                         id=minimalStep_0                                    ${step_rateToStr}
+  Wait Until Element Is Visible      name=lotGuarantee0
+  Input text                         name=lotGuarantee0                                  ${lotGuaranteeToStr}
+  Wait Until Element Is Visible      id=itemsDescription0
+  Input text                         id=itemsDescription0                                ${items_description}
+  Wait Until Element Is Visible      id=itemsQuantity0
+  Input text                         id=itemsQuantity0                                   ${quantity}
+  ${unit_etender}=                   convert_common_string_to_etender_string             ${unit}
+  Select From List By Label          ${locator.lot_items_unit}                           ${unit_etender}
+  Wait Until Element Is Visible      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Click Element                      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
+  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Click Element                      xpath=//td[contains(., '${cav}')]
+  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
+  Run Keyword if                     '${mode}' == 'multi'   Додати багато предметів   items
   Wait Until Element Is Visible      ${locator_dgfID}
   Input text                         ${locator_dgfID}       123
+  Wait Until Element Is Visible      id=CreateTenderE
+  Click Element                      id=CreateTenderE
   Sleep   60
   Reload Page
-  Sleep  10
-  Click Element   xpath=//*[text()='${title}']
-  Sleep   5
-  ${tender_UAid}=  Get Text  ${locator.auctionID}
-  Sleep  1
-  Log   ${tender_UAid}
-  ${Ids}=   Convert To String   ${tender_UAid}
-  log to console      ${Ids}
-  Log   ${Ids}
-  Run keyword if   '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
-  [return]  ${Ids}
+  Wait Until Element Is Visible      xpath=//*[text()='${title}']
+  Click Element                      xpath=//*[text()='${title}']
+  Wait Until Element Is Visible      ${locator.auctionID}
+  ${tender_UAid}=                    Get Text            ${locator.auctionID}
+  Log                                ${tender_UAid}
+  ${Ids}=                            Convert To String   ${tender_UAid}
+  log to console                     ${Ids}
+  Log                                ${Ids}
+  Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
+  [return]                           ${Ids}
 
 
 Завантажити документ

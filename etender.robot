@@ -51,7 +51,7 @@ ${locator_document_title}                                      xpath=//tender-do
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
-
+${locator_dgfID}                                               id=dgfID
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -162,6 +162,8 @@ Login
   Sleep  1
   Wait Until Page Contains Element   id=CreateTenderE
   Click Element   id=CreateTenderE
+  Wait Until Element Is Visible      ${locator_dgfID}
+  Input text                         ${locator_dgfID}       123
   Sleep   60
   Reload Page
   Sleep  10

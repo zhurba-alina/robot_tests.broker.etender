@@ -13,6 +13,7 @@ ${locator.procuringEntity.name}                                jquery=customer-i
 ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
+${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер аукціону (або лота) у XLS Фонду Гарантування:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
@@ -34,7 +35,7 @@ ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/di
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
 ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
-${locator_item_unit.code}                                  id=item_unit_symb0
+${locator_item_unit.code}                                      id=item_unit_symb0
 ${locator.items[0].quantity}                                   id=item_quantity0
 ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
@@ -51,7 +52,7 @@ ${locator_document_title}                                      xpath=//tender-do
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
-${locator_dgfID}                                               id=dgfID
+${locator_dgfID}                                               id=dgfID  # на сторінці створення
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -103,6 +104,7 @@ Login
   ${step_rateToStr}=      float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
   ${lotGuarantee}=        Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
   ${lotGuaranteeToStr}=   float_to_string_2f      ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
+  ${dgfID}=               Get From Dictionary     ${ARGUMENTS[1].data}               dgfID
   ${items_description}=   Get From Dictionary     ${items[0]}                        description
   ${quantity}=            Get From Dictionary     ${items[0]}                        quantity
   ${cav}=                 Get From Dictionary     ${items[0].classification}         id
@@ -158,7 +160,7 @@ Login
   Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
   Run Keyword if                     '${mode}' == 'multi'   Додати багато предметів   items
   Wait Until Element Is Visible      ${locator_dgfID}
-  Input text                         ${locator_dgfID}       123
+  Input text                         ${locator_dgfID}                                    ${dgfID}
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
   Sleep   60
@@ -617,6 +619,10 @@ Change_date_to_month
 Отримати інформацію про status
   ${status}=   Отримати текст із поля і показати на сторінці   status
   ${return_value}=   convert_etender_string_to_common_string      ${status}
+  [return]    ${return_value}
+
+Отримати інформацію про dgfID
+  ${return_value}=   Отримати текст із поля і показати на сторінці   dgfID
   [return]    ${return_value}
 
 

@@ -13,6 +13,8 @@ ${locator.procuringEntity.name}                                jquery=customer-i
 ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
+${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
+${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер аукціону (або лота) у XLS Фонду Гарантування:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
@@ -34,7 +36,7 @@ ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/di
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
 ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
-${locator_item_unit.code}                                  id=item_unit_symb0
+${locator_item_unit.code}                                      id=item_unit_symb0
 ${locator.items[0].quantity}                                   id=item_quantity0
 ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
@@ -51,7 +53,7 @@ ${locator_document_title}                                      xpath=//tender-do
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
-
+${locator_dgfID}                                               id=dgfID  # на сторінці створення
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -94,87 +96,86 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  tender_data
-  ${items}=             Get From Dictionary     ${ARGUMENTS[1].data}               items
-  ${title}=             Get From Dictionary     ${ARGUMENTS[1].data}               title
-  ${description}=       Get From Dictionary     ${ARGUMENTS[1].data}               description
-  ${budget}=            Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
-  ${budgetToStr}=         float_to_string_2f    ${budget}      # at least 2 fractional point precision, avoid rounding
-  ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
-  ${step_rateToStr}=      float_to_string_2f    ${step_rate}   # at least 2 fractional point precision, avoid rounding
-  ${lotGuarantee}=      Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
-  ${lotGuaranteeToStr}=   float_to_string_2f    ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
-  ${items_description}=   Get From Dictionary   ${items[0]}         description
-  ${quantity}=          Get From Dictionary     ${items[0]}                        quantity
-  ${cav}=               Get From Dictionary     ${items[0].classification}         id
-  ${unit}=              Get From Dictionary     ${items[0].unit}                   name
-  ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
-  ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
-  ${postalCode}=        Get From Dictionary     ${items[0].deliveryAddress}       postalCode
-  ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
-  ${deliveryDate}=      Get From Dictionary     ${items[0].deliveryDate}          endDate
-  ${deliveryDate}=      convert_date_to_etender_format        ${deliveryDate}
-  ${start_date}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
-  ${start_time}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
+  ${items}=               Get From Dictionary     ${ARGUMENTS[1].data}               items
+  ${title}=               Get From Dictionary     ${ARGUMENTS[1].data}               title
+  ${description}=         Get From Dictionary     ${ARGUMENTS[1].data}               description
+  ${budget}=              Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
+  ${budgetToStr}=         float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
+  ${step_rate}=           Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
+  ${step_rateToStr}=      float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
+  ${lotGuarantee}=        Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
+  ${lotGuaranteeToStr}=   float_to_string_2f      ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
+  ${dgfID}=               Get From Dictionary     ${ARGUMENTS[1].data}               dgfID
+  ${items_description}=   Get From Dictionary     ${items[0]}                        description
+  ${quantity}=            Get From Dictionary     ${items[0]}                        quantity
+  ${cav}=                 Get From Dictionary     ${items[0].classification}         id
+  ${unit}=                Get From Dictionary     ${items[0].unit}                   name
+  ${latitude}=            Get From Dictionary     ${items[0].deliveryLocation}       latitude
+  ${longitude}=           Get From Dictionary     ${items[0].deliveryLocation}       longitude
+  ${postalCode}=          Get From Dictionary     ${items[0].deliveryAddress}        postalCode
+  ${streetAddress}=       Get From Dictionary     ${items[0].deliveryAddress}        streetAddress
+  ${deliveryDate}=        Get From Dictionary     ${items[0].deliveryDate}           endDate
+  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
+  ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
+  ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
 
 
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'btnProfile')]
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
-  Sleep  10
-  Click Element                     xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
-  Sleep  3
-  Click Element                     id=goToCreate
-  Sleep   3
-  Input text    id=title                  ${title}
-  Input text    id=description            ${description}
-  Wait Until Page Contains Element  xpath=//input[@id="auctionPeriod_startDate_day"]
-  Sleep   1
-  Input text    xpath=//input[@id="auctionPeriod_startDate_day"]   ${start_date}
-  Sleep   1
-  Input text    xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
-  Sleep   1
-  Input text    id=lotValue_0        ${budgetToStr}
-  Sleep   1
-  Click Element    xpath=(//*[@id='valueAddedTaxIncluded'])[2]
-  Input text    id=minimalStep_0        ${step_rateToStr}
-  Sleep   1
-  Capture Page Screenshot
-  Input text    name=lotGuarantee0      ${lotGuaranteeToStr}
-  Sleep   1
-  Input text    id=itemsDescription0      ${items_description}
-  Sleep   1
-  Input text    id=itemsQuantity0         ${quantity}
-  ${unit_etender}=                  convert_common_string_to_etender_string  ${unit}
-  Select From List By Label         ${locator.lot_items_unit}            ${unit_etender}
-  Sleep  2
-  Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Sleep  1
-  Input text     xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
-  Wait Until Element Is Visible  xpath=//td[contains(., '${cav}')]
-  Sleep  2
-  Click Element  xpath=//td[contains(., '${cav}')]
-  Sleep  1
-  Click Element  xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
-  Sleep   2
-  Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
-  Sleep  1
-  Wait Until Page Contains Element   id=CreateTenderE
-  Click Element   id=CreateTenderE
+  Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
+  Wait Until Element Is Visible      xpath=//a[contains(@class, 'btnProfile')]
+  Click Element                      xpath=//a[contains(@class, 'btnProfile')]
+  Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  Wait Until Element Is Visible      xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
+  Click Element                      xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
+  Wait Until Element Is Visible      id=goToCreate
+  Click Element                      id=goToCreate
+  Wait Until Element Is Visible      id=title
+  Input text                         id=title                                            ${title}
+  Wait Until Element Is Visible      id=description
+  Input text                         id=description                                      ${description}
+  Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_day"]
+  Input text                         xpath=//input[@id="auctionPeriod_startDate_day"]    ${start_date}
+  Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_time"]
+  Input text                         xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
+  Wait Until Element Is Visible      id=lotValue_0
+  Input text                         id=lotValue_0                                       ${budgetToStr}
+  Wait Until Element Is Visible      xpath=(//*[@id='valueAddedTaxIncluded'])[2]
+  Click Element                      xpath=(//*[@id='valueAddedTaxIncluded'])[2]
+  Wait Until Element Is Visible      id=minimalStep_0
+  Input text                         id=minimalStep_0                                    ${step_rateToStr}
+  Wait Until Element Is Visible      name=lotGuarantee0
+  Input text                         name=lotGuarantee0                                  ${lotGuaranteeToStr}
+  Wait Until Element Is Visible      id=itemsDescription0
+  Input text                         id=itemsDescription0                                ${items_description}
+  Wait Until Element Is Visible      id=itemsQuantity0
+  Input text                         id=itemsQuantity0                                   ${quantity}
+  ${unit_etender}=                   convert_common_string_to_etender_string             ${unit}
+  Select From List By Label          ${locator.lot_items_unit}                           ${unit_etender}
+  Wait Until Element Is Visible      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Click Element                      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
+  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Click Element                      xpath=//td[contains(., '${cav}')]
+  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
+  Run Keyword if                     '${mode}' == 'multi'   Додати багато предметів   items
+  Wait Until Element Is Visible      ${locator_dgfID}
+  Input text                         ${locator_dgfID}                                    ${dgfID}
+  Wait Until Element Is Visible      id=CreateTenderE
+  Click Element                      id=CreateTenderE
   Sleep   60
   Reload Page
-  Sleep  10
-  Click Element   xpath=//*[text()='${title}']
-  Sleep   5
-  ${tender_UAid}=  Get Text  ${locator.auctionID}
-  Sleep  1
-  Log   ${tender_UAid}
-  ${Ids}=   Convert To String   ${tender_UAid}
-  log to console      ${Ids}
-  Log   ${Ids}
-  Run keyword if   '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
-  [return]  ${Ids}
+  Wait Until Element Is Visible      xpath=//*[text()='${title}']
+  Click Element                      xpath=//*[text()='${title}']
+  Wait Until Element Is Visible      ${locator.auctionID}
+  ${tender_UAid}=                    Get Text            ${locator.auctionID}
+  Log                                ${tender_UAid}
+  ${Ids}=                            Convert To String   ${tender_UAid}
+  log to console                     ${Ids}
+  Log                                ${Ids}
+  Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
+  [return]                           ${Ids}
 
 
 Завантажити документ
@@ -275,22 +276,28 @@ Login
   Choose File       id=updateBidDoc_0     ${ARGUMENTS[1]}
   Sleep   2
 
+
 Подати цінову пропозицію
   [Arguments]  @{ARGUMENTS}
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
-  ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}         amount
+  ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}          amount
   ${amount}=    float_to_string_2f      ${amount}
-  sleep  60
+  Sleep  60
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   sleep  15
-  Input text    xpath=//input[@name='amount0']          ${amount}
-  Click Element                     xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
-  sleep  10
-  Capture Page Screenshot
-  sleep  9
+  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Input text                        xpath=//input[@name='amount0']          ${amount}
+  Wait Until Element Is Enabled     ${locator.button.registrationProposition}
+  Click Element                     ${locator.button.registrationProposition}
+  Wait Until Page Contains          Пропозицію додано!                      30
+  Sleep                             5
+  Click Element                     xpath=//button[@click-and-block='activateBid(bid)']
+  Log                               Button 'Підтвердити ставку' was created for Autotesting only
+  Wait Until Page Contains          Пропозицію підтверджено!                30
+
 
 Змінити цінову пропозицію
   [Arguments]  @{ARGUMENTS}
@@ -300,13 +307,19 @@ Login
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Execute JavaScript                window.IzvDataSave=window.confirm;
-  Execute JavaScript                window.confirm = function(msg){return true;};  # DoTo: In the future will rewrite Alert Confirm with Selenium + Python
+  Execute JavaScript                window.confirm = function(msg){return true;};
+# TODO: In the future will rewrite Alert Confirm with Selenium + Python
   Sleep    5
   ${str_argument}=                  float to string           ${ARGUMENTS[3]}
   Input text                        ${locator.proposition.value.amount}           ${str_argument}
   Sleep    5
   Wait Until Element Is Visible     ${locator.button.updateBid}
   Click Element                     ${locator.button.updateBid}
+  Wait Until Page Contains          Пропозицію змінено!                 30
+  Sleep                             5
+  Click Element                     xpath=//button[@click-and-block='updateBid(bid,true)']
+  Log                               Button 'Підтвердити редаговану ставку' was created for Autotesting only
+  Wait Until Page Contains          Пропозицію змінено!                 30
   Execute JavaScript                window.confirm = window.IzvDataSave;
 
 Скасувати цінову пропозицію
@@ -619,6 +632,10 @@ Change_date_to_month
 Отримати інформацію про status
   ${status}=   Отримати текст із поля і показати на сторінці   status
   ${return_value}=   convert_etender_string_to_common_string      ${status}
+  [return]    ${return_value}
+
+Отримати інформацію про dgfID
+  ${return_value}=   Отримати текст із поля і показати на сторінці   dgfID
   [return]    ${return_value}
 
 

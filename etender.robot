@@ -307,13 +307,19 @@ Login
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Execute JavaScript                window.IzvDataSave=window.confirm;
-  Execute JavaScript                window.confirm = function(msg){return true;};  # DoTo: In the future will rewrite Alert Confirm with Selenium + Python
+  Execute JavaScript                window.confirm = function(msg){return true;};
+# TODO: In the future will rewrite Alert Confirm with Selenium + Python
   Sleep    5
   ${str_argument}=                  float to string           ${ARGUMENTS[3]}
   Input text                        ${locator.proposition.value.amount}           ${str_argument}
   Sleep    5
   Wait Until Element Is Visible     ${locator.button.updateBid}
   Click Element                     ${locator.button.updateBid}
+  Wait Until Page Contains          Пропозицію змінено!                 30
+  Sleep                             5
+  Click Element                     xpath=//button[@click-and-block='updateBid(bid,true)']
+  Log                               Button 'Підтвердити редаговану ставку' was created for Autotesting only
+  Wait Until Page Contains          Пропозицію змінено!                 30
   Execute JavaScript                window.confirm = window.IzvDataSave;
 
 Скасувати цінову пропозицію

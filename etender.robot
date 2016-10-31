@@ -13,6 +13,7 @@ ${locator.procuringEntity.name}                                jquery=customer-i
 ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
+${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер аукціону (або лота) у XLS Фонду Гарантування:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
@@ -275,22 +276,28 @@ Login
   Choose File       id=updateBidDoc_0     ${ARGUMENTS[1]}
   Sleep   2
 
+
 Подати цінову пропозицію
   [Arguments]  @{ARGUMENTS}
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
-  ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}         amount
+  ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}          amount
   ${amount}=    float_to_string_2f      ${amount}
-  sleep  60
+  Sleep  60
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   sleep  15
-  Input text    xpath=//input[@name='amount0']          ${amount}
-  Click Element                     xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
-  sleep  10
-  Capture Page Screenshot
-  sleep  9
+  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Input text                        xpath=//input[@name='amount0']          ${amount}
+  Wait Until Element Is Enabled     ${locator.button.registrationProposition}
+  Click Element                     ${locator.button.registrationProposition}
+  Wait Until Page Contains          Пропозицію додано!                      30
+  Sleep                             5
+  Click Element                     xpath=//button[@click-and-block='activateBid(bid)']
+  Log                               Button 'Підтвердити ставку' was created for Autotesting only
+  Wait Until Page Contains          Пропозицію підтверджено!                30
+
 
 Змінити цінову пропозицію
   [Arguments]  @{ARGUMENTS}

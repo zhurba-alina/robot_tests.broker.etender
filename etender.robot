@@ -6,7 +6,7 @@ Library  etender_service.py
 
 *** Variables ***
 ${locator.auctionID}                                           id=tenderidua
-${locator.title}                                               jquery=tender-subject-info>div.row:contains('Номер лоту в ФГВ:')>:eq(1)>
+${locator.title}                                               jquery=tender-subject-info>div.row:contains('Загальний опис процедури:')>:eq(1)>
 ${locator.description}                                         jquery=tender-subject-info>div.row:contains('Лот виставляється на торги:')>:eq(1)>
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
@@ -14,7 +14,7 @@ ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
 ${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
-${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер аукціону (або лота) у XLS Фонду Гарантування:']/parent::div/following-sibling::div/p  # на сторінці перегляду
+${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25

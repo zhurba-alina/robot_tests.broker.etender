@@ -54,6 +54,8 @@ ${locator_question_title}                                      xpath=//span[cont
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
+${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
+${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -125,8 +127,11 @@ Login
   Click Element                      xpath=//a[contains(@class, 'btnProfile')]
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
   Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
-  Wait Until Element Is Visible      xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
-  Click Element                      xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
+  ...  Reload Page
+  ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Click Element                      ${locator_start_auction_creation}
   Wait Until Element Is Visible      id=goToCreate
   Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title
@@ -156,6 +161,7 @@ Login
   Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
   Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
   Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      xpath=//td[contains(., '${cav}')]
   Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
   Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification

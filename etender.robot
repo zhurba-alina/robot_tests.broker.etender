@@ -48,6 +48,7 @@ ${locator.items[0].unit.name}                                  id=item_unit_symb
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 ${huge_timeout_for_visibility}  300
+${grid_page_text}                                              ProZorro.продажі
 ${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
 ${locator_document_title}                                      xpath=//tender-documents//a[contains(text(),'XX_doc_id_XX')]
@@ -171,9 +172,11 @@ Login
   Input text                         ${locator_dgfID}                                    ${dgfID}
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
+  Wait Until Page Contains           Закупівлю створено!
   Sleep   60
   Reload Page
   Wait Until Element Is Visible      xpath=//*[text()='${title}']
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      xpath=//*[text()='${title}']
   Wait Until Element Is Visible      ${locator.auctionID}
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
@@ -237,7 +240,7 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Reload Page
-  Wait Until Page Contains   ProZorro.продажі    ${huge_timeout_for_visibility}
+  Wait Until Page Contains   ${grid_page_text}    ${huge_timeout_for_visibility}
   sleep  1
   Wait Until Page Contains Element    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
   sleep  1

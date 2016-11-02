@@ -48,6 +48,7 @@ ${locator.items[0].unit.name}                                  id=item_unit_symb
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 ${huge_timeout_for_visibility}  300
+${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
 ${locator_document_title}                                      xpath=//tender-documents//a[contains(text(),'XX_doc_id_XX')]
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
@@ -644,6 +645,9 @@ Change_date_to_month
   ${return_value}=   Отримати текст із поля і показати на сторінці   dgfID
   [return]    ${return_value}
 
+Отримати інформацію про eligibilityCriteria
+  ${return_value}=   Отримати текст із поля і показати на сторінці   eligibilityCriteria
+  [return]    ${return_value}
 
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
@@ -713,6 +717,7 @@ Change_date_to_month
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}
   Switch browser   ${username}
+  Reload Page
   ${prepared_locator}=  Set Variable  ${locator_question_${field}.replace('XX_que_id_XX','${question_id}')}
   log  ${prepared_locator}
   Wait Until Page Contains Element  ${prepared_locator}  10

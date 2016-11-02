@@ -796,9 +796,6 @@ Change_date_to_month
   ${href}=  Get Element Attribute  xpath=(//div[@ng-show='!document.isDeleted']/a)@href
   sleep  5
   Capture Page Screenshot
-  ${contract_num_str}=  Convert To String  ${contract_num}
-  Input text  id=contractNumber  ${contract_num_str}
-  Capture Page Screenshot
   sleep  20
   [return]  ${href}
 
@@ -813,6 +810,8 @@ Change_date_to_month
   Click Element  xpath=//a[text()='Контракт']
   Capture Page Screenshot
   sleep  20
+  ${contract_num_str}=  Convert To String  ${contract_num}
+  Input text  id=contractNumber  ${contract_num_str}
   Capture Page Screenshot
   Click Element  xpath=//button[text()='Завершити аукціон']
   sleep  1

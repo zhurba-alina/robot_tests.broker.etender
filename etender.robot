@@ -173,12 +173,7 @@ Login
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
   Wait Until Page Contains           Закупівлю створено!
-  Sleep   60
-  Reload Page
-  Wait Until Element Is Visible      xpath=//*[text()='${title}']
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Click Element                      xpath=//*[text()='${title}']
-  Wait Until Element Is Visible      ${locator.auctionID}
+  Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
@@ -187,6 +182,12 @@ Login
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]                           ${Ids}
 
+Дочекатися завершення обробки аукціона
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      ${locator.auctionID}      30
+  ${tender_id}=                      Get Text                  ${locator.auctionID}
+  Should Match Regexp                ${tender_id}              UA-EA-\\d{4}-\\d{2}-\\d{2}-\\d+
 
 Завантажити документ
   [Arguments]  @{ARGUMENTS}

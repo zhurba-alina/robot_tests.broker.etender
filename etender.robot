@@ -92,8 +92,7 @@ Login
   Wait Until Page Contains Element   id=btn_submit      180
   Click Button                       id=btn_submit
   Sleep   10
-  Go To                              ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  Reload Page
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів  ${USERS.users['${ARGUMENTS[0]}'].homepage}
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}
@@ -239,8 +238,7 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
-  Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  Reload Page
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Wait Until Page Contains   ${grid_page_text}    ${huge_timeout_for_visibility}
   sleep  1
   Wait Until Page Contains Element    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
@@ -259,6 +257,18 @@ Login
   Wait Until Page Contains    ${ARGUMENTS[1]}   ${huge_timeout_for_visibility}
   sleep  1
 
+Подивитися список аукціонів
+  [Arguments]  ${url}
+  ${not_logged_error_message}=  Set Variable  No user logged in!
+  ${authorization_label}=  Set Variable  Авторизація
+  Go To  ${url}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ${no_problems}=  Run Keyword And Return Status  Page Should Not Contain  ${not_logged_error_message}
+  Run Keyword Unless  ${no_problems}  Log  У нас знову проблема із неавторизованим користувачем, команда розробки Е-тендер має її виправити  WARN
+  Page Should Not Contain  ${not_logged_error_message}
+  ${no_problems}=  Run Keyword And Return Status  Page Should Not Contain  ${authorization_label}
+  Run Keyword Unless  ${no_problems}  Log  У нас знову проблема із неавторизованим користувачем, команда розробки Е-тендер має її виправити  WARN
+  Page Should Not Contain  ${authorization_label}
 
 Завантажити документ в ставку
   [Arguments]  @{ARGUMENTS}

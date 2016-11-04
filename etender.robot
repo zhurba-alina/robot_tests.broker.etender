@@ -230,31 +230,29 @@ Login
 
 
 Шукати і знайти
-  Клацнути і дочекатися  jquery=a[ng-click='search()']  jquery=a[href^="#/tenderDetailes"]  5
+  [Arguments]  ${TENDER_UAID}
+  Клацнути і дочекатися  jquery=a[ng-click='search()']  jquery=a[href^='#/tenderDetailes']:contains('${TENDER_UAID}')  5
 
 
 Пошук тендера по ідентифікатору
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів  ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  [Arguments]  ${username}  ${TENDER_UAID}
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
   Wait Until Page Contains   ${grid_page_text}    ${huge_timeout_for_visibility}
   sleep  1
   Wait Until Page Contains Element    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
   sleep  1
   Wait Until Element Is Visible    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
   sleep  3
-  Input Text    xpath=//input[@type='text']    ${ARGUMENTS[1]}
+  Input Text    xpath=//input[@type='text']    ${TENDER_UAID}
   sleep  2
-  ${timeout_on_wait}=  Get Broker Property By Username  ${ARGUMENTS[0]}  timeout_on_wait
-  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  5 s  Шукати і знайти
+  ${timeout_on_wait}=  Get Broker Property By Username  ${username}  timeout_on_wait
+  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  5 s  Шукати і знайти  ${TENDER_UAID}
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
   sleep  3
   Wait Until Page Contains Element    jquery=a[href^="#/tenderDetailes"]    ${huge_timeout_for_visibility}
   sleep  1
   Click Link    jquery=a[href^="#/tenderDetailes"]
-  Wait Until Page Contains    ${ARGUMENTS[1]}   ${huge_timeout_for_visibility}
+  Wait Until Page Contains    ${TENDER_UAID}   ${huge_timeout_for_visibility}
   sleep  1
 
 Подивитися список аукціонів

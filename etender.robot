@@ -226,12 +226,13 @@ Login
   ...      wanted_locator: What are we waiting for
   ...      timeout: Timeout
   Click Link  ${click_locator}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Page Contains Element  ${wanted_locator}  ${timeout}
 
 
 Шукати і знайти
-  [Arguments]  ${TENDER_UAID}
-  Клацнути і дочекатися  jquery=a[ng-click='search()']  jquery=a[href^='#/tenderDetailes']:contains('${TENDER_UAID}')  5
+  [Arguments]  ${locator_auction_in_grid}
+  Клацнути і дочекатися  jquery=a[ng-click='search()']  ${locator_auction_in_grid}  60
 
 
 Пошук тендера по ідентифікатору
@@ -246,12 +247,13 @@ Login
   Input Text    xpath=//input[@type='text']    ${TENDER_UAID}
   sleep  2
   ${timeout_on_wait}=  Get Broker Property By Username  ${username}  timeout_on_wait
-  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  5 s  Шукати і знайти  ${TENDER_UAID}
+  ${locator_auction_in_grid}=  Set Variable  jquery=a[href^='#/tenderDetailes']:contains('${TENDER_UAID}')
+  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  ${huge_timeout_for_visibility}  Шукати і знайти  ${locator_auction_in_grid}
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
   sleep  3
-  Wait Until Page Contains Element    jquery=a[href^="#/tenderDetailes"]    ${huge_timeout_for_visibility}
+  Wait Until Page Contains Element  ${locator_auction_in_grid}  ${huge_timeout_for_visibility}
   sleep  1
-  Click Link    jquery=a[href^="#/tenderDetailes"]
+  Click Link  ${locator_auction_in_grid}
   Wait Until Page Contains    ${TENDER_UAID}   ${huge_timeout_for_visibility}
   sleep  1
 

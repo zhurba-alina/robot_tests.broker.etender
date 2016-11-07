@@ -42,6 +42,7 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
+${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]/p[1]
 ${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
@@ -52,7 +53,8 @@ ${huge_timeout_for_visibility}  300
 ${grid_page_text}                                              ProZorro.продажі
 ${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
-${locator_document_title}                                      xpath=//tender-documents//a[contains(text(),'XX_doc_id_XX')]
+${locator_document_title}                                      xpath=//a[contains(text(),'XX_doc_id_XX')]
+${locator_document_description}                                xpath=//a[contains(text(),'XX_doc_id_XX')]
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
@@ -651,6 +653,15 @@ Change_date_to_month
   ${return_value}=   Отримати текст із поля і показати на сторінці   eligibilityCriteria
   [return]    ${return_value}
 
+Отримати інформацію про cancellations[0].status
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Log  Тимчасовий workaround, перевіряється наявнітсть супутнього напису на сторінці, а не саме відображення поля cancellations[0].status; до кінця тижня 2016-11-11 розробники мають додати поле на сторінку  WARN
+  ${status}  ${field_value}=  Run Keyword And Ignore Error  Отримати текст із поля і показати на сторінці  cancellations[0].status
+  ${return_value}=  Run Keyword If  '${status}'=='PASS'  Set Variable  active
+  ...  ELSE  Set Variable  NOT_active_OR_SOMETHING_LIKE_THAT
+  [return]  ${return_value}
+
 Отримати інформацію про cancellations[0].reason
   ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].reason
   [return]    ${return_value}
@@ -719,6 +730,10 @@ Change_date_to_month
   [Arguments]  ${raw_value}
   ${return_value}=  Set Variable  ${raw_value.split(',')[0]}
   [return]  ${return_value}
+
+Конвертувати інформацію із документа про description
+  [Arguments]  ${raw_value}
+  [return]  ${raw_value}
 
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}

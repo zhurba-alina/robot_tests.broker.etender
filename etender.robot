@@ -42,6 +42,7 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
+${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
@@ -648,6 +649,10 @@ Change_date_to_month
 
 Отримати інформацію про eligibilityCriteria
   ${return_value}=   Отримати текст із поля і показати на сторінці   eligibilityCriteria
+  [return]    ${return_value}
+
+Отримати інформацію про cancellations[0].reason
+  ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].reason
   [return]    ${return_value}
 
 Отримати посилання на аукціон для глядача

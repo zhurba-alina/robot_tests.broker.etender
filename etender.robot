@@ -58,6 +58,7 @@ ${locator_question_answer}                                     xpath=//span[cont
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
+${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -218,44 +219,29 @@ Login
   Sleep  2
 
 
-
-Клацнути і дочекатися
-  [Arguments]  ${click_locator}  ${wanted_locator}  ${timeout}
-  [Documentation]
-  ...      click_locator: Where to click
-  ...      wanted_locator: What are we waiting for
-  ...      timeout: Timeout
-  Click Link  ${click_locator}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Page Contains Element  ${wanted_locator}  ${timeout}
-
-
-Шукати і знайти
-  [Arguments]  ${locator_auction_in_grid}
-  Клацнути і дочекатися  jquery=a[ng-click='search()']  ${locator_auction_in_grid}  60
-
-
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
-  Wait Until Page Contains   ${grid_page_text}    ${huge_timeout_for_visibility}
-  sleep  1
-  Wait Until Page Contains Element    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
-  sleep  1
-  Wait Until Element Is Visible    xpath=//input[@type='text']    ${huge_timeout_for_visibility}
-  sleep  3
-  Input Text    xpath=//input[@type='text']    ${TENDER_UAID}
+  Wait Until Keyword Succeeds  5 x  60  Спробувати знайти тендер по ідентифікатору  ${username}  ${TENDER_UAID}
+
+Спробувати знайти тендер по ідентифікатору
+  [Arguments]  ${username}  ${TENDER_UAID}
+  Wait Until Keyword Succeeds  5 x  60  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
+  Wait Until Page Contains Element  ${locator_auction_search_field}  60
+  Wait Until Element Is Visible     ${locator_auction_search_field}  60
+  Input Text                        ${locator_auction_search_field}  ${TENDER_UAID}
   sleep  2
-  ${timeout_on_wait}=  Get Broker Property By Username  ${username}  timeout_on_wait
+  Wait Until Page Does Not Contain  ${locator_block_overlay}
   ${locator_auction_in_grid}=  Set Variable  jquery=a[href^='#/tenderDetailes']:contains('${TENDER_UAID}')
-  ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  ${huge_timeout_for_visibility}  Шукати і знайти  ${locator_auction_in_grid}
-  Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
-  sleep  3
-  Wait Until Page Contains Element  ${locator_auction_in_grid}  ${huge_timeout_for_visibility}
-  sleep  1
+  Wait Until Page Contains Element  ${locator_auction_in_grid}  60
+  ${auction_link_within_platform}=  Get Element Attribute  ${locator_auction_in_grid}@href
+  Log  ${auction_link_within_platform}
   Click Link  ${locator_auction_in_grid}
-  Wait Until Page Contains    ${TENDER_UAID}   ${huge_timeout_for_visibility}
-  sleep  1
+  Wait Until Page Does Not Contain  ${locator_block_overlay}
+  ${location}=  Get Location
+  Log  ${location}
+  Wait Until Page Contains    ${TENDER_UAID}   60
+  Run Keyword And Ignore Error  Wait Until Page Contains Element  ${locator.auctionID}
+  Run Keyword And Ignore Error  Get Text  ${locator.auctionID}
 
 Подивитися список аукціонів
   [Arguments]  ${url}
@@ -269,6 +255,7 @@ Login
   ${no_problems}=  Run Keyword And Return Status  Page Should Not Contain  ${authorization_label}
   Run Keyword Unless  ${no_problems}  Log  У нас знову проблема із неавторизованим користувачем, команда розробки Е-тендер має її виправити  WARN
   Page Should Not Contain  ${authorization_label}
+  Wait Until Page Contains   ${grid_page_text}
 
 Завантажити документ в ставку
   [Arguments]  @{ARGUMENTS}

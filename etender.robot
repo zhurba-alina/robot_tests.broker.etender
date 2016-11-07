@@ -221,21 +221,25 @@ Login
 
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  60  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
+  Wait Until Keyword Succeeds  5 x  60  Спробувати знайти тендер по ідентифікатору  ${username}  ${TENDER_UAID}
+
+Спробувати знайти тендер по ідентифікатору
+  [Arguments]  ${username}  ${TENDER_UAID}
+  Wait Until Keyword Succeeds  5 x  60  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
   Wait Until Page Contains Element  ${locator_auction_search_field}  60
   Wait Until Element Is Visible     ${locator_auction_search_field}  60
   Input Text                        ${locator_auction_search_field}  ${TENDER_UAID}
   sleep  2
   Wait Until Page Does Not Contain  ${locator_block_overlay}
   ${locator_auction_in_grid}=  Set Variable  jquery=a[href^='#/tenderDetailes']:contains('${TENDER_UAID}')
-  Wait Until Page Contains Element  ${locator_auction_in_grid}  ${huge_timeout_for_visibility}
+  Wait Until Page Contains Element  ${locator_auction_in_grid}  60
   ${auction_link_within_platform}=  Get Element Attribute  ${locator_auction_in_grid}@href
   Log  ${auction_link_within_platform}
   Click Link  ${locator_auction_in_grid}
   Wait Until Page Does Not Contain  ${locator_block_overlay}
   ${location}=  Get Location
   Log  ${location}
-  Wait Until Page Contains    ${TENDER_UAID}   ${huge_timeout_for_visibility}
+  Wait Until Page Contains    ${TENDER_UAID}   60
   Run Keyword And Ignore Error  Wait Until Page Contains Element  ${locator.auctionID}
   Run Keyword And Ignore Error  Get Text  ${locator.auctionID}
 

@@ -108,6 +108,7 @@ def get_helper_dictionary():
         u"Закупівля не відбулась":  u"unsuccessfull",
         u"Аукціон не відбувся":     u"unsuccessfull",
         u"Торги не відбулись":      u"unsuccessfull",
+        u"Торги не відбулися":      u"unsuccessfull",
         u"Відмінена закупівля":     u"cancelled",
         u"Відмінений аукціон":      u"cancelled",
         u"Торги відмінено":         u"cancelled",

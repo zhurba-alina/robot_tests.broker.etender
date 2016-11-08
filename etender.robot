@@ -42,7 +42,7 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
-${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]/p[1]
+${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Статус']/parent::div/following-sibling::div/p
 ${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
@@ -54,6 +54,7 @@ ${grid_page_text}                                              ProZorro.прод
 ${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
 ${locator_document_title}                                      xpath=//a[contains(text(),'XX_doc_id_XX')]
+${locator_document_href}                                       xpath=(//a[contains(text(),'XX_doc_id_XX')])@href
 ${locator_document_description}                                xpath=//a[contains(text(),'XX_doc_id_XX')]
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
@@ -656,10 +657,8 @@ Change_date_to_month
 Отримати інформацію про cancellations[0].status
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Log  Тимчасовий workaround, перевіряється наявнітсть супутнього напису на сторінці, а не саме відображення поля cancellations[0].status; до кінця тижня 2016-11-11 розробники мають додати поле на сторінку  WARN
-  ${status}  ${field_value}=  Run Keyword And Ignore Error  Отримати текст із поля і показати на сторінці  cancellations[0].status
-  ${return_value}=  Run Keyword If  '${status}'=='PASS'  Set Variable  active
-  ...  ELSE  Set Variable  NOT_active_OR_SOMETHING_LIKE_THAT
+  ${status}=  Отримати текст із поля і показати на сторінці  cancellations[0].status
+  ${return_value}=   convert_etender_string_to_common_string  cancellation.status=${status}  # workaround to distinguish between auction and cancellation
   [return]  ${return_value}
 
 Отримати інформацію про cancellations[0].reason
@@ -734,6 +733,20 @@ Change_date_to_month
 Конвертувати інформацію із документа про description
   [Arguments]  ${raw_value}
   [return]  ${raw_value}
+
+Отримати документ
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
+  Switch browser   ${username}
+  ${title}=  etender.Отримати інформацію із документа  ${username}  ${tender_uaid}  ${doc_id}  title
+  ${prepared_locator}=  Set Variable  ${locator_document_href.replace('XX_doc_id_XX','${doc_id}')}
+  log  ${prepared_locator}
+  ${href}=  Get Element Attribute  ${prepared_locator}
+  ${document_file}=  download_file_from_url  ${href}  ${OUTPUT_DIR}${/}${title}
+  [return]  ${document_file}
+
+Отримати документ до скасування
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
+  Run Keyword And Return  etender.Отримати документ  ${username}  ${tender_uaid}  ${doc_id}
 
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}

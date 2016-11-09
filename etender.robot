@@ -353,7 +353,7 @@ Login
   etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
 
-Задати питання
+Задати запитання на тендер
   [Arguments]  @{ARGUMENTS}
   [Documentation]
   ...      ${ARGUMENTS[0]} = username
@@ -373,6 +373,10 @@ Login
   Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']
   Wait Until Page Does Not Contain   xpath=//button[@type='submit']  ${huge_timeout_for_visibility}
+
+Задати запитання на предмет
+  [Arguments]  ${username}  ${TENDER_UAID}  ${item_id}  ${question_data}
+  etender.Задати запитання на тендер  ${username}  ${TENDER_UAID}  ${question_data}
 
 Відповісти на питання
   [Arguments]  @{ARGUMENTS}
@@ -755,6 +759,7 @@ Change_date_to_month
   ${prepared_locator}=  Set Variable  ${locator_question_${field}.replace('XX_que_id_XX','${question_id}')}
   log  ${prepared_locator}
   Wait Until Page Contains Element  ${prepared_locator}  10
+  Wait Until Keyword Succeeds  10 x  5  Check Is Element Loaded  ${prepared_locator}
   ${raw_value}=   Get Text  ${prepared_locator}
   Run Keyword And Return  Конвертувати інформацію із запитання про ${field}  ${raw_value}
 

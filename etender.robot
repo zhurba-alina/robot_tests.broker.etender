@@ -42,6 +42,7 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
+${locator_question_item}                                       xpath=//select[@ng-model='vm.question.item']
 ${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Статус']/parent::div/following-sibling::div/p
 ${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
@@ -353,16 +354,13 @@ Login
   etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
 
-Задати запитання на тендер
-  [Arguments]  @{ARGUMENTS}
+Задати запитання на щось
+  [Arguments]  ${username}  ${TENDER_UAID}  ${question_data}  ${question_to}  ${item_id}
   [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = question_data
-  ${title}=        Get From Dictionary  ${ARGUMENTS[2].data}  title
-  ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  ${title}=        Get From Dictionary  ${question_data.data}  title
+  ${description}=  Get From Dictionary  ${question_data.data}  description
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${TENDER_UAID}
   Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
   Sleep  1
@@ -371,12 +369,32 @@ Login
   Sleep  1
   Input text                         id=title                 ${title}
   Input text                         id=description           ${description}
+  Select From List By Label          xpath=//select[@ng-model='vm.questionTo']  ${question_to}
+  Run Keyword If  'Предмет аукціону' == '${question_to}'  Вказати предмет для питання  ${item_id}
   Click Element                      xpath=//button[@type='submit']
   Wait Until Page Does Not Contain   xpath=//button[@type='submit']  ${huge_timeout_for_visibility}
 
+Вказати предмет для питання
+  [Arguments]  ${item_id}
+  Wait Until Element Is Visible      ${locator_question_item}
+  @{items}=  Get List Items          ${locator_question_item}
+  Log  ${items}
+  ${tmp_item}=  Set variable  stub
+  :FOR  ${item_x}  IN  @{items}
+  \  ${tmp_item}=  Set variable  ${item_x}
+  \  ${item_was_found_by_prefix}=  Run Keyword And Return Status  Should Contain  ${tmp_item}  ${item_id}
+  \  Run Keyword If  ${item_was_found_by_prefix}  Exit For Loop
+  \  ${tmp_item}=  Set variable  stub2
+  Log  ${tmp_item}
+  Select From List By Label          ${locator_question_item}  ${tmp_item}
+
 Задати запитання на предмет
   [Arguments]  ${username}  ${TENDER_UAID}  ${item_id}  ${question_data}
-  etender.Задати запитання на тендер  ${username}  ${TENDER_UAID}  ${question_data}
+  etender.Задати запитання на щось  ${username}  ${TENDER_UAID}  ${question_data}  Предмет аукціону  ${item_id}
+
+Задати запитання на тендер
+  [Arguments]  ${username}  ${TENDER_UAID}  ${question_data}
+  etender.Задати запитання на щось  ${username}  ${TENDER_UAID}  ${question_data}  Аукціону  nothing
 
 Відповісти на питання
   [Arguments]  @{ARGUMENTS}

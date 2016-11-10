@@ -49,6 +49,7 @@ ${locator.value.currency}                                      xpath=//span[@id=
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
+${locator.bids_0_amount}                                       xpath=(//form[@name='changeBidForm']//div[@class = 'row']/div/p[text() = 'Cума:']/parent::div/following-sibling::div/div/div/span)[1]  #note: mixed en/ru chars!
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 ${huge_timeout_for_visibility}  300
 ${grid_page_text}                                              ProZorro.продажі
@@ -714,6 +715,13 @@ Change_date_to_month
 
 Отримати інформацію про cancellations[0].reason
   ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].reason
+  [return]    ${return_value}
+
+Отримати інформацію про bids
+  [Documentation]
+  ...  Для перевірки можливості побачити цінові пропозиції учасників під час прийому пропозицій.
+  ...  На даний момет важливим є лише те, виконається кейворд успішно чи видасть помилку. Значення не перевіряється
+  ${return_value}=   Отримати текст із поля і показати на сторінці   bids_0_amount
   [return]    ${return_value}
 
 Отримати посилання на аукціон для глядача

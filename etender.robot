@@ -42,18 +42,21 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
-${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]/p[1]
+${locator_question_item}                                       xpath=//select[@ng-model='vm.question.item']
+${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Статус']/parent::div/following-sibling::div/p
 ${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
+${locator.bids_0_amount}                                       xpath=(//form[@name='changeBidForm']//div[@class = 'row']/div/p[text() = 'Cума:']/parent::div/following-sibling::div/div/div/span)[1]  #note: mixed en/ru chars!
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
 ${huge_timeout_for_visibility}  300
 ${grid_page_text}                                              ProZorro.продажі
 ${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
 ${locator_document_title}                                      xpath=//a[contains(text(),'XX_doc_id_XX')]
+${locator_document_href}                                       xpath=(//a[contains(text(),'XX_doc_id_XX')])@href
 ${locator_document_description}                                xpath=//a[contains(text(),'XX_doc_id_XX')]
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
@@ -343,6 +346,35 @@ Login
   Click Element               xpath=//button[contains(@class, 'btn-sm btn-danger')]
   Wait Until Page Does Not Contain  Скасувати${SPACE}пропозицію  ${huge_timeout_for_visibility}
 
+Скасувати закупівлю
+  [Arguments]  ${username}  ${tender_uaid}  ${cancellation_reason}  ${document}  ${new_description}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Element Is Visible  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']  ${huge_timeout_for_visibility}
+  Click Element                  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']
+  Wait Until Element Is Visible  xpath=//textarea[@placeholder='Причина']  ${huge_timeout_for_visibility}
+  Sleep  2
+  Input text                     xpath=//textarea[@placeholder='Причина']  ${cancellation_reason}
+  Click Element                  xpath=//button[@ng-click='beginCancelTender()' and text()='Почати процедуру']
+  Wait Until Page Contains Element  xpath=//form[@name='cancelForm']//input[@id='tend_doc_add']  ${huge_timeout_for_visibility}
+  Sleep  1
+  Choose File  xpath=//form[@name='cancelForm']//input[@id='tend_doc_add']  ${document}
+  Sleep  1
+  Run Keyword And Ignore Error   Page Should Contain  файл додано
+  # TODO: remove sleep after file upload progressbar fix
+  Sleep  120
+  Wait Until Element Is Visible  xpath=//div[@id='modalCancelTender']//button[text()=' Зберегти зміни та продовжити пізніше']
+  Click Element                  xpath=//div[@id='modalCancelTender']//button[text()=' Зберегти зміни та продовжити пізніше']
+  Wait Until Keyword Succeeds  5 x  30  Продовжити процедуру скасування аукціона  ${username}  ${tender_uaid}
+
+Продовжити процедуру скасування аукціона
+  [Arguments]  ${username}  ${tender_uaid}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Element Is Visible  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Продовжити процедуру скасування аукціона']
+  Click Element                  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Продовжити процедуру скасування аукціона']
+  Wait Until Element Is Visible  xpath=//button[@ng-click='endCancelTender()']  ${huge_timeout_for_visibility}  # Скасувати аукціон
+  Click Element                  xpath=//button[@ng-click='endCancelTender()']  # Скасувати аукціон
+  Wait Until Page Contains       Торги скасовано!
+
 Оновити сторінку з тендером
   [Arguments]  @{ARGUMENTS}
   [Documentation]
@@ -352,16 +384,13 @@ Login
   etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
 
-Задати питання
-  [Arguments]  @{ARGUMENTS}
+Задати запитання на щось
+  [Arguments]  ${username}  ${TENDER_UAID}  ${question_data}  ${question_to}  ${item_id}
   [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = question_data
-  ${title}=        Get From Dictionary  ${ARGUMENTS[2].data}  title
-  ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  ${title}=        Get From Dictionary  ${question_data.data}  title
+  ${description}=  Get From Dictionary  ${question_data.data}  description
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${TENDER_UAID}
   Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
   Sleep  1
@@ -370,8 +399,32 @@ Login
   Sleep  1
   Input text                         id=title                 ${title}
   Input text                         id=description           ${description}
+  Select From List By Label          xpath=//select[@ng-model='vm.questionTo']  ${question_to}
+  Run Keyword If  'Предмет аукціону' == '${question_to}'  Вказати предмет для питання  ${item_id}
   Click Element                      xpath=//button[@type='submit']
   Wait Until Page Does Not Contain   xpath=//button[@type='submit']  ${huge_timeout_for_visibility}
+
+Вказати предмет для питання
+  [Arguments]  ${item_id}
+  Wait Until Element Is Visible      ${locator_question_item}
+  @{items}=  Get List Items          ${locator_question_item}
+  Log  ${items}
+  ${tmp_item}=  Set variable  stub
+  :FOR  ${item_x}  IN  @{items}
+  \  ${tmp_item}=  Set variable  ${item_x}
+  \  ${item_was_found_by_prefix}=  Run Keyword And Return Status  Should Contain  ${tmp_item}  ${item_id}
+  \  Run Keyword If  ${item_was_found_by_prefix}  Exit For Loop
+  \  ${tmp_item}=  Set variable  stub2
+  Log  ${tmp_item}
+  Select From List By Label          ${locator_question_item}  ${tmp_item}
+
+Задати запитання на предмет
+  [Arguments]  ${username}  ${TENDER_UAID}  ${item_id}  ${question_data}
+  etender.Задати запитання на щось  ${username}  ${TENDER_UAID}  ${question_data}  Предмет аукціону  ${item_id}
+
+Задати запитання на тендер
+  [Arguments]  ${username}  ${TENDER_UAID}  ${question_data}
+  etender.Задати запитання на щось  ${username}  ${TENDER_UAID}  ${question_data}  Аукціону  nothing
 
 Відповісти на питання
   [Arguments]  @{ARGUMENTS}
@@ -656,14 +709,19 @@ Change_date_to_month
 Отримати інформацію про cancellations[0].status
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Log  Тимчасовий workaround, перевіряється наявнітсть супутнього напису на сторінці, а не саме відображення поля cancellations[0].status; до кінця тижня 2016-11-11 розробники мають додати поле на сторінку  WARN
-  ${status}  ${field_value}=  Run Keyword And Ignore Error  Отримати текст із поля і показати на сторінці  cancellations[0].status
-  ${return_value}=  Run Keyword If  '${status}'=='PASS'  Set Variable  active
-  ...  ELSE  Set Variable  NOT_active_OR_SOMETHING_LIKE_THAT
+  ${status}=  Отримати текст із поля і показати на сторінці  cancellations[0].status
+  ${return_value}=   convert_etender_string_to_common_string  cancellation.status=${status}  # workaround to distinguish between auction and cancellation
   [return]  ${return_value}
 
 Отримати інформацію про cancellations[0].reason
   ${return_value}=   Отримати текст із поля і показати на сторінці   cancellations[0].reason
+  [return]    ${return_value}
+
+Отримати інформацію про bids
+  [Documentation]
+  ...  Для перевірки можливості побачити цінові пропозиції учасників під час прийому пропозицій.
+  ...  На даний момет важливим є лише те, виконається кейворд успішно чи видасть помилку. Значення не перевіряється
+  ${return_value}=   Отримати текст із поля і показати на сторінці   bids_0_amount
   [return]    ${return_value}
 
 Отримати посилання на аукціон для глядача
@@ -735,6 +793,20 @@ Change_date_to_month
   [Arguments]  ${raw_value}
   [return]  ${raw_value}
 
+Отримати документ
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
+  Switch browser   ${username}
+  ${title}=  etender.Отримати інформацію із документа  ${username}  ${tender_uaid}  ${doc_id}  title
+  ${prepared_locator}=  Set Variable  ${locator_document_href.replace('XX_doc_id_XX','${doc_id}')}
+  log  ${prepared_locator}
+  ${href}=  Get Element Attribute  ${prepared_locator}
+  ${document_file}=  download_file_from_url  ${href}  ${OUTPUT_DIR}${/}${title}
+  [return]  ${document_file}
+
+Отримати документ до скасування
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
+  Run Keyword And Return  etender.Отримати документ  ${username}  ${tender_uaid}  ${doc_id}
+
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}
   Switch browser   ${username}
@@ -742,6 +814,7 @@ Change_date_to_month
   ${prepared_locator}=  Set Variable  ${locator_question_${field}.replace('XX_que_id_XX','${question_id}')}
   log  ${prepared_locator}
   Wait Until Page Contains Element  ${prepared_locator}  10
+  Wait Until Keyword Succeeds  10 x  5  Check Is Element Loaded  ${prepared_locator}
   ${raw_value}=   Get Text  ${prepared_locator}
   Run Keyword And Return  Конвертувати інформацію із запитання про ${field}  ${raw_value}
 

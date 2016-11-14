@@ -223,6 +223,17 @@ Login
   Choose File	                            ${locator.button.addDoc}                 ${filepath}
   Wait Until Page Contains                  Файл додано!                             60
 
+Додати Virtual Data Room
+  [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='title']
+  Input Text                               xpath=//virtual-data-room//*[@id='title']    ${title}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='url']
+  Input Text                               xpath=//virtual-data-room//*[@id='url']      ${vdr_url}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
+  Click Element                            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
+  Wait Until Page Contains                 VDR збережено!                                60
+
 Додати предмет
   [Arguments]  @{ARGUMENTS}
   [Documentation]

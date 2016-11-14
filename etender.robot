@@ -14,6 +14,9 @@ ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
 ${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
+${locator.button.selectDocTypeForDoc}                          xpath=(//*[@id='docType'])[3]
+${locator.button.selectDocTypeForIll}                          xpath=(//tender-documents//*[@id='docType' and @ng-change='docTypeSelectHundler()'])
+${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
@@ -201,10 +204,13 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  file
   ...      ${ARGUMENTS[2]} ==  tender_uaid
-  Wait Until Element Is Visible  id=tend_doc_add
-  Choose File     id=tend_doc_add     ${ARGUMENTS[1]}
-  Sleep   4
-  Capture Page Screenshot
+  Focus                                     ${locator.button.selectDocTypeForDoc}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForDoc}
+  Click Element                             ${locator.button.selectDocTypeForDoc}
+  Select From List By Label                 ${locator.button.selectDocTypeForDoc}    Інші
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File                               ${locator.button.addDoc}                 ${ARGUMENTS[1]}
+  Wait Until Page Contains                  Файл додано!                             60
 
 Додати предмет
   [Arguments]  @{ARGUMENTS}

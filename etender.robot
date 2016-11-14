@@ -212,6 +212,17 @@ Login
   Choose File                               ${locator.button.addDoc}                 ${ARGUMENTS[1]}
   Wait Until Page Contains                  Файл додано!                             60
 
+Завантажити ілюстрацію
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Ілюстрації
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
 Додати предмет
   [Arguments]  @{ARGUMENTS}
   [Documentation]

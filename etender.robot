@@ -454,24 +454,17 @@ Login
   [Arguments]  ${username}  ${TENDER_UAID}  ${question_data}
   etender.Задати запитання на щось  ${username}  ${TENDER_UAID}  ${question_data}  Аукціону  nothing
 
-Відповісти на питання
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = 0
-  ...      ${ARGUMENTS[3]} = answer_data
-  ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+Відповісти на запитання
+  [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${question_id}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Wait Until Element Is Visible      id=addAnswer_0  ${huge_timeout_for_visibility}
   Wait Until Element Is Enabled      id=addAnswer_0  ${huge_timeout_for_visibility}
   Click Element                      id=addAnswer_0
-  Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea  ${huge_timeout_for_visibility}
-  Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer}
-  Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]  ${huge_timeout_for_visibility}
+  Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea            ${huge_timeout_for_visibility}
+  Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer_data.data.answer}
+  Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
   Click Element                      xpath=//*[@id="questionContainer"]/form/div/span/button[1]
-  Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]  ${huge_timeout_for_visibility}
+  Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
 
 Внести зміни в тендер
   [Arguments]  @{ARGUMENTS}

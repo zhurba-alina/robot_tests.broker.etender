@@ -48,6 +48,7 @@ ${locator.questions[0].answer}                                 id=question_answe
 ${locator_question_item}                                       xpath=//select[@ng-model='vm.question.item']
 ${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Статус']/parent::div/following-sibling::div/p
 ${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
+${locator.contracts[-1].status}                                xpath=//div[@ng-if='isShowContract(award)']//p[text()='Статус договору:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
@@ -743,6 +744,11 @@ Change_date_to_month
   ...  Для перевірки можливості побачити цінові пропозиції учасників під час прийому пропозицій.
   ...  На даний момет важливим є лише те, виконається кейворд успішно чи видасть помилку. Значення не перевіряється
   ${return_value}=   Отримати текст із поля і показати на сторінці   bids_0_amount
+  [return]    ${return_value}
+
+Отримати інформацію про contracts[-1].status
+  ${return_value}=   Отримати текст із поля і показати на сторінці   contracts[-1].status
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   [return]    ${return_value}
 
 Отримати посилання на аукціон для глядача

@@ -811,6 +811,18 @@ Change_date_to_month
   ${raw_value}=   Get Text  ${prepared_locator}
   Run Keyword And Return  Конвертувати інформацію із документа про ${field}  ${raw_value}
 
+Отримати кількість документів в ставці
+  [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
+  Switch browser   ${username}
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ${bid_index}=  Convert To Integer  ${bid_index}
+  ${prepared_locator}=  Run Keyword IF  ${bid_index} < 0   Set Variable  (//div[@ng-repeat='bid in lot.bids'])[last()+1${bid_index}]//div[@ng-show='!document.isDeleted']
+  ...  ELSE  Set Variable  (//div[@ng-repeat='bid in lot.bids'])[1+${bid_index}]//div[@ng-show='!document.isDeleted']
+  ${return_value}=  Get Matching Xpath Count  ${prepared_locator}
+  ${return_value}=  Convert To Integer  ${return_value}
+  [return]  ${return_value}
+
 Конвертувати інформацію із документа про title
   [Arguments]  ${raw_value}
   ${return_value}=  Set Variable  ${raw_value.split(',')[0]}
@@ -833,6 +845,23 @@ Change_date_to_month
 Отримати документ до скасування
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
   Run Keyword And Return  etender.Отримати документ  ${username}  ${tender_uaid}  ${doc_id}
+
+Отримати дані із документу пропозиції
+  [Arguments]  ${username}  ${tender_uaid}  ${bid_index}  ${document_index}  ${field}
+  Switch browser   ${username}
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Run Keyword And Return  Отримати дані із документу пропозиції про ${field}  ${bid_index}  ${document_index}
+
+Отримати дані із документу пропозиції про documentType
+  [Arguments]  ${bid_index}  ${document_index}
+  ${bid_index}=  Convert To Integer  ${bid_index}
+  ${prepared_locator}=  Run Keyword IF  ${bid_index} < 0   Set Variable  xpath=((//div[@ng-repeat='bid in lot.bids'])[last()+1${bid_index}]//div[contains(@class,'label-info') and contains(text(),'Тип документа')])[1+${document_index}]
+  ...  ELSE  Set Variable  xpath=((//div[@ng-repeat='bid in lot.bids'])[1+${bid_index}]//div[contains(@class,'label-info') and contains(text(),'Тип документа')])[1+${document_index}]
+  ${raw_value}=   Get Text  ${prepared_locator}
+  ${raw_value}=  Set Variable  ${raw_value.replace(u'Тип документа: ', u'')}
+  ${return_value}=  convert_etender_string_to_common_string  ${raw_value}
+  [return]  ${return_value}
 
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}

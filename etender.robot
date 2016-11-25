@@ -931,7 +931,7 @@ Change_date_to_month
   Click Element  xpath=//a[text()='Контракт']
   sleep  5
   Capture Page Screenshot
-  Choose File  xpath=//button[@ng-model='documentsToAdd']  ${filepath}
+  Choose File  id=tend_doc_add  ${filepath}
   Capture Page Screenshot
   sleep  1
   Capture Page Screenshot
@@ -975,6 +975,7 @@ Change_date_to_month
   Capture Page Screenshot
 
   Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
+  sleep  10
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
   sleep  1
   Capture Page Screenshot

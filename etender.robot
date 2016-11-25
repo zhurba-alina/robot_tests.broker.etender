@@ -913,17 +913,12 @@ Change_date_to_month
   ...      [Arguments] Username, tender uaid and number of the award to confirm
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  sleep  5
-  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
   Click Element  xpath=//a[@data-target='#modalGetAwards']
-  sleep  5
-  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
   Click Element  xpath=//button[@ng-click='getAwardsNextStep()']
-  sleep  5
-  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//button[@click-and-block='setDecision(1)']
   Click Element  xpath=//button[@click-and-block='setDecision(1)']
-  sleep  5
-  Capture Page Screenshot
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
@@ -970,3 +965,53 @@ Change_date_to_month
   Capture Page Screenshot
   sleep  20
   Capture Page Screenshot
+
+Скасування рішення кваліфікаційної комісії
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//button[@data-target='#modalCancelAward']
+  Click Element  xpath=//button[@data-target='#modalCancelAward']
+  sleep  1
+  Capture Page Screenshot
+
+  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
+  Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
+  sleep  1
+  Capture Page Screenshot
+
+  Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
+  sleep  1
+  Capture Page Screenshot
+
+  Click Element                  xpath=//button[@ng-click='cancelAward()']
+  sleep  1
+  Capture Page Screenshot
+
+Завантажити документ рішення кваліфікаційної комісії
+  [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
+  sleep  60
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
+  Click Element                  xpath=//a[@data-target='#modalGetAwards']
+  sleep  1
+  Capture Page Screenshot
+
+  # TODO: try upload doc?
+
+  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
+  Click Element                  xpath=//button[@ng-click='getAwardsNextStep()']
+  sleep  1
+  Capture Page Screenshot
+
+  Wait Until Element Is Visible  xpath=//button[@ng-click='vm.ga.disqualify()']
+  Click Element                  xpath=//button[@ng-click='vm.ga.disqualify()']
+  sleep  1
+  Capture Page Screenshot
+  Page Should Contain  Кандидата відмінено!
+
+Дискваліфікувати постачальника
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
+  Log  Розібратись докладніше які дії в яких кейвордах мають бути
+  No Operation

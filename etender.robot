@@ -466,8 +466,6 @@ Login
   Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
   Click Element                      xpath=//*[@id="questionContainer"]/form/div/span/button[1]
   Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
-  Оновити LAST_MODIFICATION_DATE
-  Дочекатись синхронізації з майданчиком  ${tender_owner}  # По проходженні тесткейсу на подання відповіді  сама відповідь повинна бути у ЦБД
 
 Внести зміни в тендер
   [Arguments]  @{ARGUMENTS}

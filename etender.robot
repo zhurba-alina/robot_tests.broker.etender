@@ -16,6 +16,7 @@ ${locator.button.updateBid}                                    xpath=//button[@c
 ${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
 ${locator.button.selectDocTypeForDoc}                          xpath=//select[@name='docType' and @id='docType' and @ng-model='selectedDocType' and @ng-change='docTypeSelectHundler()']
 ${locator.button.selectDocTypeForIll}                          xpath=(//tender-documents//*[@id='docType' and @ng-change='docTypeSelectHundler()'])
+${locator.button.selectDocTypeForLicence}                      id=selectDoctype2
 ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
@@ -223,6 +224,17 @@ Login
   Wait Until Element Is Visible             ${locator.button.addDoc}
   Choose File	                            ${locator.button.addDoc}                 ${filepath}
   Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити фінансову ліцензію
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForLicence}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForLicence}
+  Click Element                             ${locator.button.selectDocTypeForLicence}
+  Select From List By Label                 ${locator.button.selectDocTypeForLicence}        Ліцензія
+  Wait Until Element Is Visible             xpath=(//*[@id='addNewDocToExistingBid_0'][1])
+  Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'][1])   ${filepath}
+  Wait Until Page Contains                  Файл додано!                                     60
 
 Додати Virtual Data Room
   [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room

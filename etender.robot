@@ -14,6 +14,10 @@ ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
 ${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
+${locator.button.selectDocTypeForDoc}                          xpath=//select[@name='docType' and @id='docType' and @ng-model='selectedDocType' and @ng-change='docTypeSelectHundler()']
+${locator.button.selectDocTypeForIll}                          xpath=(//tender-documents//*[@id='docType' and @ng-change='docTypeSelectHundler()'])
+${locator.button.selectDocTypeForLicence}                      id=selectDoctype2
+${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
@@ -45,6 +49,7 @@ ${locator.questions[0].answer}                                 id=question_answe
 ${locator_question_item}                                       xpath=//select[@ng-model='vm.question.item']
 ${locator.cancellations[0].status}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Статус']/parent::div/following-sibling::div/p
 ${locator.cancellations[0].reason}                             xpath=//div[contains(@ng-if,'detailes.cancellations')]//p[text()='Причина:']/parent::div/following-sibling::div/p
+${locator.contracts[-1].status}                                xpath=//div[@ng-if='isShowContract(award)']//p[text()='Статус договору:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
@@ -201,10 +206,46 @@ Login
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  file
   ...      ${ARGUMENTS[2]} ==  tender_uaid
-  Wait Until Element Is Visible  id=tend_doc_add
-  Choose File     id=tend_doc_add     ${ARGUMENTS[1]}
-  Sleep   4
-  Capture Page Screenshot
+  Focus                                     ${locator.button.selectDocTypeForDoc}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForDoc}
+  Click Element                             ${locator.button.selectDocTypeForDoc}
+  Select From List By Label                 ${locator.button.selectDocTypeForDoc}    Інші
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File                               ${locator.button.addDoc}                 ${ARGUMENTS[1]}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити ілюстрацію
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Ілюстрації
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити фінансову ліцензію
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForLicence}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForLicence}
+  Click Element                             ${locator.button.selectDocTypeForLicence}
+  Select From List By Label                 ${locator.button.selectDocTypeForLicence}        Ліцензія
+  Wait Until Element Is Visible             xpath=(//*[@id='addNewDocToExistingBid_0'][1])
+  Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'][1])   ${filepath}
+  Wait Until Page Contains                  Файл додано!                                     60
+
+Додати Virtual Data Room
+  [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='title']
+  Input Text                               xpath=//virtual-data-room//*[@id='title']    ${title}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='url']
+  Input Text                               xpath=//virtual-data-room//*[@id='url']      ${vdr_url}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
+  Click Element                            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
+  Wait Until Page Contains                 VDR збережено!                                60
 
 Додати предмет
   [Arguments]  @{ARGUMENTS}
@@ -426,24 +467,17 @@ Login
   [Arguments]  ${username}  ${TENDER_UAID}  ${question_data}
   etender.Задати запитання на щось  ${username}  ${TENDER_UAID}  ${question_data}  Аукціону  nothing
 
-Відповісти на питання
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = 0
-  ...      ${ARGUMENTS[3]} = answer_data
-  ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+Відповісти на запитання
+  [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${question_id}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Wait Until Element Is Visible      id=addAnswer_0  ${huge_timeout_for_visibility}
   Wait Until Element Is Enabled      id=addAnswer_0  ${huge_timeout_for_visibility}
   Click Element                      id=addAnswer_0
-  Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea  ${huge_timeout_for_visibility}
-  Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer}
-  Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]  ${huge_timeout_for_visibility}
+  Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea            ${huge_timeout_for_visibility}
+  Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer_data.data.answer}
+  Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
   Click Element                      xpath=//*[@id="questionContainer"]/form/div/span/button[1]
-  Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]  ${huge_timeout_for_visibility}
+  Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
 
 Внести зміни в тендер
   [Arguments]  @{ARGUMENTS}
@@ -724,6 +758,11 @@ Change_date_to_month
   ${return_value}=   Отримати текст із поля і показати на сторінці   bids_0_amount
   [return]    ${return_value}
 
+Отримати інформацію про contracts[-1].status
+  ${return_value}=   Отримати текст із поля і показати на сторінці   contracts[-1].status
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
+  [return]    ${return_value}
+
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
@@ -784,6 +823,18 @@ Change_date_to_month
   ${raw_value}=   Get Text  ${prepared_locator}
   Run Keyword And Return  Конвертувати інформацію із документа про ${field}  ${raw_value}
 
+Отримати кількість документів в ставці
+  [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
+  Switch browser   ${username}
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ${bid_index}=  Convert To Integer  ${bid_index}
+  ${prepared_locator}=  Run Keyword IF  ${bid_index} < 0   Set Variable  (//div[@ng-repeat='bid in lot.bids'])[last()+1${bid_index}]//div[@ng-show='!document.isDeleted']
+  ...  ELSE  Set Variable  (//div[@ng-repeat='bid in lot.bids'])[1+${bid_index}]//div[@ng-show='!document.isDeleted']
+  ${return_value}=  Get Matching Xpath Count  ${prepared_locator}
+  ${return_value}=  Convert To Integer  ${return_value}
+  [return]  ${return_value}
+
 Конвертувати інформацію із документа про title
   [Arguments]  ${raw_value}
   ${return_value}=  Set Variable  ${raw_value.split(',')[0]}
@@ -806,6 +857,23 @@ Change_date_to_month
 Отримати документ до скасування
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
   Run Keyword And Return  etender.Отримати документ  ${username}  ${tender_uaid}  ${doc_id}
+
+Отримати дані із документу пропозиції
+  [Arguments]  ${username}  ${tender_uaid}  ${bid_index}  ${document_index}  ${field}
+  Switch browser   ${username}
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Run Keyword And Return  Отримати дані із документу пропозиції про ${field}  ${bid_index}  ${document_index}
+
+Отримати дані із документу пропозиції про documentType
+  [Arguments]  ${bid_index}  ${document_index}
+  ${bid_index}=  Convert To Integer  ${bid_index}
+  ${prepared_locator}=  Run Keyword IF  ${bid_index} < 0   Set Variable  xpath=((//div[@ng-repeat='bid in lot.bids'])[last()+1${bid_index}]//div[contains(@class,'label-info') and contains(text(),'Тип документа')])[1+${document_index}]
+  ...  ELSE  Set Variable  xpath=((//div[@ng-repeat='bid in lot.bids'])[1+${bid_index}]//div[contains(@class,'label-info') and contains(text(),'Тип документа')])[1+${document_index}]
+  ${raw_value}=   Get Text  ${prepared_locator}
+  ${raw_value}=  Set Variable  ${raw_value.replace(u'Тип документа: ', u'')}
+  ${return_value}=  convert_etender_string_to_common_string  ${raw_value}
+  [return]  ${return_value}
 
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}
@@ -855,17 +923,12 @@ Change_date_to_month
   ...      [Arguments] Username, tender uaid and number of the award to confirm
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  sleep  5
-  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
   Click Element  xpath=//a[@data-target='#modalGetAwards']
-  sleep  5
-  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
   Click Element  xpath=//button[@ng-click='getAwardsNextStep()']
-  sleep  5
-  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//button[@click-and-block='setDecision(1)']
   Click Element  xpath=//button[@click-and-block='setDecision(1)']
-  sleep  5
-  Capture Page Screenshot
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
@@ -878,7 +941,7 @@ Change_date_to_month
   Click Element  xpath=//a[text()='Контракт']
   sleep  5
   Capture Page Screenshot
-  Choose File  xpath=//button[@ng-model='documentsToAdd']  ${filepath}
+  Choose File  id=tend_doc_add  ${filepath}
   Capture Page Screenshot
   sleep  1
   Capture Page Screenshot
@@ -912,3 +975,54 @@ Change_date_to_month
   Capture Page Screenshot
   sleep  20
   Capture Page Screenshot
+
+Скасування рішення кваліфікаційної комісії
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  Capture Page Screenshot
+  Wait Until Element Is Visible  xpath=//button[@data-target='#modalCancelAward']
+  Click Element  xpath=//button[@data-target='#modalCancelAward']
+  sleep  1
+  Capture Page Screenshot
+
+  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
+  sleep  10
+  Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
+  sleep  1
+  Capture Page Screenshot
+
+  Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
+  sleep  1
+  Capture Page Screenshot
+
+  Click Element                  xpath=//button[@ng-click='cancelAward()']
+  sleep  1
+  Capture Page Screenshot
+
+Завантажити документ рішення кваліфікаційної комісії
+  [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
+  sleep  60
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
+  Click Element                  xpath=//a[@data-target='#modalGetAwards']
+  sleep  1
+  Capture Page Screenshot
+
+  # TODO: try upload doc?
+
+  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
+  Click Element                  xpath=//button[@ng-click='getAwardsNextStep()']
+  sleep  1
+  Capture Page Screenshot
+
+  Wait Until Element Is Visible  xpath=//button[@ng-click='vm.ga.disqualify()']
+  Click Element                  xpath=//button[@ng-click='vm.ga.disqualify()']
+  sleep  1
+  Capture Page Screenshot
+  Page Should Contain  Кандидата відмінено!
+
+Дискваліфікувати постачальника
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
+  Log  Розібратись докладніше які дії в яких кейвордах мають бути
+  No Operation

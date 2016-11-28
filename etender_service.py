@@ -115,6 +115,9 @@ def get_helper_dictionary():
         u"Завершена закупівля":     u"complete",
         u"Завершений аукціон":      u"complete",
         u"cancellation.status=Торги не відбулися": u"active", # workaround to distinguish between auction and cancellation
+        u"Договір опубліковано": u"active", # contract status
+        u"Протокол торгів": u"auctionProtocol", # document type
+        u"Ліцензія": u"financialLicense", # document type
     }
 
 def convert_unit_name_to_unit_code(string):

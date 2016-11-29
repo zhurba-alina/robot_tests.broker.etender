@@ -342,10 +342,14 @@ Login
   Run Keyword If	   '${status}' == 'PASS'  Подати цінову пропозицію без кваліфікації користувачем  ${amount}
   Run Keyword Unless   '${status}' == 'PASS'   Подати цінову пропозицію користувачем  ${amount}
 
+Подати цінову пропозицію користувачем
+  [Arguments]  ${amount}
   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Clear Element Text	            xpath=//input[@name='amount0']
   Input text                        xpath=//input[@name='amount0']          ${amount}
-  Wait Until Element Is Enabled     ${locator.button.registrationProposition}
-  Click Element                     ${locator.button.registrationProposition}
+  Wait Until Element Is Enabled     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
+  Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
+  Capture Page Screenshot
   Wait Until Page Contains          Пропозицію додано!                      30
   Sleep                             5
   Click Element                     xpath=//button[@click-and-block='activateBid(bid)']

@@ -16,6 +16,8 @@ ${locator.button.updateBid}                                    xpath=//button[@c
 ${locator.button.selectDocTypeForDoc}                          xpath=//select[@name='docType' and @id='docType' and @ng-model='selectedDocType' and @ng-change='docTypeSelectHundler()']
 ${locator.button.selectDocTypeForIll}                          xpath=(//tender-documents//*[@id='docType' and @ng-change='docTypeSelectHundler()'])
 ${locator.button.selectDocTypeForLicence}                      id=selectDoctype2
+${locator.button.selectDocTypeForProtocol}                     id=selectDoctype1
+${locator.button.addProtocol}                                  xpath=//div[@class='panel-body']//button[@ngf-change='addNewDocToExistingBid($files, bid.id, bid.docType.id)']
 ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
@@ -233,6 +235,17 @@ Login
   Select From List By Label                 ${locator.button.selectDocTypeForLicence}        Ліцензія
   Wait Until Element Is Visible             xpath=(//*[@id='addNewDocToExistingBid_0'][1])
   Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'][1])   ${filepath}
+  Wait Until Page Contains                  Файл додано!                                     60
+
+Завантажити протокол аукціону
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForProtocol}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForProtocol}
+  Click Element                             ${locator.button.selectDocTypeForProtocol}
+  Select From List By Label                 ${locator.button.selectDocTypeForProtocol}       Протокол торгів
+  Wait Until Element Is Visible             ${locator.button.addProtocol}
+  Choose File	                            ${locator.button.addProtocol}                    ${filepath}
   Wait Until Page Contains                  Файл додано!                                     60
 
 Додати Virtual Data Room

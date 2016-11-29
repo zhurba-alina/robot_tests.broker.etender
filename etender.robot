@@ -356,6 +356,14 @@ Login
   Log                               Button 'Підтвердити ставку' was created for Autotesting only
   Wait Until Page Contains          Пропозицію підтверджено!                30
 
+Подати цінову пропозицію без кваліфікації користувачем
+  [Arguments]  ${amount}
+  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Input text                        xpath=//input[@name='amount0']          ${amount}
+  Wait Until Element Is Enabled     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
+  Click Element                     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
+  Wait Until Page Contains          Ви ще не пройшли валідацію, щоб приймати участь у торгах.           30
+  Wait Until Page Contains          Пропозицію підтверджено!                30
 
 Змінити цінову пропозицію
   [Arguments]  @{ARGUMENTS}

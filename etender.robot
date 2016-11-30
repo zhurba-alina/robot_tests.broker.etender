@@ -13,10 +13,11 @@ ${locator.procuringEntity.name}                                jquery=customer-i
 ${locator.value.amount}                                        id=lotvalue_0
 ${locator.proposition.value.amount}                            xpath=//div/input[@ng-model='bid.value.amount']
 ${locator.button.updateBid}                                    xpath=//button[@click-and-block='updateBid(bid)']
-${locator.button.registrationProposition}                      xpath=//div[@id='addBidDiv']//button[contains(@class, 'btn btn-success')][contains(text(), 'Реєстрація пропозиції')]
 ${locator.button.selectDocTypeForDoc}                          xpath=//select[@name='docType' and @id='docType' and @ng-model='selectedDocType' and @ng-change='docTypeSelectHundler()']
 ${locator.button.selectDocTypeForIll}                          xpath=(//tender-documents//*[@id='docType' and @ng-change='docTypeSelectHundler()'])
 ${locator.button.selectDocTypeForLicence}                      id=selectDoctype2
+${locator.button.selectDocTypeForProtocol}                     id=selectDoctype1
+${locator.button.addProtocol}                                  xpath=//div[@class='panel-body']//button[@ngf-change='addNewDocToExistingBid($files, bid.id, bid.docType.id)']
 ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
@@ -236,6 +237,17 @@ Login
   Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'][1])   ${filepath}
   Wait Until Page Contains                  Файл додано!                                     60
 
+Завантажити протокол аукціону
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForProtocol}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForProtocol}
+  Click Element                             ${locator.button.selectDocTypeForProtocol}
+  Select From List By Label                 ${locator.button.selectDocTypeForProtocol}       Протокол торгів
+  Wait Until Element Is Visible             ${locator.button.addProtocol}
+  Choose File	                            ${locator.button.addProtocol}                    ${filepath}
+  Wait Until Page Contains                  Файл додано!                                     60
+
 Додати Virtual Data Room
   [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
@@ -333,26 +345,38 @@ Login
 
 
 Подати цінову пропозицію
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
-  ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}          amount
+  [Arguments]  ${username}  ${tender_uaid}  ${bid}
+  ${amount}=    Get From Dictionary     ${bid.data.value}         amount
   ${amount}=    float_to_string_2f      ${amount}
   Sleep  60
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   sleep  15
+  ${status}	            ${value}=  Run Keyword And Ignore Error	  Get From Dictionary  ${bid.data}  qualified
+  Run Keyword If	   '${status}' == 'PASS'  Подати цінову пропозицію без кваліфікації користувачем  ${amount}
+  Run Keyword Unless   '${status}' == 'PASS'   Подати цінову пропозицію користувачем  ${amount}
+
+Подати цінову пропозицію користувачем
+  [Arguments]  ${amount}
   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Clear Element Text	            xpath=//input[@name='amount0']
   Input text                        xpath=//input[@name='amount0']          ${amount}
-  Wait Until Element Is Enabled     ${locator.button.registrationProposition}
-  Click Element                     ${locator.button.registrationProposition}
+  Wait Until Element Is Enabled     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
+  Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
+  Capture Page Screenshot
   Wait Until Page Contains          Пропозицію додано!                      30
   Sleep                             5
   Click Element                     xpath=//button[@click-and-block='activateBid(bid)']
   Log                               Button 'Підтвердити ставку' was created for Autotesting only
   Wait Until Page Contains          Пропозицію підтверджено!                30
 
+Подати цінову пропозицію без кваліфікації користувачем
+  [Arguments]  ${amount}
+  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Input text                        xpath=//input[@name='amount0']          ${amount}
+  Wait Until Element Is Enabled     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
+  Click Element                     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
+  Wait Until Page Contains          Ви ще не пройшли валідацію, щоб приймати участь у торгах.           30
+  Wait Until Page Contains          Пропозицію підтверджено!                30
 
 Змінити цінову пропозицію
   [Arguments]  @{ARGUMENTS}

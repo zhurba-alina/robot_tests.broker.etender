@@ -146,6 +146,8 @@ Login
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
+  Wait Until Element Is Visible      id=selectProcType1
+  Select From List By Label          id=selectProcType1    Продаж права вимоги за кредитними договорами
   Wait Until Element Is Visible      id=goToCreate
   Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title

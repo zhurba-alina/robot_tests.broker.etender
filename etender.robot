@@ -17,7 +17,7 @@ ${locator.button.selectDocTypeForDoc}                          xpath=//select[@n
 ${locator.button.selectDocTypeForIll}                          xpath=(//tender-documents//*[@id='docType' and @ng-change='docTypeSelectHundler()'])
 ${locator.button.selectDocTypeForLicence}                      id=selectDoctype2
 ${locator.button.selectDocTypeForProtocol}                     id=selectDoctype1
-${locator.button.addProtocol}                                  xpath=//div[@class='panel-body']//button[@ngf-change='addNewDocToExistingBid($files, bid.id, bid.docType.id)']
+${locator.button.addProtocol}                                  id=addNewDocToExistingBid2_0
 ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p

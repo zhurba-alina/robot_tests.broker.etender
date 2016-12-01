@@ -1024,24 +1024,28 @@ Change_date_to_month
   sleep  60
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-
-  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']  30
   Click Element                  xpath=//a[@data-target='#modalGetAwards']
   sleep  1
   Capture Page Screenshot
-
-  # TODO: try upload doc?
-
-  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
+  Wait Until Element Is Visible      id=documentToAdd4        30
+  Choose File                        id=documentToAdd4        ${document}
+  Capture Page Screenshot
+  Wait Until Page Contains           Файл додано!             30
+  Capture Page Screenshot
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']    30
+  Click Element                  xpath=//a[@data-target='#modalGetAwards']
+  sleep  3
+  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']    30
   Click Element                  xpath=//button[@ng-click='getAwardsNextStep()']
+  sleep  3
+  Wait Until Element Is Visible  xpath=(//*[@id='modalGetAwards']/div/div/div[3]/div[2]/div[2]/button[3]/span)  30
+  Click Element                  xpath=(//*[@id='modalGetAwards']/div/div/div[3]/div[2]/div[2]/button[3]/span)
+  Wait Until Page Contains       Кандидата відмінено!
   sleep  1
   Capture Page Screenshot
-
-  Wait Until Element Is Visible  xpath=//button[@ng-click='vm.ga.disqualify()']
-  Click Element                  xpath=//button[@ng-click='vm.ga.disqualify()']
-  sleep  1
-  Capture Page Screenshot
-  Page Should Contain  Кандидата відмінено!
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

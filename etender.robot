@@ -1004,20 +1004,17 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   Capture Page Screenshot
   Wait Until Element Is Visible  xpath=//button[@data-target='#modalCancelAward']
-  Click Element  xpath=//button[@data-target='#modalCancelAward']
+  Click Element                  xpath=//button[@data-target='#modalCancelAward']
   sleep  1
   Capture Page Screenshot
-
   Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
   sleep  10
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
   sleep  1
   Capture Page Screenshot
-
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  1
   Capture Page Screenshot
-
   Click Element                  xpath=//button[@ng-click='cancelAward()']
   sleep  1
   Capture Page Screenshot

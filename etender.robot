@@ -146,6 +146,8 @@ Login
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
+  Wait Until Element Is Visible      id=selectProcType1
+  Select From List By Label          id=selectProcType1    Продаж права вимоги за кредитними договорами
   Wait Until Element Is Visible      id=goToCreate
   Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title
@@ -1004,20 +1006,17 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   Capture Page Screenshot
   Wait Until Element Is Visible  xpath=//button[@data-target='#modalCancelAward']
-  Click Element  xpath=//button[@data-target='#modalCancelAward']
+  Click Element                  xpath=//button[@data-target='#modalCancelAward']
   sleep  1
   Capture Page Screenshot
-
   Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
   sleep  10
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
   sleep  1
   Capture Page Screenshot
-
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  1
   Capture Page Screenshot
-
   Click Element                  xpath=//button[@ng-click='cancelAward()']
   sleep  1
   Capture Page Screenshot
@@ -1027,24 +1026,28 @@ Change_date_to_month
   sleep  60
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-
-  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']  30
   Click Element                  xpath=//a[@data-target='#modalGetAwards']
   sleep  1
   Capture Page Screenshot
-
-  # TODO: try upload doc?
-
-  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
+  Wait Until Element Is Visible      id=documentToAdd4        30
+  Choose File                        id=documentToAdd4        ${document}
+  Capture Page Screenshot
+  Wait Until Page Contains           Файл додано!             30
+  Capture Page Screenshot
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']    30
+  Click Element                  xpath=//a[@data-target='#modalGetAwards']
+  sleep  3
+  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']    30
   Click Element                  xpath=//button[@ng-click='getAwardsNextStep()']
+  sleep  3
+  Wait Until Element Is Visible  xpath=(//*[@id='modalGetAwards']/div/div/div[3]/div[2]/div[2]/button[3]/span)  30
+  Click Element                  xpath=(//*[@id='modalGetAwards']/div/div/div[3]/div[2]/div[2]/button[3]/span)
+  Wait Until Page Contains       Кандидата відмінено!
   sleep  1
   Capture Page Screenshot
-
-  Wait Until Element Is Visible  xpath=//button[@ng-click='vm.ga.disqualify()']
-  Click Element                  xpath=//button[@ng-click='vm.ga.disqualify()']
-  sleep  1
-  Capture Page Screenshot
-  Page Should Contain  Кандидата відмінено!
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

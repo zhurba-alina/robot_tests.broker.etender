@@ -1004,9 +1004,11 @@ Change_date_to_month
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Capture Page Screenshot
-  Wait Until Element Is Visible  xpath=//button[@data-target='#modalCancelAward']
-  Click Element                  xpath=//button[@data-target='#modalCancelAward']
+  Wait Until Element Is Visible  id=btn_modalCancelAward    30
+  Click Element                  id=btn_modalCancelAward
   sleep  1
   Capture Page Screenshot
   Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']

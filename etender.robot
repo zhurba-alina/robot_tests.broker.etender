@@ -991,8 +991,8 @@ Change_date_to_month
   sleep  10
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Capture Page Screenshot
-  Wait Until Element Is Visible   xpath=//a[text()='Контракт']    60
-  Click Element                   xpath=//a[text()='Контракт']
+  Wait Until Element Is Visible   id=btn_ContractActiveAwarded    60
+  Click Element                   id=btn_ContractActiveAwarded
   Capture Page Screenshot
   sleep  20
   ${contract_num_str}=  Convert To String  ${contract_num}

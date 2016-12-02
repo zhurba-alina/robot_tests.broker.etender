@@ -989,8 +989,10 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   sleep  10
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Capture Page Screenshot
-  Click Element  xpath=//a[text()='Контракт']
+  Wait Until Element Is Visible   xpath=//a[text()='Контракт']    60
+  Click Element                   xpath=//a[text()='Контракт']
   Capture Page Screenshot
   sleep  20
   ${contract_num_str}=  Convert To String  ${contract_num}

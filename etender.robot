@@ -1028,8 +1028,8 @@ Change_date_to_month
   sleep  60
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']  30
-  Click Element                  xpath=//a[@data-target='#modalGetAwards']
+  Wait Until Element Is Visible      id=btn_getAwardsId1      30
+  Click Element                      id=btn_getAwardsId1
   sleep  1
   Capture Page Screenshot
   Wait Until Element Is Visible      id=documentToAdd4        30
@@ -1037,18 +1037,18 @@ Change_date_to_month
   Capture Page Screenshot
   Wait Until Page Contains           Файл додано!             30
   Capture Page Screenshot
+
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']    30
-  Click Element                  xpath=//a[@data-target='#modalGetAwards']
+  Wait Until Element Is Visible      id=btn_getAwardsId1     60
+  Click Element                      id=btn_getAwardsId1
   sleep  3
-  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']    30
-  Click Element                  xpath=//button[@ng-click='getAwardsNextStep()']
+  Wait Until Element Is Visible      id=btn_nextStepAwards    30
+  Click Element                      id=btn_nextStepAwards
   sleep  3
-  Wait Until Element Is Visible  xpath=(//*[@id='modalGetAwards']/div/div/div[3]/div[2]/div[2]/button[3]/span)  30
-  Click Element                  xpath=(//*[@id='modalGetAwards']/div/div/div[3]/div[2]/div[2]/button[3]/span)
-  Wait Until Page Contains       Кандидата відмінено!
-  sleep  1
+  Wait Until Element Is Visible      id=btn_disqualify        30
+  Click Element                      id=btn_disqualify
+  Wait Until Page Contains           Кандидата відмінено!
   Capture Page Screenshot
 
 Дискваліфікувати постачальника

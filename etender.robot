@@ -1017,22 +1017,21 @@ Change_date_to_month
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
-  sleep  60
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Capture Page Screenshot
+  sleep  30
   Wait Until Element Is Visible      id=btn_getAwardsId1      30
   Click Element                      id=btn_getAwardsId1
   sleep  1
-  Capture Page Screenshot
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
-  Capture Page Screenshot
   Wait Until Page Contains           Файл додано!             30
-  Capture Page Screenshot
-
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible      id=btn_getAwardsId1     60
+  sleep  30
+  Capture Page Screenshot
+  Wait Until Element Is Visible      id=btn_getAwardsId1      30
   Click Element                      id=btn_getAwardsId1
   sleep  3
   Wait Until Element Is Visible      id=btn_nextStepAwards    30
@@ -1041,7 +1040,6 @@ Change_date_to_month
   Wait Until Element Is Visible      id=btn_disqualify        30
   Click Element                      id=btn_disqualify
   Wait Until Page Contains           Кандидата відмінено!
-  Capture Page Screenshot
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

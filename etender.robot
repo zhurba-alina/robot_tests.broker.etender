@@ -1005,21 +1005,15 @@ Change_date_to_month
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Capture Page Screenshot
+  sleep  30
   Wait Until Element Is Visible  id=btn_modalCancelAward    30
   Click Element                  id=btn_modalCancelAward
   sleep  1
   Capture Page Screenshot
-  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
-  sleep  10
+  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']  30
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
-  sleep  1
-  Capture Page Screenshot
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
-  sleep  1
-  Capture Page Screenshot
   Click Element                  xpath=//button[@ng-click='cancelAward()']
-  sleep  1
-  Capture Page Screenshot
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}

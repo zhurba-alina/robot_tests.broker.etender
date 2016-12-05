@@ -964,22 +964,18 @@ Change_date_to_month
   log  ${filepath}
   sleep  5
   Capture Page Screenshot
-  Click Element  xpath=//a[text()='Контракт']
+  Click Element  id=btn_ContractActiveAwarded
   sleep  5
   Capture Page Screenshot
   Choose File  id=tend_doc_add  ${filepath}
-  Capture Page Screenshot
   sleep  1
-  Capture Page Screenshot
   sleep  240  #  wait till disappears "Поки не експортовано"
-  Capture Page Screenshot
   Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Sleep  20
   Capture Page Screenshot
   ${href}=  Get Element Attribute  xpath=(//div[@ng-show='!document.isDeleted']/a)@href
-  sleep  5
-  Capture Page Screenshot
-  sleep  20
+  sleep  30
   [return]  ${href}
 
 Підтвердити підписання контракту

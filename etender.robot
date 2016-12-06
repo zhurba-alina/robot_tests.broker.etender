@@ -964,22 +964,18 @@ Change_date_to_month
   log  ${filepath}
   sleep  5
   Capture Page Screenshot
-  Click Element  xpath=//a[text()='Контракт']
+  Click Element  id=btn_ContractActiveAwarded
   sleep  5
   Capture Page Screenshot
   Choose File  id=tend_doc_add  ${filepath}
-  Capture Page Screenshot
   sleep  1
-  Capture Page Screenshot
   sleep  240  #  wait till disappears "Поки не експортовано"
-  Capture Page Screenshot
   Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Sleep  20
   Capture Page Screenshot
   ${href}=  Get Element Attribute  xpath=(//div[@ng-show='!document.isDeleted']/a)@href
-  sleep  5
-  Capture Page Screenshot
-  sleep  20
+  sleep  30
   [return]  ${href}
 
 Підтвердити підписання контракту
@@ -1009,40 +1005,33 @@ Change_date_to_month
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Capture Page Screenshot
+  sleep  30
   Wait Until Element Is Visible  id=btn_modalCancelAward    30
   Click Element                  id=btn_modalCancelAward
   sleep  1
   Capture Page Screenshot
-  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']
-  sleep  10
+  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']  30
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
-  sleep  1
-  Capture Page Screenshot
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
-  sleep  1
-  Capture Page Screenshot
   Click Element                  xpath=//button[@ng-click='cancelAward()']
-  sleep  1
-  Capture Page Screenshot
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
-  sleep  60
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Capture Page Screenshot
+  sleep  30
   Wait Until Element Is Visible      id=btn_getAwardsId1      30
   Click Element                      id=btn_getAwardsId1
   sleep  1
-  Capture Page Screenshot
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
-  Capture Page Screenshot
   Wait Until Page Contains           Файл додано!             30
-  Capture Page Screenshot
-
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible      id=btn_getAwardsId1     60
+  sleep  30
+  Capture Page Screenshot
+  Wait Until Element Is Visible      id=btn_getAwardsId1      30
   Click Element                      id=btn_getAwardsId1
   sleep  3
   Wait Until Element Is Visible      id=btn_nextStepAwards    30
@@ -1051,7 +1040,6 @@ Change_date_to_month
   Wait Until Element Is Visible      id=btn_disqualify        30
   Click Element                      id=btn_disqualify
   Wait Until Page Contains           Кандидата відмінено!
-  Capture Page Screenshot
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

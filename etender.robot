@@ -164,8 +164,8 @@ Login
   Click Element                      xpath=(//*[@id='valueAddedTaxIncluded'])[2]
   Wait Until Element Is Visible      id=minimalStep_0
   Input text                         id=minimalStep_0                                    ${step_rateToStr}
-  Wait Until Element Is Visible      name=lotGuarantee0
-  Input text                         name=lotGuarantee0                                  ${lotGuaranteeToStr}
+  Wait Until Element Is Visible      id=inputGuarantee
+  Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
   Wait Until Element Is Visible      id=itemsDescription0
   Input text                         id=itemsDescription0                                ${items_description}
   Wait Until Element Is Visible      id=itemsQuantity0

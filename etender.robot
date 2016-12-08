@@ -134,6 +134,7 @@ Login
   ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
   ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
+  ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}               procurementMethodType
 
 
   Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
@@ -146,8 +147,10 @@ Login
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  Wait Until Element Is Visible      id=selectProcType1
-  Select From List By Label          id=selectProcType1    Продаж права вимоги за кредитними договорами
+  log to console                     ${method_type}
+  Wait Until Element Is Visible      id=selectProcType1                      30
+  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Label          id=selectProcType1    Продаж права вимоги за кредитними договорами
+  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Label          id=selectProcType1    Продаж майна банків, що ліквідуються
   Wait Until Element Is Visible      id=goToCreate
   Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title

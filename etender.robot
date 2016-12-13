@@ -149,8 +149,8 @@ Login
   Click Element                      ${locator_start_auction_creation}
   log to console                     ${method_type}
   Wait Until Element Is Visible      id=selectProcType1                      30
-  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Label          id=selectProcType1    Продаж права вимоги за кредитними договорами
-  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Label          id=selectProcType1    Продаж майна банків, що ліквідуються
+  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
+  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
   Wait Until Element Is Visible      id=goToCreate
   Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title

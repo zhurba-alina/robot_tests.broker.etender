@@ -797,7 +797,7 @@ Change_date_to_month
 Отримати інформацію про dgfDecisionDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   dgfDecisionDate
   log                ${return_value}
-  ${return_value}=   convert_dgfDecisionDateOut_to_etender_format   ${return_value}     6
+  ${return_value}=   convert_dgfDecisionDateOut_to_etender_format   ${return_value}
   log                ${return_value}
   [return]           ${return_value}
 

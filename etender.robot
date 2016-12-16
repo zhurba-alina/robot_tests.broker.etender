@@ -73,6 +73,7 @@ ${locator_block_overlay}                                       xpath=//div[@clas
 ${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
 ${locator.dgfDecisionDate}                                     id=dgfDecisionDateOut   
 ${locator.dgfDecisionID}                                       id=dgfDecisionIdOut
+${locator.tenderAttempts}                                      id=tenderAtempts
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -807,6 +808,14 @@ Change_date_to_month
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   log                ${return_value}
   [return]           ${return_value}
+
+Отримати інформацію про tenderAttempts
+  ${return_value}=   Отримати текст із поля і показати на сторінці   tenderAttempts
+  log                ${return_value}
+  ${return_value}=   Convert To Integer   ${return_value}
+  log                ${return_value}
+  [return]           ${return_value}
+
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}

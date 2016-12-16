@@ -70,8 +70,9 @@ ${locator_dgfID}                                               id=dgfID  # на 
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
-${locator.dgfDecisionDate}                                     id=dgfDecisionDateOut   
-${locator.dgfDecisionID}                                       id=dgfDecisionIdOut
+${locator.procurementMethodType}                               xpath=//span[@ng-show='getTenderProcedureType()']
+${locator.dgfDecisionDate}                                     id=dgfDecisionDateId
+${locator.dgfDecisionID}                                       id=dgfDecisionID_Id
 ${locator.tenderAttempts}                                      id=tenderAtempts
 
 *** Keywords ***
@@ -793,6 +794,13 @@ Change_date_to_month
   ${return_value}=   Отримати текст із поля і показати на сторінці   contracts[-1].status
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   [return]    ${return_value}
+
+Отримати інформацію про procurementMethodType
+  ${return_value}=   Отримати текст із поля і показати на сторінці   procurementMethodType
+  log to console     ${return_value}
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
+  log to console     ${return_value}
+  [return]           ${return_value}
 
 Отримати інформацію про dgfDecisionDate
   ${return_value}=   Отримати текст із поля і показати на сторінці   dgfDecisionDate

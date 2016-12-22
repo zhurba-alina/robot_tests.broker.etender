@@ -7,7 +7,7 @@ Library  etender_service.py
 *** Variables ***
 ${locator.auctionID}                                           id=tenderidua
 ${locator.title}                                               jquery=tender-subject-info>div.row:contains('Загальний опис процедури:')>:eq(1)>
-${locator.description}                                         jquery=tender-subject-info>div.row:contains('Лот виставляється на торги:')>:eq(1)>
+${locator.description}                                         id=descriptionOut
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
 ${locator.value.amount}                                        id=lotvalue_0
@@ -22,8 +22,7 @@ ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
-${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
-${locator.items[0].description}                                xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p
+${locator.items[0].description}                                xpath=//div[p[contains(text(), 'Стислий опис майна:')]]/following-sibling::*/p
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
 ${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
@@ -71,6 +70,10 @@ ${locator_dgfID}                                               id=dgfID  # на 
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
+${locator.procurementMethodType}                               xpath=//span[@ng-show='getTenderProcedureType()']
+${locator.dgfDecisionDate}                                     id=dgfDecisionDateId
+${locator.dgfDecisionID}                                       id=dgfDecisionID_Id
+${locator.tenderAttempts}                                      id=tenderAtempts
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -134,6 +137,7 @@ Login
   ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
   ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
+  ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}               procurementMethodType
 
 
   Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
@@ -146,8 +150,10 @@ Login
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  Wait Until Element Is Visible      id=selectProcType1
-  Select From List By Label          id=selectProcType1    Продаж права вимоги за кредитними договорами
+  log to console                     ${method_type}
+  Wait Until Element Is Visible      id=selectProcType1                      30
+  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
+  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
   Wait Until Element Is Visible      id=goToCreate
   Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title
@@ -164,8 +170,8 @@ Login
   Click Element                      xpath=(//*[@id='valueAddedTaxIncluded'])[2]
   Wait Until Element Is Visible      id=minimalStep_0
   Input text                         id=minimalStep_0                                    ${step_rateToStr}
-  Wait Until Element Is Visible      name=lotGuarantee0
-  Input text                         name=lotGuarantee0                                  ${lotGuaranteeToStr}
+  Wait Until Element Is Visible      id=inputGuarantee
+  Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
   Wait Until Element Is Visible      id=itemsDescription0
   Input text                         id=itemsDescription0                                ${items_description}
   Wait Until Element Is Visible      id=itemsQuantity0
@@ -788,6 +794,34 @@ Change_date_to_month
   ${return_value}=   Отримати текст із поля і показати на сторінці   contracts[-1].status
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   [return]    ${return_value}
+
+Отримати інформацію про procurementMethodType
+  ${return_value}=   Отримати текст із поля і показати на сторінці   procurementMethodType
+  log to console     ${return_value}
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
+  log to console     ${return_value}
+  [return]           ${return_value}
+
+Отримати інформацію про dgfDecisionDate
+  ${return_value}=   Отримати текст із поля і показати на сторінці   dgfDecisionDate
+  log                ${return_value}
+  ${return_value}=   convert_dgfDecisionDateOut_to_etender_format   ${return_value}
+  log                ${return_value}
+  [return]           ${return_value}
+
+Отримати інформацію про dgfDecisionID
+  ${return_value}=   Отримати текст із поля і показати на сторінці   dgfDecisionID
+  log                ${return_value}
+  ${return_value}=   convert_etender_string_to_common_string   ${return_value}
+  log                ${return_value}
+  [return]           ${return_value}
+
+Отримати інформацію про tenderAttempts
+  ${return_value}=   Отримати текст із поля і показати на сторінці   tenderAttempts
+  log                ${return_value}
+  ${return_value}=   Convert To Integer   ${return_value}
+  log                ${return_value}
+  [return]           ${return_value}
 
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}

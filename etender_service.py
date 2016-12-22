@@ -30,6 +30,11 @@ def convert_etender_date_to_iso_format(date_time_from_ui):
     new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
     return new_date_time_string
 
+def convert_dgfDecisionDateOut_to_etender_format(date_str):
+    timedata = datetime.strptime(date_str, '%d-%m-%Y')
+    stringdata = timedata.strftime("%Y-%m-%d")
+    return stringdata
+
 
 def convert_date_to_etender_format(isodate):
     iso_dt = parse_date(isodate)

@@ -31,7 +31,7 @@ def convert_etender_date_to_iso_format(date_time_from_ui):
     return new_date_time_string
 
 def convert_dgfDecisionDateOut_to_etender_format(date_str):
-    timedata = datetime.strptime(date_str, '%d-%m-%Y')
+    timedata = datetime.strptime(date_str, '%d.%m.%Y')
     stringdata = timedata.strftime("%Y-%m-%d")
     return stringdata
 
@@ -123,6 +123,13 @@ def get_helper_dictionary():
         u"Договір опубліковано": u"active", # contract status
         u"Протокол торгів": u"auctionProtocol", # document type
         u"Ліцензія": u"financialLicense", # document type
+
+        u"(Оголошення аукціону з продажу прав вимоги за кредитами.)": u"dgfFinancialAssets",
+        u"(Оголошення аукціону з продажу майна банків.)": u"dgfOtherAssets",
+
+        u"Лот виставляється вперше": u"1",
+        u"Лот виставляється повторно": u"2",
+
     }
 
 def convert_unit_name_to_unit_code(string):

@@ -22,7 +22,10 @@ ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
-${locator.items[0].description}                                xpath=//div[p[contains(text(), 'Стислий опис майна:')]]/following-sibling::*/p
+${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
+${locator.items[0].description}                                id=style-desc-stuf-id0
+${locator.items[1].description}                                id=style-desc-stuf-id1
+${locator.items[2].description}                                id=style-desc-stuf-id2
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
 ${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
@@ -669,8 +672,9 @@ Change_date_to_month
   ${return_value}=   Convert To String  ${month}${day}${year}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].description
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].description
+Отримати інформацію про items.description
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].description
   [return]  ${return_value}
 
 Отримати інформацію про items[0].unit.code

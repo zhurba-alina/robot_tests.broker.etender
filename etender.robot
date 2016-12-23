@@ -533,7 +533,17 @@ Login
   [Documentation]
   ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
   Switch browser   ${user}
+  ${passed} =	   Run Keyword And Return Status	Should Match Regexp    ${fieldname}      ^items\\\[
+  Run Keyword And Return If  ${passed}==True	  Get Keyword From Items Index   ${fieldname}
   Run Keyword And Return  Отримати інформацію про ${fieldname}
+
+Get Keyword From Items Index
+  [Arguments]   ${fieldname}
+  @{index_in_list}=  Get Regexp Matches	  ${fieldname}  items\\\[([\\\-\\\d]+)\\\]\\\.(.+)  1
+  ${index}=  Set Variable  @{index_in_list}[0]
+  @{item_in_list}=   Get Regexp Matches	  ${fieldname}  items\\\[([\\\-\\\d]+)\\\]\\\.(.+)  2
+  ${item}=  Set Variable  @{item_in_list}[0]
+  Run Keyword And Return   Отримати інформацію про items.${item}   ${index}
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}

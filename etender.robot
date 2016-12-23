@@ -153,7 +153,6 @@ Login
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  log to console                     ${method_type}
   Wait Until Element Is Visible      id=selectProcType1                      30
   Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
   ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
@@ -200,7 +199,6 @@ Login
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
-  log to console                     ${Ids}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]                           ${Ids}
@@ -586,13 +584,15 @@ Check Is Element Loaded
   ${return_value}=   Convert To Number   ${return_value.replace(',','.')}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryLocation.latitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.latitude
+Отримати інформацію про items.deliveryLocation.latitude
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].deliveryLocation.latitude
   ${return_value}=   string_to_float   ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryLocation.longitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.longitude
+Отримати інформацію про items.deliveryLocation.longitude
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].deliveryLocation.longitude
   #${return_value}=   Convert To Number   ${return_value}
   ${return_value}=   string_to_float   ${return_value}
   [return]  ${return_value}
@@ -613,8 +613,9 @@ Check Is Element Loaded
   [return]  ${return_value}
 
 
-Отримати інформацію про items[0].unit.name
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.name
+Отримати інформацію про items.unit.name
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].unit.name
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   [return]  ${return_value}
 
@@ -677,67 +678,81 @@ Change_date_to_month
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].description
   [return]  ${return_value}
 
-Отримати інформацію про items[0].unit.code
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.code
+Отримати інформацію про items.unit.code
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].unit.code
   ${return_value}=   convert_etender_string_to_common_string      ${return_value}
   ${return_value}=   convert_unit_name_to_unit_code  ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].quantity
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
+Отримати інформацію про items.quantity
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].quantity
   ${return_value}=   Convert To Number   ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].classification.id
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
+Отримати інформацію про items.classification.id
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.id
   [return]  ${return_value}
 
-Отримати інформацію про items[0].classification.scheme
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
+Отримати інформацію про items.classification.scheme
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.scheme
   ${return_value}=   Get Substring  ${return_value}   0   -1
   [return]  ${return_value.split(' ')[1]}
 
-Отримати інформацію про items[0].classification.description
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
+Отримати інформацію про items.classification.description
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.description
   Run Keyword And Return  convert_etender_string_to_common_string  ${return_value}
 
-Отримати інформацію про items[0].additionalClassifications[0].id
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].id
+Отримати інформацію про items.additionalClassifications[0].id
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].additionalClassifications[0].id
   [return]  ${return_value.split(' ')[0]}
 
-Отримати інформацію про items[0].additionalClassifications[0].scheme
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].scheme
+Отримати інформацію про items.additionalClassifications[0].scheme
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].additionalClassifications[0].scheme
   ${return_value}=   Get Substring  ${return_value}   0   -1
   [return]  ${return_value.split(' ')[1]}
 
-Отримати інформацію про items[0].additionalClassifications[0].description
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].description
+Отримати інформацію про items.additionalClassifications[0].description
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].additionalClassifications[0].description
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryAddress.postalCode
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.postalCode
+Отримати інформацію про items.deliveryAddress.postalCode
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.postalCode
   Run Keyword And Return  Get Substring  ${return_value}  0  5
 
-Отримати інформацію про items[0].deliveryAddress.countryName
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.countryName
+Отримати інформацію про items.deliveryAddress.countryName
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.countryName
   Run Keyword And Return  Get Substring  ${return_value}  0  7
 
-Отримати інформацію про items[0].deliveryAddress.region
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.region
+Отримати інформацію про items.deliveryAddress.region
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.region
   ${return_value}=    convert_etender_string_to_common_string     ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryAddress.locality
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.locality
+Отримати інформацію про items.deliveryAddress.locality
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.locality
   ${return_value}=   Remove String      ${return_value}     ,
   ${return_value}=    convert_etender_string_to_common_string     ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryAddress.streetAddress
-  Run Keyword And Return  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.streetAddress
+Отримати інформацію про items.deliveryAddress.streetAddress
+  [Arguments]  ${index}
+  Run Keyword And Return  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.streetAddress
 
-Отримати інформацію про items[0].deliveryDate.endDate
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryDate.endDate
+Отримати інформацію про items.deliveryDate.endDate
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryDate.endDate
   ${time}=  Отримати текст із поля і показати на сторінці  enquiryPeriod.startDate
   ${time}=  Get Substring  ${time}  11
   ${day}=  Get Substring  ${return_value}  16  18
@@ -811,9 +826,7 @@ Change_date_to_month
 
 Отримати інформацію про procurementMethodType
   ${return_value}=   Отримати текст із поля і показати на сторінці   procurementMethodType
-  log to console     ${return_value}
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
-  log to console     ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про dgfDecisionDate

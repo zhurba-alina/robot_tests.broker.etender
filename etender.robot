@@ -73,6 +73,13 @@ ${locator_dgfID}                                               id=dgfID  # на 
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
+${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
+${locator_tender_attempts}                                     id=tenderAttempts
+${locator.dgfDecisionDate}                                     id=dgfDecisionDateOut
+${locator.dgfDecisionID}                                       id=dgfDecisionIdOut
+${locator_dgfDecisionIDCreate}                                 id=dgfDecisionID
+${dgfPublicAssetCertificateTitle}                              id=dgfPublicAssetCertificateTitle
+${xdgfPublicAssetCertificateLinkId}                            id=xdgfPublicAssetCertificateLinkId
 ${locator.procurementMethodType}                               xpath=//span[@ng-show='getTenderProcedureType()']
 ${locator.dgfDecisionDate}                                     id=dgfDecisionDateId
 ${locator.dgfDecisionID}                                       id=dgfDecisionID_Id
@@ -140,8 +147,11 @@ Login
   ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
   ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
-  ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}               procurementMethodType
-
+  ${procurementMethodType}=     Get From Dictionary  ${ARGUMENTS[1].data}        procurementMethodType
+  ${dgfDecisionID}=       Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionID
+  ${dgfDecisionDate}=     Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionDate
+  ${tenderAttempts}=      Get From Dictionary        ${ARGUMENTS[1].data}        tenderAttempts
+  ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}           procurementMethodType
 
   Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'btnProfile')]
@@ -162,8 +172,14 @@ Login
   Input text                         id=title                                            ${title}
   Wait Until Element Is Visible      id=description
   Input text                         id=description                                      ${description}
+  Wait Until Element Is Visible      ${locator_tender_attempts}                          30
+  ${tenderAttempts_string}=          int_to_string                                       ${tenderAttempts}
+  Select From List By Label          ${locator_tender_attempts}                          ${tenderAttempts_string}
   Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_day"]
   Input text                         xpath=//input[@id="auctionPeriod_startDate_day"]    ${start_date}
+  Wait Until Page Contains Element   xpath=//input[@id="dgfDecisionDate"]
+  ${dgfDecisionDate_etender}=        convert_dgfDecisionDate_to_etender_format           ${dgfDecisionDate}
+  Input text                         xpath=//input[@id="dgfDecisionDate"]                ${dgfDecisionDate_etender}
   Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_time"]
   Input text                         xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
   Wait Until Element Is Visible      id=lotValue_0
@@ -192,13 +208,18 @@ Login
   Run Keyword if                     '${mode}' == 'multi'   Додати багато предметів   items
   Wait Until Element Is Visible      ${locator_dgfID}
   Input text                         ${locator_dgfID}                                    ${dgfID}
+  log to console                     ${dgfDecisionID}
+  Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
+  Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
+  log to console                     ${dgfDecisionDate}
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
-  Wait Until Page Contains           Закупівлю створено!
+  Wait Until Page Contains           Закупівлю створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
+  log to console                     ${Ids}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]                           ${Ids}
@@ -260,9 +281,9 @@ Login
 Додати Virtual Data Room
   [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='title']
-  Input Text                               xpath=//virtual-data-room//*[@id='title']    ${title}
-  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='url']
+  Wait Until Element Is Visible            id=title                                      60
+  Input Text                               id=title                                      ${title}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='url']        60
   Input Text                               xpath=//virtual-data-room//*[@id='url']      ${vdr_url}
   Wait Until Element Is Visible            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
   Click Element                            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
@@ -1106,3 +1127,117 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
   Log  Розібратись докладніше які дії в яких кейвордах мають бути
   No Operation
+
+Отримати кількість предметів в тендері
+  [Arguments]  ${username}  ${tender_uaid}
+  Switch browser   ${username}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ${actives_counter_of_lot_value}=   Get Text  ${actives_counter_of_lot}
+  ${actives_counter_of_lot_value}=  Convert To Integer  ${actives_counter_of_lot_value}
+  [return]  ${actives_counter_of_lot_value}
+
+Додати предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item}
+  Run Keyword And Ignore Error  Спробувати додати предмет закупівлі  ${username}  ${tender_uaid}  ${item}
+
+
+Спробувати додати предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item}
+  Wait Until Element Is Visible      id=addLotItem_0
+  Click Element                      id=addLotItem_0
+  Wait Until Element Is Visible      id=itemsDescription1
+  Input text                         id=itemsDescription1                                ${items_description}
+  Wait Until Element Is Visible      id=itemsQuantity1
+  Input text                         id=itemsQuantity1                                   ${quantity}
+  ${unit_etender}=                   convert_common_string_to_etender_string             ${unit}
+  Select From List By Label          ${locator.lot_items_unit}                           ${unit_etender}
+  Wait Until Element Is Visible      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Click Element                      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
+  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Click Element                      xpath=//td[contains(., '${cav}')]
+  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+
+Видалити предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${lot_id}=${Empty}
+  Run Keyword And Ignore Error  Спробувати видалити предмет закупівлі   ${username}  ${tender_uaid}  ${item_id}  ${lot_id}=${Empty}
+
+Спробувати видалити предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${lot_id}=${Empty}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Element Is Visible       xpath=//button[@ng-click='vm.removeLotItem(lot, $index)']
+  Click Element                       xpath=//button[@ng-click='vm.removeLotItem(lot, $index)']
+
+Додати публічний паспорт активу
+  [Arguments]  ${username}  ${tender_uaid}  ${certificate_url}  ${title}=Public Asset Certificate
+  Wait Until Element Is Visible       ${dgfPublicAssetCertificateTitle}
+  Input text                          ${dgfPublicAssetCertificateTitle}                     test
+  Wait Until Element Is Visible       ${xdgfPublicAssetCertificateLinkId}
+  Input text                          ${xdgfPublicAssetCertificateLinkId}                   http://test.com
+  Sleep   5
+  Wait Until Element Is Visible       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
+  Click Element                       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
+  Wait Until Page Contains            Посилання на Публічний Паспорт Активу збережено!
+
+Завантажити документ в тендер з типом
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${documentType}
+  log  ${documentType}
+  Run Keyword  Завантажити ${documentType}      ${username}  ${tender_uaid}  ${filepath}
+
+Завантажити x_presentation
+    [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Презентація
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити tenderNotice
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Паспорт торгів
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити x_nda
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Договір NDA
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити technicalSpecifications
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Публічний Паспорт Активу
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Додати офлайн документ
+  [Arguments]  ${username}  ${tender_uaid}  ${accessDetails}  ${title}=Familiarization with bank asset
+  Wait Until Page Contains Element               id=name-param                                    60
+  Input text                                     id=name-param                                    test
+  Wait Until Page Contains Element               id=accessDetails                                 60
+  Input text                                     id=accessDetails                                 test
+  Wait Until Element Is Visible                  xpath=//a[@click-and-block='saveVdr()']          60
+  Click Element                                  xpath=//a[@click-and-block='saveVdr()']
+  Wait Until Page Contains            Порядку ознайомлення збережено!
+

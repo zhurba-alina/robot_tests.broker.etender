@@ -35,6 +35,12 @@ def convert_dgfDecisionDateOut_to_etender_format(date_str):
     stringdata = timedata.strftime("%Y-%m-%d")
     return stringdata
 
+def convert_dgfDecisionDate_to_etender_format(date_str):
+    timedata = datetime.strptime(date_str, '%Y-%m-%d')
+    stringdata = timedata.strftime('%d-%m-%Y')
+    return stringdata
+
+
 
 def convert_date_to_etender_format(isodate):
     iso_dt = parse_date(isodate)
@@ -59,6 +65,9 @@ def string_to_float(string):
 
 def float_to_string(float):
     return str(float)
+
+def int_to_string(int):
+    return str(int)
 
 def float_to_string_2f(value):
     return '{:.2f}'.format(value)

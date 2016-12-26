@@ -211,6 +211,7 @@ Login
   Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
   Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
   log to console                     ${dgfDecisionDate}
+  debug
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
   Wait Until Page Contains           Закупівлю створено!             60

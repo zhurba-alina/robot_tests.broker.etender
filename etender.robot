@@ -1178,11 +1178,13 @@ Change_date_to_month
 Додати публічний паспорт активу
   [Arguments]  ${username}  ${tender_uaid}  ${certificate_url}  ${title}=Public Asset Certificate
   Wait Until Element Is Visible       ${dgfPublicAssetCertificateTitle}
+  Sleep   10
   Input text                          ${dgfPublicAssetCertificateTitle}                     test
   Wait Until Element Is Visible       ${xdgfPublicAssetCertificateLinkId}
+  Sleep   10
   Input text                          ${xdgfPublicAssetCertificateLinkId}                   http://test.com
-  Sleep   5
-  Wait Until Element Is Visible       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
+  Sleep   10
+  Wait Until Element Is Visible       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']      60
   Click Element                       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
   Wait Until Page Contains            Посилання на Публічний Паспорт Активу збережено!
 

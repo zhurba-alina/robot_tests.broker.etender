@@ -528,9 +528,9 @@ Login
 Відповісти на запитання
   [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${question_id}
   etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
-  Wait Until Element Is Visible      id=addAnswer_0  ${huge_timeout_for_visibility}
-  Wait Until Element Is Enabled      id=addAnswer_0  ${huge_timeout_for_visibility}
-  Click Element                      id=addAnswer_0
+  Wait Until Element Is Visible      xpath=//span[contains(@id,'quest_title_') and contains(text(),'${question_id}') ]/ancestor::div[contains(@ng-repeat,'question in questions')] //div[contains(@id,'addAnswer')]  ${huge_timeout_for_visibility}
+  Wait Until Element Is Enabled      xpath=//span[contains(@id,'quest_title_') and contains(text(),'${question_id}') ]/ancestor::div[contains(@ng-repeat,'question in questions')] //div[contains(@id,'addAnswer')]  ${huge_timeout_for_visibility}
+  Click Element                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'${question_id}') ]/ancestor::div[contains(@ng-repeat,'question in questions')] //div[contains(@id,'addAnswer')]
   Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea            ${huge_timeout_for_visibility}
   Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer_data.data.answer}
   Wait Until Element Is Enabled      xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}

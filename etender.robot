@@ -33,7 +33,9 @@ ${locator.items[0].deliveryAddress.countryName}                id=delivery_count
 ${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
+${locator.items[0].classification.scheme}                      xpath=//div//*[@id='item_classification0']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
+${locator.items[1].classification.scheme}                      xpath=//div//*[@id='item_classification1']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
+${locator.items[2].classification.scheme}                      xpath=//div//*[@id='item_classification2']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
 ${locator.items[0].classification.id}                          id=item_classification0
 ${locator.items[1].classification.id}                          id=item_classification1
 ${locator.items[2].classification.id}                          id=item_classification2
@@ -734,8 +736,8 @@ Change_date_to_month
 Отримати інформацію про items.classification.scheme
   [Arguments]  ${index}
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.scheme
-  ${return_value}=   Get Substring  ${return_value}   0   -1
-  [return]  ${return_value.split(' ')[1]}
+  ${return_value}=   convert_etender_string_to_common_string      ${return_value}
+  [return]           ${return_value}
 
 Отримати інформацію про items.classification.description
   [Arguments]  ${index}

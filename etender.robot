@@ -956,6 +956,12 @@ Change_date_to_month
   ${return_value}=  Convert To Integer  ${return_value}
   [return]  ${return_value}
 
+Отримати кількість документів в тендері
+  [Arguments]  ${username}  ${tender_uaid}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  ${number_of_documents}=  Get Matching Xpath Count     //a[@class='ng-binding']
+  [return]  ${number_of_documents}
+
 Конвертувати інформацію із документа про title
   [Arguments]  ${raw_value}
   ${return_value}=  Set Variable  ${raw_value.split(',')[0]}

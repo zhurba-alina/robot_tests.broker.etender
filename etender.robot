@@ -1239,11 +1239,11 @@ Change_date_to_month
 
 Додати офлайн документ
   [Arguments]  ${username}  ${tender_uaid}  ${accessDetails}  ${title}=Familiarization with bank asset
-  Wait Until Page Contains Element               id=name-param                                    60
-  Input text                                     id=name-param                                    test
   Wait Until Page Contains Element               id=accessDetails                                 60
+  Sleep  10
   Input text                                     id=accessDetails                                 test
   Wait Until Element Is Visible                  xpath=//a[@click-and-block='saveVdr()']          60
   Click Element                                  xpath=//a[@click-and-block='saveVdr()']
   Wait Until Page Contains            Порядку ознайомлення збережено!
+
 

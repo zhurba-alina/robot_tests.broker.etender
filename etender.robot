@@ -134,16 +134,6 @@ Login
   ${lotGuarantee}=        Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
   ${lotGuaranteeToStr}=   float_to_string_2f      ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
   ${dgfID}=               Get From Dictionary     ${ARGUMENTS[1].data}               dgfID
-  ${items_description}=   Get From Dictionary     ${items[0]}                        description
-  ${quantity}=            Get From Dictionary     ${items[0]}                        quantity
-  ${cav}=                 Get From Dictionary     ${items[0].classification}         id
-  ${unit}=                Get From Dictionary     ${items[0].unit}                   name
-  ${latitude}=            Get From Dictionary     ${items[0].deliveryLocation}       latitude
-  ${longitude}=           Get From Dictionary     ${items[0].deliveryLocation}       longitude
-  ${postalCode}=          Get From Dictionary     ${items[0].deliveryAddress}        postalCode
-  ${streetAddress}=       Get From Dictionary     ${items[0].deliveryAddress}        streetAddress
-  ${deliveryDate}=        Get From Dictionary     ${items[0].deliveryDate}           endDate
-  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
   ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
   ${procurementMethodType}=     Get From Dictionary  ${ARGUMENTS[1].data}        procurementMethodType
@@ -151,6 +141,7 @@ Login
   ${dgfDecisionDate}=     Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionDate
   ${tenderAttempts}=      Get From Dictionary        ${ARGUMENTS[1].data}        tenderAttempts
   ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}           procurementMethodType
+  ${number_of_items}=     Get Length              ${items}
 
   Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'btnProfile')]
@@ -189,28 +180,15 @@ Login
   Input text                         id=minimalStep_0                                    ${step_rateToStr}
   Wait Until Element Is Visible      id=inputGuarantee
   Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
-  Wait Until Element Is Visible      id=itemsDescription0
-  Input text                         id=itemsDescription0                                ${items_description}
-  Wait Until Element Is Visible      id=itemsQuantity0
-  Input text                         id=itemsQuantity0                                   ${quantity}
-  ${unit_etender}=                   convert_common_string_to_etender_string             ${unit}
-  Select From List By Label          ${locator.lot_items_unit}                           ${unit_etender}
-  Wait Until Element Is Visible      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Click Element                      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
-  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
-  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Click Element                      xpath=//td[contains(., '${cav}')]
-  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
-  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
-  Run Keyword if                     '${mode}' == 'multi'   Додати багато предметів   items
   Wait Until Element Is Visible      ${locator_dgfID}
   Input text                         ${locator_dgfID}                                    ${dgfID}
   log to console                     ${dgfDecisionID}
   Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
   Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
   log to console                     ${dgfDecisionDate}
+  :FOR  ${index}  IN RANGE  ${number_of_items}
+  \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index -1}
+  \  Додати актив лоту  ${items[${index}]}  ${index}
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
   Wait Until Page Contains           Закупівлю створено!             60
@@ -306,6 +284,33 @@ Login
   Click Element                      xpath=//div[@id='addClassification']//button[starts-with(@ng-click, 'choose(')]
   Sleep  2
 
+Додати актив лоту
+  [Arguments]  ${item}  ${index}
+  ${items_description}=   Get From Dictionary     ${item}                           description
+  ${quantity}=            Get From Dictionary     ${item}                           quantity
+  ${cav}=                 Get From Dictionary     ${item.classification}            id
+  ${unit}=                Get From Dictionary     ${item.unit}                      name
+  ${latitude}=            Get From Dictionary     ${item.deliveryLocation}          latitude
+  ${longitude}=           Get From Dictionary     ${item.deliveryLocation}          longitude
+  ${postalCode}=          Get From Dictionary     ${item.deliveryAddress}           postalCode
+  ${streetAddress}=       Get From Dictionary     ${item.deliveryAddress}           streetAddress
+  ${deliveryDate}=        Get From Dictionary     ${item.deliveryDate}              endDate
+  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
+  Wait Until Element Is Visible      id=itemsDescription${index}
+  Input text                         id=itemsDescription${index}                    ${items_description}
+  Wait Until Element Is Visible      id=itemsQuantity${index}
+  Input text                         id=itemsQuantity${index}                       ${quantity}
+  ${unit_etender}=                   convert_common_string_to_etender_string        ${unit}
+  Select From List By Label          id=itemsUnit${index}                           ${unit_etender}
+  Wait Until Element Is Visible      xpath=(//input[@id='openClassificationModal'])[${index +1}]
+  Click Element                      xpath=(//input[@id='openClassificationModal'])[${index +1}]
+  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
+  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Click Element                      xpath=//td[contains(., '${cav}')]
+  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
 
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
@@ -1173,11 +1178,13 @@ Change_date_to_month
 Додати публічний паспорт активу
   [Arguments]  ${username}  ${tender_uaid}  ${certificate_url}  ${title}=Public Asset Certificate
   Wait Until Element Is Visible       ${dgfPublicAssetCertificateTitle}
+  Sleep   10
   Input text                          ${dgfPublicAssetCertificateTitle}                     test
   Wait Until Element Is Visible       ${xdgfPublicAssetCertificateLinkId}
+  Sleep   10
   Input text                          ${xdgfPublicAssetCertificateLinkId}                   http://test.com
-  Sleep   5
-  Wait Until Element Is Visible       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
+  Sleep   10
+  Wait Until Element Is Visible       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']      60
   Click Element                       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
   Wait Until Page Contains            Посилання на Публічний Паспорт Активу збережено!
 
@@ -1232,11 +1239,11 @@ Change_date_to_month
 
 Додати офлайн документ
   [Arguments]  ${username}  ${tender_uaid}  ${accessDetails}  ${title}=Familiarization with bank asset
-  Wait Until Page Contains Element               id=name-param                                    60
-  Input text                                     id=name-param                                    test
   Wait Until Page Contains Element               id=accessDetails                                 60
+  Sleep  10
   Input text                                     id=accessDetails                                 test
   Wait Until Element Is Visible                  xpath=//a[@click-and-block='saveVdr()']          60
   Click Element                                  xpath=//a[@click-and-block='saveVdr()']
   Wait Until Page Contains            Порядку ознайомлення збережено!
+
 

@@ -882,9 +882,6 @@ Change_date_to_month
 
 Отримати інформацію про tenderAttempts
   ${return_value}=   Отримати текст із поля і показати на сторінці   tenderAttempts
-  log                ${return_value}
-  ${return_value}=   Convert To Integer   ${return_value}
-  log                ${return_value}
   [return]           ${return_value}
 
 Отримати посилання на аукціон для глядача

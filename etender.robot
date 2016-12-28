@@ -35,15 +35,23 @@ ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@clas
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
 ${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
 ${locator.items[0].classification.id}                          id=item_classification0
+${locator.items[1].classification.id}                          id=item_classification1
+${locator.items[2].classification.id}                          id=item_classification2
+${locator.items[0].classification.description}                 id=item_class_descr0
+${locator.items[1].classification.description}                 id=item_class_descr1
+${locator.items[2].classification.description}                 id=item_class_descr2
 ${locator_item_classification.description}                     id=item_class_descr0
 ${locator_item_classification.scheme}                          xpath=//div[@ng-repeat='item in lot.items']//p[contains(text(),'Класифікатор')]
-${locator.items[0].classification.description}                 id=item_class_descr0
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
 ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
+${locator.items[1].unit.code}                                  id=item_unit_symb1
+${locator.items[2].unit.code}                                  id=item_unit_symb2
 ${locator_item_unit.code}                                      id=item_unit_symb0
 ${locator.items[0].quantity}                                   id=item_quantity0
+${locator.items[1].quantity}                                   id=item_quantity1
+${locator.items[2].quantity}                                   id=item_quantity2
 ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
@@ -55,6 +63,8 @@ ${locator.contracts[-1].status}                                xpath=//div[@ng-i
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
+${locator.items[1].unit.name}                                  id=item_unit_symb1
+${locator.items[2].unit.name}                                  id=item_unit_symb2
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.bids_0_amount}                                       xpath=(//form[@name='changeBidForm']//div[@class = 'row']/div/p[text() = 'Cума:']/parent::div/following-sibling::div/div/div/span)[1]  #note: mixed en/ru chars!
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p

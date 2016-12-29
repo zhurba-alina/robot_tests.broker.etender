@@ -1013,6 +1013,7 @@ Change_date_to_month
 
 Конвертувати інформацію із документа по індексу про documentType
   [Arguments]  ${raw_value}
+  ${raw_value}=  Set Variable  ${raw_value.replace(u'Тип документа: ', u'')}
   ${return_value}=   convert_etender_string_to_common_string      ${raw_value}
   [return]  ${return_value}
 

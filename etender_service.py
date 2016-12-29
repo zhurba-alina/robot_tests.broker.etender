@@ -140,6 +140,17 @@ def get_helper_dictionary():
         u"Лот виставляється повторно": u"2",
         u"Код відповідного класифікатору лоту - CAV:": u"CAV",
 
+        u"Посилання на Публічний Паспорт Активу":                   u"x_dgfPublicAssetCertificate",
+        u"Публічний Паспорт Активу":                                u"technicalSpecifications",
+        u"Virtual Data Room":                                       u"virtualDataRoom",
+        u"Презентація":                                             u"x_presentation",
+        u"Паспорт торгів":                                          u"tenderNotice",
+        u"Договір NDA":                                             u"x_nda",
+        u"Порядок ознайомлення з майном/активом у кімнаті даних":   u"x_dgfAssetFamiliarization",
+        u"Місце та форма прийому заяв та банківськіх реквізитів":   u"x_dgfPlatformLegalDetails",
+        u"Іллюстрації":                                             u"illustration",
+        u"Інші": u"None",
+
     }
 
 def convert_unit_name_to_unit_code(string):

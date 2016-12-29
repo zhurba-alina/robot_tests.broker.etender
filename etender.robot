@@ -77,6 +77,7 @@ ${locator.lot_items_unit}                                      id=itemsUnit0    
 ${locator_document_title}                                      xpath=//a[contains(text(),'XX_doc_id_XX')]
 ${locator_document_href}                                       xpath=(//a[contains(text(),'XX_doc_id_XX')])@href
 ${locator_document_description}                                xpath=//a[contains(text(),'XX_doc_id_XX')]
+${locator_tender_document_documentType}                        xpath=(//tender-documents/div[@ng-show='documents.length>0']//a)[XX_doc_index_XX +1]/../../../li[@class='list-group-item']
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
@@ -921,7 +922,6 @@ Change_date_to_month
 
 Конвертувати інформацію із предмету про unit.code
   [Arguments]  ${raw_value}
-  ${return_value}=   convert_etender_string_to_common_string      ${return_value}
   ${return_value}=  convert_unit_name_to_unit_code  ${raw_value}
   [return]  ${return_value}
 
@@ -959,7 +959,7 @@ Change_date_to_month
 Отримати кількість документів в тендері
   [Arguments]  ${username}  ${tender_uaid}
   etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
-  ${number_of_documents}=  Get Matching Xpath Count     //a[@class='ng-binding']
+  ${number_of_documents}=  Get Matching Xpath Count     //tender-documents/div[@ng-show='documents.length>0']//a
   [return]  ${number_of_documents}
 
 Конвертувати інформацію із документа про title
@@ -1000,6 +1000,23 @@ Change_date_to_month
   ${raw_value}=   Get Text  ${prepared_locator}
   ${raw_value}=  Set Variable  ${raw_value.replace(u'Тип документа: ', u'')}
   ${return_value}=  convert_etender_string_to_common_string  ${raw_value}
+  [return]  ${return_value}
+
+Отримати інформацію із документа по індексу
+  [Arguments]  ${username}  ${tender_uaid}  ${document_index}  ${field}
+  Switch browser   ${username}
+  Reload Page
+  ${document_index}=  Convert To Integer  ${document_index}
+  ${prepared_locator}=  Set Variable  ${locator_tender_document_${field}.replace('XX_doc_index_XX','${document_index}')}
+  log  ${prepared_locator}
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  Wait Until Keyword Succeeds  10 x  5  Check Is Element Loaded  ${prepared_locator}
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із документа по індексу про ${field}  ${raw_value}
+
+Конвертувати інформацію із документа по індексу про documentType
+  [Arguments]  ${raw_value}
+  ${return_value}=   convert_etender_string_to_common_string      ${raw_value}
   [return]  ${return_value}
 
 Отримати інформацію із запитання

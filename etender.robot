@@ -1058,7 +1058,6 @@ Change_date_to_month
   ${bid}=   etender.Отримати пропозицію  ${field}
   [return]  ${bid.data.${field}}
 
-
 Підтвердити постачальника
   [Documentation]
   ...      [Arguments] Username, tender uaid and number of the award to confirm
@@ -1172,7 +1171,6 @@ Change_date_to_month
 Додати предмет закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${item}
   Run Keyword And Ignore Error  Спробувати додати предмет закупівлі  ${username}  ${tender_uaid}  ${item}
-
 
 Спробувати додати предмет закупівлі
   [Arguments]  ${username}  ${tender_uaid}  ${item}

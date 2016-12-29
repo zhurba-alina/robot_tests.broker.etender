@@ -40,25 +40,20 @@ def convert_dgfDecisionDate_to_etender_format(date_str):
     stringdata = timedata.strftime('%d-%m-%Y')
     return stringdata
 
-
-
 def convert_date_to_etender_format(isodate):
     iso_dt = parse_date(isodate)
     date_string = iso_dt.strftime("%d-%m-%Y")
     return date_string
-
 
 def convert_datetime_for_delivery(isodate):
     iso_dt = parse_date(isodate)
     date_string = iso_dt.strftime("%Y-%m-%d %H:%M")
     return date_string
 
-
 def convert_time_to_etender_format(isodate):
     iso_dt = parse_date(isodate)
     time_string = iso_dt.strftime("%H:%M")
     return time_string
-
 
 def string_to_float(string):
     return float(string)
@@ -75,7 +70,6 @@ def float_to_string_2f(value):
 def adapt_data(initial_data):
     initial_data['data']['procuringEntity']['name'] = u"Likvidator3"
     return initial_data
-
 
 def convert_etender_string_to_common_string(string):
     dict = get_helper_dictionary()
@@ -135,9 +129,6 @@ def get_helper_dictionary():
 
         u"(Оголошення аукціону з продажу прав вимоги за кредитами.)": u"dgfFinancialAssets",
         u"(Оголошення аукціону з продажу майна банків.)": u"dgfOtherAssets",
-
-        u"Лот виставляється вперше": u"1",
-        u"Лот виставляється повторно": u"2",
         u"Код відповідного класифікатору лоту - CAV:": u"CAV",
 
         u"Посилання на Публічний Паспорт Активу":                   u"x_dgfPublicAssetCertificate",

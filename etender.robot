@@ -1,5 +1,4 @@
 *** Settings ***
-Library  Selenium2Screenshots
 Library  String
 Library  DateTime
 Library  etender_service.py
@@ -22,7 +21,10 @@ ${locator.button.addDoc}                                       id=tend_doc_add
 ${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
-${locator.items[0].description}                                xpath=//div[p[contains(text(), 'Стислий опис майна:')]]/following-sibling::*/p
+${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
+${locator.items[0].description}                                id=style-desc-stuf-id0
+${locator.items[1].description}                                id=style-desc-stuf-id1
+${locator.items[2].description}                                id=style-desc-stuf-id2
 ${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
 ${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
@@ -31,17 +33,27 @@ ${locator.items[0].deliveryAddress.countryName}                id=delivery_count
 ${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
+${locator.items[0].classification.scheme}                      xpath=//div//*[@id='item_classification0']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
+${locator.items[1].classification.scheme}                      xpath=//div//*[@id='item_classification1']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
+${locator.items[2].classification.scheme}                      xpath=//div//*[@id='item_classification2']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
 ${locator.items[0].classification.id}                          id=item_classification0
+${locator.items[1].classification.id}                          id=item_classification1
+${locator.items[2].classification.id}                          id=item_classification2
+${locator.items[0].classification.description}                 id=item_class_descr0
+${locator.items[1].classification.description}                 id=item_class_descr1
+${locator.items[2].classification.description}                 id=item_class_descr2
 ${locator_item_classification.description}                     id=item_class_descr0
 ${locator_item_classification.scheme}                          xpath=//div[@ng-repeat='item in lot.items']//p[contains(text(),'Класифікатор')]
-${locator.items[0].classification.description}                 id=item_class_descr0
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
 ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
+${locator.items[1].unit.code}                                  id=item_unit_symb1
+${locator.items[2].unit.code}                                  id=item_unit_symb2
 ${locator_item_unit.code}                                      id=item_unit_symb0
 ${locator.items[0].quantity}                                   id=item_quantity0
+${locator.items[1].quantity}                                   id=item_quantity1
+${locator.items[2].quantity}                                   id=item_quantity2
 ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
@@ -53,6 +65,8 @@ ${locator.contracts[-1].status}                                xpath=//div[@ng-i
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
+${locator.items[1].unit.name}                                  id=item_unit_symb1
+${locator.items[2].unit.name}                                  id=item_unit_symb2
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.bids_0_amount}                                       xpath=(//form[@name='changeBidForm']//div[@class = 'row']/div/p[text() = 'Cума:']/parent::div/following-sibling::div/div/div/span)[1]  #note: mixed en/ru chars!
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
@@ -70,6 +84,13 @@ ${locator_dgfID}                                               id=dgfID  # на 
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
+${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
+${locator_tender_attempts}                                     id=tenderAttempts
+${locator.dgfDecisionDate}                                     id=dgfDecisionDateOut
+${locator.dgfDecisionID}                                       id=dgfDecisionIdOut
+${locator_dgfDecisionIDCreate}                                 id=dgfDecisionID
+${dgfPublicAssetCertificateTitle}                              id=dgfPublicAssetCertificateTitle
+${xdgfPublicAssetCertificateLinkId}                            id=xdgfPublicAssetCertificateLinkId
 ${locator.procurementMethodType}                               xpath=//span[@ng-show='getTenderProcedureType()']
 ${locator.dgfDecisionDate}                                     id=dgfDecisionDateId
 ${locator.dgfDecisionID}                                       id=dgfDecisionID_Id
@@ -125,20 +146,14 @@ Login
   ${lotGuarantee}=        Get From Dictionary     ${ARGUMENTS[1].data.guarantee}     amount
   ${lotGuaranteeToStr}=   float_to_string_2f      ${lotGuarantee}   # at least 2 fractional point precision, avoid rounding
   ${dgfID}=               Get From Dictionary     ${ARGUMENTS[1].data}               dgfID
-  ${items_description}=   Get From Dictionary     ${items[0]}                        description
-  ${quantity}=            Get From Dictionary     ${items[0]}                        quantity
-  ${cav}=                 Get From Dictionary     ${items[0].classification}         id
-  ${unit}=                Get From Dictionary     ${items[0].unit}                   name
-  ${latitude}=            Get From Dictionary     ${items[0].deliveryLocation}       latitude
-  ${longitude}=           Get From Dictionary     ${items[0].deliveryLocation}       longitude
-  ${postalCode}=          Get From Dictionary     ${items[0].deliveryAddress}        postalCode
-  ${streetAddress}=       Get From Dictionary     ${items[0].deliveryAddress}        streetAddress
-  ${deliveryDate}=        Get From Dictionary     ${items[0].deliveryDate}           endDate
-  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
   ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
-  ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}               procurementMethodType
-
+  ${procurementMethodType}=     Get From Dictionary  ${ARGUMENTS[1].data}        procurementMethodType
+  ${dgfDecisionID}=       Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionID
+  ${dgfDecisionDate}=     Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionDate
+  ${tenderAttempts}=      Get From Dictionary        ${ARGUMENTS[1].data}        tenderAttempts
+  ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}           procurementMethodType
+  ${number_of_items}=     Get Length              ${items}
 
   Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'btnProfile')]
@@ -150,7 +165,6 @@ Login
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  log to console                     ${method_type}
   Wait Until Element Is Visible      id=selectProcType1                      30
   Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
   ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
@@ -160,8 +174,14 @@ Login
   Input text                         id=title                                            ${title}
   Wait Until Element Is Visible      id=description
   Input text                         id=description                                      ${description}
+  Wait Until Element Is Visible      ${locator_tender_attempts}                          30
+  ${tenderAttempts_string}=          int_to_string                                       ${tenderAttempts}
+  Select From List By Label          ${locator_tender_attempts}                          ${tenderAttempts_string}
   Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_day"]
   Input text                         xpath=//input[@id="auctionPeriod_startDate_day"]    ${start_date}
+  Wait Until Page Contains Element   xpath=//input[@id="dgfDecisionDate"]
+  ${dgfDecisionDate_etender}=        convert_dgfDecisionDate_to_etender_format           ${dgfDecisionDate}
+  Input text                         xpath=//input[@id="dgfDecisionDate"]                ${dgfDecisionDate_etender}
   Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_time"]
   Input text                         xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
   Wait Until Element Is Visible      id=lotValue_0
@@ -172,27 +192,18 @@ Login
   Input text                         id=minimalStep_0                                    ${step_rateToStr}
   Wait Until Element Is Visible      id=inputGuarantee
   Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
-  Wait Until Element Is Visible      id=itemsDescription0
-  Input text                         id=itemsDescription0                                ${items_description}
-  Wait Until Element Is Visible      id=itemsQuantity0
-  Input text                         id=itemsQuantity0                                   ${quantity}
-  ${unit_etender}=                   convert_common_string_to_etender_string             ${unit}
-  Select From List By Label          ${locator.lot_items_unit}                           ${unit_etender}
-  Wait Until Element Is Visible      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Click Element                      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
-  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
-  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Click Element                      xpath=//td[contains(., '${cav}')]
-  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
-  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]   # end choosing classification
-  Run Keyword if                     '${mode}' == 'multi'   Додати багато предметів   items
   Wait Until Element Is Visible      ${locator_dgfID}
   Input text                         ${locator_dgfID}                                    ${dgfID}
+  log to console                     ${dgfDecisionID}
+  Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
+  Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
+  log to console                     ${dgfDecisionDate}
+  :FOR  ${index}  IN RANGE  ${number_of_items}
+  \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index -1}
+  \  Додати актив лоту  ${items[${index}]}  ${index}
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
-  Wait Until Page Contains           Закупівлю створено!
+  Wait Until Page Contains           Закупівлю створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
@@ -259,9 +270,9 @@ Login
 Додати Virtual Data Room
   [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='title']
-  Input Text                               xpath=//virtual-data-room//*[@id='title']    ${title}
-  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='url']
+  Wait Until Element Is Visible            id=title                                      60
+  Input Text                               id=title                                      ${title}
+  Wait Until Element Is Visible            xpath=//virtual-data-room//*[@id='url']        60
   Input Text                               xpath=//virtual-data-room//*[@id='url']      ${vdr_url}
   Wait Until Element Is Visible            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
   Click Element                            xpath=//virtual-data-room//*[contains(text(),'Зберегти зміни')]
@@ -285,6 +296,33 @@ Login
   Click Element                      xpath=//div[@id='addClassification']//button[starts-with(@ng-click, 'choose(')]
   Sleep  2
 
+Додати актив лоту
+  [Arguments]  ${item}  ${index}
+  ${items_description}=   Get From Dictionary     ${item}                           description
+  ${quantity}=            Get From Dictionary     ${item}                           quantity
+  ${cav}=                 Get From Dictionary     ${item.classification}            id
+  ${unit}=                Get From Dictionary     ${item.unit}                      name
+  ${latitude}=            Get From Dictionary     ${item.deliveryLocation}          latitude
+  ${longitude}=           Get From Dictionary     ${item.deliveryLocation}          longitude
+  ${postalCode}=          Get From Dictionary     ${item.deliveryAddress}           postalCode
+  ${streetAddress}=       Get From Dictionary     ${item.deliveryAddress}           streetAddress
+  ${deliveryDate}=        Get From Dictionary     ${item.deliveryDate}              endDate
+  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
+  Wait Until Element Is Visible      id=itemsDescription${index}
+  Input text                         id=itemsDescription${index}                    ${items_description}
+  Wait Until Element Is Visible      id=itemsQuantity${index}
+  Input text                         id=itemsQuantity${index}                       ${quantity}
+  ${unit_etender}=                   convert_common_string_to_etender_string        ${unit}
+  Select From List By Label          id=itemsUnit${index}                           ${unit_etender}
+  Wait Until Element Is Visible      xpath=(//input[@id='openClassificationModal'])[${index +1}]
+  Click Element                      xpath=(//input[@id='openClassificationModal'])[${index +1}]
+  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
+  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Click Element                      xpath=//td[contains(., '${cav}')]
+  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
 
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
@@ -533,7 +571,17 @@ Login
   [Documentation]
   ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
   Switch browser   ${user}
+  ${passed} =	   Run Keyword And Return Status	Should Match Regexp    ${fieldname}      ^items\\\[
+  Run Keyword And Return If  ${passed}==True	  Get Keyword From Items Index   ${fieldname}
   Run Keyword And Return  Отримати інформацію про ${fieldname}
+
+Get Keyword From Items Index
+  [Arguments]   ${fieldname}
+  @{index_in_list}=  Get Regexp Matches	  ${fieldname}  items\\\[([\\\-\\\d]+)\\\]\\\.(.+)  1
+  ${index}=  Set Variable  @{index_in_list}[0]
+  @{item_in_list}=   Get Regexp Matches	  ${fieldname}  items\\\[([\\\-\\\d]+)\\\]\\\.(.+)  2
+  ${item}=  Set Variable  @{item_in_list}[0]
+  Run Keyword And Return   Отримати інформацію про items.${item}   ${index}
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
@@ -573,13 +621,15 @@ Check Is Element Loaded
   ${return_value}=   Convert To Number   ${return_value.replace(',','.')}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryLocation.latitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.latitude
+Отримати інформацію про items.deliveryLocation.latitude
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].deliveryLocation.latitude
   ${return_value}=   string_to_float   ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryLocation.longitude
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].deliveryLocation.longitude
+Отримати інформацію про items.deliveryLocation.longitude
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].deliveryLocation.longitude
   #${return_value}=   Convert To Number   ${return_value}
   ${return_value}=   string_to_float   ${return_value}
   [return]  ${return_value}
@@ -600,8 +650,9 @@ Check Is Element Loaded
   [return]  ${return_value}
 
 
-Отримати інформацію про items[0].unit.name
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.name
+Отримати інформацію про items.unit.name
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].unit.name
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
   [return]  ${return_value}
 
@@ -659,71 +710,86 @@ Change_date_to_month
   ${return_value}=   Convert To String  ${month}${day}${year}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].description
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].description
+Отримати інформацію про items.description
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].description
   [return]  ${return_value}
 
-Отримати інформацію про items[0].unit.code
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.code
+Отримати інформацію про items.unit.code
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].unit.code
   ${return_value}=   convert_etender_string_to_common_string      ${return_value}
   ${return_value}=   convert_unit_name_to_unit_code  ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].quantity
-  ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
+Отримати інформацію про items.quantity
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці   items[${index}].quantity
   ${return_value}=   Convert To Number   ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].classification.id
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.id
+Отримати інформацію про items.classification.id
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.id
   [return]  ${return_value}
 
-Отримати інформацію про items[0].classification.scheme
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
-  ${return_value}=   Get Substring  ${return_value}   0   -1
-  [return]  ${return_value.split(' ')[1]}
+Отримати інформацію про items.classification.scheme
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.scheme
+  ${return_value}=   convert_etender_string_to_common_string      ${return_value}
+  [return]           ${return_value}
 
-Отримати інформацію про items[0].classification.description
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
+Отримати інформацію про items.classification.description
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.description
   Run Keyword And Return  convert_etender_string_to_common_string  ${return_value}
 
-Отримати інформацію про items[0].additionalClassifications[0].id
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].id
+Отримати інформацію про items.additionalClassifications[0].id
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].additionalClassifications[0].id
   [return]  ${return_value.split(' ')[0]}
 
-Отримати інформацію про items[0].additionalClassifications[0].scheme
-  ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].scheme
+Отримати інформацію про items.additionalClassifications[0].scheme
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].additionalClassifications[0].scheme
   ${return_value}=   Get Substring  ${return_value}   0   -1
   [return]  ${return_value.split(' ')[1]}
 
-Отримати інформацію про items[0].additionalClassifications[0].description
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].additionalClassifications[0].description
+Отримати інформацію про items.additionalClassifications[0].description
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].additionalClassifications[0].description
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryAddress.postalCode
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.postalCode
+Отримати інформацію про items.deliveryAddress.postalCode
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.postalCode
   Run Keyword And Return  Get Substring  ${return_value}  0  5
 
-Отримати інформацію про items[0].deliveryAddress.countryName
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.countryName
+Отримати інформацію про items.deliveryAddress.countryName
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.countryName
   Run Keyword And Return  Get Substring  ${return_value}  0  7
 
-Отримати інформацію про items[0].deliveryAddress.region
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.region
+Отримати інформацію про items.deliveryAddress.region
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.region
   ${return_value}=    convert_etender_string_to_common_string     ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryAddress.locality
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.locality
+Отримати інформацію про items.deliveryAddress.locality
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.locality
   ${return_value}=   Remove String      ${return_value}     ,
   ${return_value}=    convert_etender_string_to_common_string     ${return_value}
   [return]  ${return_value}
 
-Отримати інформацію про items[0].deliveryAddress.streetAddress
-  Run Keyword And Return  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.streetAddress
+Отримати інформацію про items.deliveryAddress.streetAddress
+  [Arguments]  ${index}
+  Run Keyword And Return  Отримати текст із поля і показати на сторінці  items[${index}].deliveryAddress.streetAddress
 
-Отримати інформацію про items[0].deliveryDate.endDate
-  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryDate.endDate
+Отримати інформацію про items.deliveryDate.endDate
+  [Arguments]  ${index}
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[${index}].deliveryDate.endDate
   ${time}=  Отримати текст із поля і показати на сторінці  enquiryPeriod.startDate
   ${time}=  Get Substring  ${time}  11
   ${day}=  Get Substring  ${return_value}  16  18
@@ -797,9 +863,7 @@ Change_date_to_month
 
 Отримати інформацію про procurementMethodType
   ${return_value}=   Отримати текст із поля і показати на сторінці   procurementMethodType
-  log to console     ${return_value}
   ${return_value}=   convert_etender_string_to_common_string   ${return_value}
-  log to console     ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про dgfDecisionDate
@@ -818,9 +882,6 @@ Change_date_to_month
 
 Отримати інформацію про tenderAttempts
   ${return_value}=   Отримати текст із поля і показати на сторінці   tenderAttempts
-  log                ${return_value}
-  ${return_value}=   Convert To Integer   ${return_value}
-  log                ${return_value}
   [return]           ${return_value}
 
 Отримати посилання на аукціон для глядача
@@ -894,6 +955,12 @@ Change_date_to_month
   ${return_value}=  Get Matching Xpath Count  ${prepared_locator}
   ${return_value}=  Convert To Integer  ${return_value}
   [return]  ${return_value}
+
+Отримати кількість документів в тендері
+  [Arguments]  ${username}  ${tender_uaid}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  ${number_of_documents}=  Get Matching Xpath Count     //a[@class='ng-binding']
+  [return]  ${number_of_documents}
 
 Конвертувати інформацію із документа про title
   [Arguments]  ${raw_value}
@@ -1079,3 +1146,119 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
   Log  Розібратись докладніше які дії в яких кейвордах мають бути
   No Operation
+
+Отримати кількість предметів в тендері
+  [Arguments]  ${username}  ${tender_uaid}
+  Switch browser   ${username}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ${actives_counter_of_lot_value}=   Get Text  ${actives_counter_of_lot}
+  ${actives_counter_of_lot_value}=  Convert To Integer  ${actives_counter_of_lot_value}
+  [return]  ${actives_counter_of_lot_value}
+
+Додати предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item}
+  Run Keyword And Ignore Error  Спробувати додати предмет закупівлі  ${username}  ${tender_uaid}  ${item}
+
+
+Спробувати додати предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item}
+  Wait Until Element Is Visible      id=addLotItem_0
+  Click Element                      id=addLotItem_0
+  Wait Until Element Is Visible      id=itemsDescription1
+  Input text                         id=itemsDescription1                                ${items_description}
+  Wait Until Element Is Visible      id=itemsQuantity1
+  Input text                         id=itemsQuantity1                                   ${quantity}
+  ${unit_etender}=                   convert_common_string_to_etender_string             ${unit}
+  Select From List By Label          ${locator.lot_items_unit}                           ${unit_etender}
+  Wait Until Element Is Visible      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Click Element                      xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
+  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Click Element                      xpath=//td[contains(., '${cav}')]
+  Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+
+Видалити предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${lot_id}=${Empty}
+  Run Keyword And Ignore Error  Спробувати видалити предмет закупівлі   ${username}  ${tender_uaid}  ${item_id}  ${lot_id}=${Empty}
+
+Спробувати видалити предмет закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${lot_id}=${Empty}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Element Is Visible       xpath=//button[@ng-click='vm.removeLotItem(lot, $index)']
+  Click Element                       xpath=//button[@ng-click='vm.removeLotItem(lot, $index)']
+
+Додати публічний паспорт активу
+  [Arguments]  ${username}  ${tender_uaid}  ${certificate_url}  ${title}=Public Asset Certificate
+  Wait Until Element Is Visible       ${dgfPublicAssetCertificateTitle}
+  Sleep   10
+  Input text                          ${dgfPublicAssetCertificateTitle}                     test
+  Wait Until Element Is Visible       ${xdgfPublicAssetCertificateLinkId}
+  Sleep   10
+  Input text                          ${xdgfPublicAssetCertificateLinkId}                   http://test.com
+  Sleep   10
+  Wait Until Element Is Visible       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']      60
+  Click Element                       xpath=//a[@click-and-block='savexdgfPublicAssetCertificate()']
+  Wait Until Page Contains            Посилання на Публічний Паспорт Активу збережено!
+
+Завантажити документ в тендер з типом
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${documentType}
+  log  ${documentType}
+  Run Keyword  Завантажити ${documentType}      ${username}  ${tender_uaid}  ${filepath}
+
+Завантажити x_presentation
+    [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Презентація
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити tenderNotice
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Паспорт торгів
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити x_nda
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Договір NDA
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Завантажити technicalSpecifications
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Focus                                     ${locator.button.selectDocTypeForIll}
+  Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
+  Click Element                             ${locator.button.selectDocTypeForIll}
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Публічний Паспорт Активу
+  Wait Until Element Is Visible             ${locator.button.addDoc}
+  Choose File	                            ${locator.button.addDoc}                 ${filepath}
+  Wait Until Page Contains                  Файл додано!                             60
+
+Додати офлайн документ
+  [Arguments]  ${username}  ${tender_uaid}  ${accessDetails}  ${title}=Familiarization with bank asset
+  Wait Until Page Contains Element               id=accessDetails                                 60
+  Sleep  10
+  Input text                                     id=accessDetails                                 test
+  Wait Until Element Is Visible                  xpath=//a[@click-and-block='saveVdr()']          60
+  Click Element                                  xpath=//a[@click-and-block='saveVdr()']
+  Wait Until Page Contains            Порядку ознайомлення збережено!
+
+

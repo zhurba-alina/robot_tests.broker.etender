@@ -399,8 +399,10 @@ Login
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   sleep  15
   ${status}	            ${value}=  Run Keyword And Ignore Error	  Get From Dictionary  ${bid.data}  qualified
-  Run Keyword If	   '${status}' == 'PASS'  Подати цінову пропозицію без кваліфікації користувачем  ${amount}
-  Run Keyword Unless   '${status}' == 'PASS'   Подати цінову пропозицію користувачем  ${amount}
+  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем  ${amount}
+  ${value}=  Convert To Boolean  ${value}
+  Run Keyword If      ${value}  Подати цінову пропозицію користувачем  ${amount}
+  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем  ${amount}
 
 Подати цінову пропозицію користувачем
   [Arguments]  ${amount}

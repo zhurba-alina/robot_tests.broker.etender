@@ -907,12 +907,7 @@ Change_date_to_month
 
 Отримати інформацію із предмету
   [Arguments]    ${user}    ${tender_uaid}    ${item_id}    ${fieldname}
-  Switch browser   ${user}
-  ${prepared_locator}=  Set Variable  ${locator_item_${fieldname}}
-  log  ${prepared_locator}
-  Wait Until Page Contains Element  ${prepared_locator}  1
-  ${raw_value}=   Get Text  ${prepared_locator}
-  Run Keyword And Return  Конвертувати інформацію із предмету про ${fieldname}  ${raw_value}
+   Fail  Temporary using keyword 'Отримати інформацію із тендера' until will be updated keyword 'Отримати інформацію із предмету'
 
 Конвертувати інформацію із предмету про description
   [Arguments]  ${raw_value}

@@ -699,6 +699,7 @@ Check Is Element Loaded
 
 Отримати інформацію про auctionPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  auctionPeriod.startDate
+  ${return_value}=   Set Variable   ${return_value.split(u' (')[0]}
   ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
   ${return_value}=   add_timezone_to_date   ${return_value.split('.')[0]}
   [return]  ${return_value}

@@ -195,21 +195,19 @@ Login
   Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
   Wait Until Element Is Visible      ${locator_dgfID}
   Input text                         ${locator_dgfID}                                    ${dgfID}
-  log to console                     ${dgfDecisionID}
   Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
   Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
-  log to console                     ${dgfDecisionDate}
+  Sleep     90
   :FOR  ${index}  IN RANGE  ${number_of_items}
-  \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index -1}
+  \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
   \  Додати актив лоту  ${items[${index}]}  ${index}
-  Wait Until Element Is Visible      id=CreateTenderE
+  Wait Until Element Is Visible      id=CreateTenderE                60
   Click Element                      id=CreateTenderE
   Wait Until Page Contains           Закупівлю створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
-  log to console                     ${Ids}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]                           ${Ids}
@@ -1080,11 +1078,11 @@ Change_date_to_month
   log  ${filepath}
   sleep  5
   Capture Page Screenshot
+  Wait Until Element Is Visible   id=btn_ContractActiveAwarded     120
   Click Element  id=btn_ContractActiveAwarded
   sleep  5
   Capture Page Screenshot
   Choose File  id=tend_doc_add  ${filepath}
-  sleep  1
   sleep  240  #  wait till disappears "Поки не експортовано"
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
@@ -1118,8 +1116,12 @@ Change_date_to_month
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  Reload Page
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      id=btn_modalCancelAward  30
+  Wait Until Element Is Visible      id=btn_ContractActiveAwarded  30
+  Wait Until Element Is Visible      xpath=//span[contains(text(),'Почати процедуру скасування торгів')]  30
+  Wait Until Element Is Visible      xpath=//button[@onclick='window.print()']
   Capture Page Screenshot
   sleep  30
   Wait Until Element Is Visible  id=btn_modalCancelAward    30
@@ -1129,11 +1131,12 @@ Change_date_to_month
   Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']  30
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
+  sleep  2
   Click Element                  xpath=//button[@ng-click='cancelAward()']
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
-  Reload Page
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Capture Page Screenshot
   sleep  30
@@ -1155,7 +1158,7 @@ Change_date_to_month
   sleep  3
   Wait Until Element Is Visible      id=btn_disqualify        30
   Click Element                      id=btn_disqualify
-  Wait Until Page Contains           Кандидата відмінено!
+  Wait Until Page Contains           Кандидата відмінено!     30
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

@@ -1120,8 +1120,8 @@ Change_date_to_month
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      id=btn_modalCancelAward  30
   Wait Until Element Is Visible      id=btn_ContractActiveAwarded  30
-  Wait Until Element Is Visible      xpath=//span[contains(text(),'Почати процедуру скасування торгів')]  30
-  Wait Until Element Is Visible      xpath=//button[@onclick='window.print()']
+  Wait Until Page Contains      xpath=//span[contains(text(),'Почати процедуру скасування торгів')]  60
+  Wait Until Page Contains      xpath=//button[@onclick='window.print()']  60
   Capture Page Screenshot
   sleep  30
   Wait Until Element Is Visible  id=btn_modalCancelAward    30

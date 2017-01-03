@@ -199,8 +199,9 @@ Login
   Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
   Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
   log to console                     ${dgfDecisionDate}
+  Sleep     90
   :FOR  ${index}  IN RANGE  ${number_of_items}
-  \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index -1}
+  \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
   \  Додати актив лоту  ${items[${index}]}  ${index}
   Wait Until Element Is Visible      id=CreateTenderE
   Click Element                      id=CreateTenderE
@@ -1080,9 +1081,11 @@ Change_date_to_month
   log  ${filepath}
   sleep  5
   Capture Page Screenshot
+  Wait Until Element Is Visible   id=btn_ContractActiveAwarded     120
   Click Element  id=btn_ContractActiveAwarded
   sleep  5
   Capture Page Screenshot
+
   Choose File  id=tend_doc_add  ${filepath}
   sleep  1
   sleep  240  #  wait till disappears "Поки не експортовано"

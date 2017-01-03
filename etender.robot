@@ -195,22 +195,20 @@ Login
   Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
   Wait Until Element Is Visible      ${locator_dgfID}
   Input text                         ${locator_dgfID}                                    ${dgfID}
-  log to console                     ${dgfDecisionID}
   Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
   Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
-  log to console                     ${dgfDecisionDate}
   Sleep     90
   :FOR  ${index}  IN RANGE  ${number_of_items}
   \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
   \  Додати актив лоту  ${items[${index}]}  ${index}
   Wait Until Element Is Visible      id=CreateTenderE
+  Wait Until Element Is Visible      id=CreateTenderE                60
   Click Element                      id=CreateTenderE
   Wait Until Page Contains           Закупівлю створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
-  log to console                     ${Ids}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]                           ${Ids}
@@ -1085,9 +1083,7 @@ Change_date_to_month
   Click Element  id=btn_ContractActiveAwarded
   sleep  5
   Capture Page Screenshot
-
   Choose File  id=tend_doc_add  ${filepath}
-  sleep  1
   sleep  240  #  wait till disappears "Поки не експортовано"
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}

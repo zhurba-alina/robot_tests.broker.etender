@@ -1117,18 +1117,19 @@ Change_date_to_month
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible      id=btn_modalCancelAward       30
-  Wait Until Element Is Visible      id=btn_ContractActiveAwarded  30
-  Capture Page Screenshot
-  sleep  30
-  Wait Until Element Is Visible  xpath=//awards-info//button[@id='btn_modalCancelAward']    60
-  Focus                          xpath=//awards-info//button[@id='btn_modalCancelAward']
-  Click Element                  xpath=//awards-info//button[@id='btn_modalCancelAward']
-  sleep  1
-  Capture Page Screenshot
-  Wait Until Page Contains       Анулювання переможця     30
-  Capture Page Screenshot
+  ${current_page}=   Get Location
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
+  ...  Go to                                   ${current_page}
+  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ...  AND  sleep  60
+  ...  AND  Capture Page Screenshot
+  ...  AND  Wait Until Element Is Visible      xpath=//awards-info//button[@id='btn_modalCancelAward']    60
+  ...  AND  Focus                              xpath=//awards-info//button[@id='btn_modalCancelAward']
+  ...  AND  Click Element                      xpath=//awards-info//button[@id='btn_modalCancelAward']
+  ...  AND  sleep  3
+  ...  AND  Capture Page Screenshot
+  ...  AND  Wait Until Page Contains           Анулювання переможця     30
+  ...  AND  Capture Page Screenshot
   Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']  30
   Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору

@@ -1138,21 +1138,18 @@ Change_date_to_month
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Capture Page Screenshot
-  sleep  30
-  Wait Until Element Is Visible      id=btn_getAwardsId1      30
-  Click Element                      id=btn_getAwardsId1
-  sleep  1
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
+  ...  Reload page
+  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ...  AND  Capture Page Screenshot
+  ...  AND  sleep  30
+  ...  AND  Wait Until Element Is Visible      id=btn_getAwardsId1      60
+  ...  AND  Click Element                      id=btn_getAwardsId1
+  sleep  3
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
   Wait Until Page Contains           Файл додано!             30
-  Reload Page
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  sleep  30
-  Capture Page Screenshot
-  Wait Until Element Is Visible      id=btn_getAwardsId1      30
-  Click Element                      id=btn_getAwardsId1
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
   sleep  3
   Wait Until Element Is Visible      id=btn_nextStepAwards    30
   Click Element                      id=btn_nextStepAwards

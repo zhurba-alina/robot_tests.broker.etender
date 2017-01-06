@@ -1135,6 +1135,7 @@ Change_date_to_month
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  2
   Click Element                  xpath=//button[@ng-click='cancelAward()']
+  Capture Page Screenshot
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}

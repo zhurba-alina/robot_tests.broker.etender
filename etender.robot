@@ -464,7 +464,7 @@ Login
   Wait Until Element Is Visible  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']  ${huge_timeout_for_visibility}
   Click Element                  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']
   Wait Until Element Is Visible  xpath=//select[@id='reasonSelect1']  ${huge_timeout_for_visibility}
-  Select From List By Value      xpath=//select[@id='reasonSelect1']  Порушення порядку публікації оголошення
+  Select From List By Value      xpath=//select[@id='reasonSelect1']  ${cancellation_reason}
   Click Element                  xpath=//button[@ng-click='beginCancelTender(reasonCancellationVariant)'][contains(text(), ' Почати процедуру')]
   Wait Until Page Contains Element  xpath=//form[@name='cancelForm']//input[@id='tend_doc_add']  ${huge_timeout_for_visibility}
   Sleep  1

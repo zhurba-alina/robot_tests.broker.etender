@@ -463,10 +463,9 @@ Login
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Element Is Visible  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']  ${huge_timeout_for_visibility}
   Click Element                  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']
-  Wait Until Element Is Visible  xpath=//textarea[@placeholder='Причина']  ${huge_timeout_for_visibility}
-  Sleep  2
-  Input text                     xpath=//textarea[@placeholder='Причина']  ${cancellation_reason}
-  Click Element                  xpath=//button[@ng-click='beginCancelTender()' and text()='Почати процедуру']
+  Wait Until Element Is Visible  xpath=//select[@id='reasonSelect1']  ${huge_timeout_for_visibility}
+  Select From List By Value      xpath=//select[@id='reasonSelect1']  Порушення порядку публікації оголошення
+  Click Element                  xpath=//button[@ng-click='beginCancelTender(reasonCancellationVariant)'][contains(text(), ' Почати процедуру')]
   Wait Until Page Contains Element  xpath=//form[@name='cancelForm']//input[@id='tend_doc_add']  ${huge_timeout_for_visibility}
   Sleep  1
   Choose File  xpath=//form[@name='cancelForm']//input[@id='tend_doc_add']  ${document}
@@ -474,8 +473,8 @@ Login
   Run Keyword And Ignore Error   Page Should Contain  файл додано
   # TODO: remove sleep after file upload progressbar fix
   Sleep  120
-  Wait Until Element Is Visible  xpath=//div[@id='modalCancelTender']//button[text()=' Зберегти зміни та продовжити пізніше']
-  Click Element                  xpath=//div[@id='modalCancelTender']//button[text()=' Зберегти зміни та продовжити пізніше']
+  Wait Until Element Is Visible  xpath=//div[@id='modalCancelTender']//button[@data-dismiss='modal'][3]
+  Click Element                  xpath=//div[@id='modalCancelTender']//button[@data-dismiss='modal'][3]
   Wait Until Keyword Succeeds  5 x  30  Продовжити процедуру скасування аукціона  ${username}  ${tender_uaid}
 
 Продовжити процедуру скасування аукціона

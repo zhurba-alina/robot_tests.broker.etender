@@ -1117,8 +1117,13 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ${current_page}=   Get Location
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Анулювання переможця  ${current_page}
+
+Анулювання переможця
+  [Arguments]  ${current_page}
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
   ...  Go to                                   ${current_page}
+  ...  AND  Reload page
   ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
   ...  AND  sleep  60
   ...  AND  Capture Page Screenshot
@@ -1134,6 +1139,11 @@ Change_date_to_month
   Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  2
   Click Element                  xpath=//button[@ng-click='cancelAward()']
+  Capture Page Screenshot
+  Reload page
+  Capture Page Screenshot
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Page Should Not Contain Element    xpath=//awards-info//button[@id='btn_modalCancelAward']
   Capture Page Screenshot
 
 Завантажити документ рішення кваліфікаційної комісії

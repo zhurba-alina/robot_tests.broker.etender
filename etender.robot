@@ -126,7 +126,15 @@ Login
   Wait Until Page Contains Element   id=btn_submit      180
   Click Button                       id=btn_submit
   Sleep   10
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів  ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів      ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Run Keyword                         Закрити повідомлення про наявність питань
+
+Закрити повідомлення про наявність питань
+  Wait Until Page Contains Element   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
+  Wait Until Page Contains Element   xpath=//button[@class='cancel'][contains(text(), 'Відміна')]   60
+  Focus                              xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
+  Click Element                      xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
+  Wait Until Page Does Not Contain   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}
@@ -159,6 +167,7 @@ Login
   Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
   ...  Reload Page
+  ...  AND  Run Keyword                    Закрити повідомлення про наявність питань
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}

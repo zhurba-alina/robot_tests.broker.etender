@@ -129,6 +129,8 @@ Login
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів      ${USERS.users['${ARGUMENTS[0]}'].homepage}
   ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Contain Element  xpath=//div[@class='sweet-alert showSweetAlert visible']
   Run Keyword If        '${status}' == 'PASS'         Закрити повідомлення про наявність питань
+  ${status}  ${value}=  Run Keyword And Ignore Error  Перевірка перебування у режимі навчання
+  Run Keyword If        '${status}' == 'FAIL'         Fatal Error
 
 Закрити повідомлення про наявність питань
   Wait Until Page Contains Element   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
@@ -136,6 +138,9 @@ Login
   Focus                              xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
   Click Element                      xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
   Wait Until Page Does Not Contain   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
+
+Перевірка перебування у режимі навчання
+  Page Should Contain Element        xpath=//span[@bs-tooltip='tooltip'][contains(text(), 'нережимі навчання')]       Організація у режим реальних торгів!
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}

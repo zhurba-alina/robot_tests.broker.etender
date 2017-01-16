@@ -127,7 +127,8 @@ Login
   Click Button                       id=btn_submit
   Sleep   10
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів      ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  Run Keyword                         Закрити повідомлення про наявність питань
+  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Contain Element  xpath=//div[@class='sweet-alert showSweetAlert visible']
+  Run Keyword If        '${status}' == 'PASS'         Закрити повідомлення про наявність питань
 
 Закрити повідомлення про наявність питань
   Wait Until Page Contains Element   xpath=//div[@class='sweet-alert showSweetAlert visible']       60

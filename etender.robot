@@ -140,7 +140,7 @@ Login
   Wait Until Page Does Not Contain   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
 
 Перевірка перебування у режимі навчання
-  Page Should Contain Element        xpath=//span[@bs-tooltip='tooltip'][contains(text(), 'нережимі навчання')]       Організація у режим реальних торгів!
+  Page Should Contain Element        xpath=//span[@bs-tooltip='tooltip'][contains(text(), 'режимі навчання')]       Організація у режим реальних торгів!
 
 Створити тендер
   [Arguments]  @{ARGUMENTS}

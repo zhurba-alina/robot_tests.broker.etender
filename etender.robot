@@ -127,17 +127,18 @@ Login
   Click Button                       id=btn_submit
   Sleep   10
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Подивитися список аукціонів      ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Contain Element  xpath=//div[@class='sweet-alert showSweetAlert visible']
-  Run Keyword If        '${status}' == 'PASS'         Закрити повідомлення про наявність питань
+  Run Keyword  Закрити повідомлення про наявність питань
   ${status}  ${value}=  Run Keyword And Ignore Error  Перевірка перебування у режимі навчання
   Run Keyword If        '${status}' == 'FAIL'         Fatal Error
 
 Закрити повідомлення про наявність питань
-  Wait Until Page Contains Element   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
-  Wait Until Page Contains Element   xpath=//button[@class='cancel'][contains(text(), 'Відміна')]   60
-  Focus                              xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
-  Click Element                      xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
-  Wait Until Page Does Not Contain   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
+  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Contain Element  xpath=//div[@class='sweet-alert showSweetAlert visible']
+  Run Keyword If        '${status}' == 'PASS'         Run Keywords
+  ...  Wait Until Page Contains Element   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
+  ...  AND  Wait Until Page Contains Element   xpath=//button[@class='cancel'][contains(text(), 'Відміна')]   60
+  ...  AND  Focus                              xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
+  ...  AND  Click Element                      xpath=//button[@class='cancel'][contains(text(), 'Відміна')]
+  ...  AND  Wait Until Page Does Not Contain   xpath=//div[@class='sweet-alert showSweetAlert visible']       60
 
 Перевірка перебування у режимі навчання
   Page Should Contain Element        xpath=//span[@bs-tooltip='tooltip'][contains(text(), 'режимі навчання')]       Організація у режим реальних торгів!
@@ -173,7 +174,7 @@ Login
   Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
   ...  Reload Page
-  ...  AND  Run Keyword                    Закрити повідомлення про наявність питань
+  ...  AND  Run Keyword  Закрити повідомлення про наявність питань
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}

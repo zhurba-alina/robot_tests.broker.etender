@@ -1118,39 +1118,31 @@ Change_date_to_month
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  ${current_page}=   Get Location
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Анулювання переможця  ${current_page}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Run Keyword   Анулювання переможця  ${current_page}
 
 Анулювання переможця
   [Arguments]  ${current_page}
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
-  ...  Go to                                   ${current_page}
-  ...  AND  Reload page
-  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  ...  AND  sleep  60
-  ...  AND  Wait Until Element Is Visible      xpath=//awards-info//button[@id='btn_modalCancelAward']    60
-  ...  AND  Focus                              xpath=//awards-info//button[@id='btn_modalCancelAward']
-  ...  AND  Click Element                      xpath=//awards-info//button[@id='btn_modalCancelAward']
-  ...  AND  sleep  3
-  ...  AND  Wait Until Page Contains           Анулювання переможця     30
-  Wait Until Element Is Visible  xpath=//textarea[@ng-model='cancelAwardModel.description']  30
-  Input Text                     xpath=//textarea[@ng-model='cancelAwardModel.description']  Якась причина для скасування (для потреб автотестів)
-  Select From List By Label      xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
-  sleep  2
-  Click Element                  xpath=//button[@ng-click='cancelAward()']
   Reload page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Page Should Not Contain Element    xpath=//awards-info//button[@id='btn_modalCancelAward']
+  Wait Until Element Is Visible      id=btn_modalCancelAward    60
+  sleep  5
+  Click Element                      id=btn_modalCancelAward
+  Wait Until Page Contains           Анулювання переможця     60
+  Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   60
+  Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Якась причина для скасування (для потреб автотестів)
+  Select From List By Label         xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
+  sleep  2
+  Click Element                     xpath=//button[@ng-click='cancelAward()']
+  Sleep  3
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
-  ...  Reload page
-  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  ...  AND  sleep  30
-  ...  AND  Wait Until Element Is Visible      id=btn_getAwardsId1      60
-  ...  AND  Click Element                      id=btn_getAwardsId1
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      id=btn_getAwardsId1      60
+  Sleep  5
+  Click Element                      id=btn_getAwardsId1
   sleep  3
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
@@ -1158,20 +1150,19 @@ Change_date_to_month
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
 
 Ухвалили рішення про відхилення кандидата
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
-  ...  Reload page
-  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  ...  AND  sleep  30
-  ...  AND  Wait Until Element Is Visible      id=btn_getAwardsId1      60
-  ...  AND  Click Element                      id=btn_getAwardsId1
+  Reload page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      id=btn_getAwardsId1      60
+  sleep  60
+  Click Element                      id=btn_getAwardsId1
   sleep  3
-  Wait Until Element Is Visible      xpath=//button[@id='btn_nextStepAwards']    60
-  Click Element                      xpath=//button[@id='btn_nextStepAwards']
+  Wait Until Element Is Visible      id=btn_nextStepAwards    60
+  Click Element                      id=btn_nextStepAwards
   sleep  3
   Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
-  Wait Until Element Is Visible      xpath=//button[@id='btn_disqualify']        60
-  Click Element                      xpath=//button[@id='btn_disqualify']
-  Wait Until Page Contains           Кандидата відмінено!     30
+  Wait Until Element Is Visible      id=btn_disqualify        60
+  Click Element                      id=btn_disqualify
+  Wait Until Page Contains           Кандидата відмінено!     60
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

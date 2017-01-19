@@ -210,11 +210,12 @@ Login
   Input text                         ${locator_dgfID}                                    ${dgfID}
   Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
   Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
-  Sleep     90
   :FOR  ${index}  IN RANGE  ${number_of_items}
+  \  Run Keyword If  ${index} != 0  Wait Until Element Is Visible  id=addLotItem_${index-1}  60
   \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
   \  Додати актив лоту  ${items[${index}]}  ${index}
   Wait Until Element Is Visible      id=CreateTenderE                60
+  Focus                              id=CreateTenderE
   Click Element                      id=CreateTenderE
   Wait Until Page Contains           Закупівлю створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
@@ -302,7 +303,7 @@ Login
   Wait Until Element Is Visible      xpath=//div[contains(@id,'addClassification')]
   Sleep  1
   Input text                         xpath=//div[contains(@class, 'modal fade ng-scope in')]//input[@ng-model='searchstring']    ${dkpp_desc}
-  Wait Until Element Is Visible      xpath=//td[contains(., '${dkpp_id}')]
+  Wait Until Element Is Visible      xpath=//td[contains(., '${dkpp_id}')]  60
   Sleep  2
   Click Element                      xpath=//td[contains(., '${dkpp_id}')]
   Click Element                      xpath=//div[@id='addClassification']//button[starts-with(@ng-click, 'choose(')]

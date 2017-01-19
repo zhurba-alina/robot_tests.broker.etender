@@ -96,6 +96,7 @@ ${locator.procurementMethodType}                               xpath=//span[@ng-
 ${locator.dgfDecisionDate}                                     id=dgfDecisionDateId
 ${locator.dgfDecisionID}                                       id=dgfDecisionID_Id
 ${locator.tenderAttempts}                                      id=tenderAtempts
+${locator_search_cav}                                          xpath=//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -327,8 +328,10 @@ Login
   Select From List By Label          id=itemsUnit${index}                           ${unit_etender}
   Wait Until Element Is Visible      xpath=(//input[@id='openClassificationModal'])[${index +1}]
   Click Element                      xpath=(//input[@id='openClassificationModal'])[${index +1}]
-  Wait Until Element Is Visible      xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']
-  Input text                         xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cav}
+  Wait Until Element Is Visible      ${locator_search_cav}
+  Execute JavaScript  element = document.evaluate("//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]",document.documentElement,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0);
+  Execute JavaScript  element.value = '${cav}';
+  Execute JavaScript  angular.element(element).triggerHandler('change');
   Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      xpath=//td[contains(., '${cav}')]

@@ -1123,12 +1123,6 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Run Keyword   Анулювання переможця  ${current_page}
-
-Анулювання переможця
-  [Arguments]  ${current_page}
-  Reload page
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      id=btn_modalCancelAward    60
   sleep  5
   Click Element                      id=btn_modalCancelAward

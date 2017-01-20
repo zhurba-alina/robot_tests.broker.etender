@@ -1151,7 +1151,7 @@ Change_date_to_month
   Reload page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      id=btn_getAwardsId1      60
-  sleep  60
+  sleep  5
   Click Element                      id=btn_getAwardsId1
   sleep  3
   Wait Until Element Is Visible      id=btn_nextStepAwards    60

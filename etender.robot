@@ -1124,8 +1124,8 @@ Change_date_to_month
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      id=btn_modalCancelAward    60
-  sleep  5
-  Click Element                      id=btn_modalCancelAward
+  sleep  60
+  Execute JavaScript                document.getElementById("btn_modalCancelAward").click()
   Wait Until Page Contains           Анулювання переможця     60
   Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   60
   Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Якась причина для скасування (для потреб автотестів)

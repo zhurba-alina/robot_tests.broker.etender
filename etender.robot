@@ -84,7 +84,7 @@ ${locator_question_answer}                                     xpath=//span[cont
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
-${locator_auction_search_field}                                xpath=//input[@type='text' and @placeholder='Пошук за номером аукціону']
+${locator_auction_search_field}                                xpath=//input[@ng-model='searchString' and @ng-change='searchChange()']
 ${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
 ${locator_tender_attempts}                                     id=tenderAttempts
 ${locator.dgfDecisionDate}                                     id=dgfDecisionDateOut
@@ -351,11 +351,7 @@ Login
   Input Text                        ${locator_auction_search_field}  ${TENDER_UAID}
   sleep  2
   Wait Until Page Does Not Contain  ${locator_block_overlay}
-  ${locator_auction_in_grid}=  Set Variable  jquery=a[href^='#/tenderDetailes']:contains('${TENDER_UAID}')
-  Wait Until Page Contains Element  ${locator_auction_in_grid}  60
-  ${auction_link_within_platform}=  Get Element Attribute  ${locator_auction_in_grid}@href
-  Log  ${auction_link_within_platform}
-  Click Link  ${locator_auction_in_grid}
+  Click Link                        xpath=(//td[@class='title-td ng-binding'])[1]/a[1]
   Wait Until Page Does Not Contain  ${locator_block_overlay}
   ${location}=  Get Location
   Log  ${location}

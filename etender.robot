@@ -1072,12 +1072,18 @@ Change_date_to_month
   ...      [Arguments] Username, tender uaid and number of the award to confirm
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  Wait Until Element Is Visible  xpath=//a[@data-target='#modalGetAwards']
-  Click Element  xpath=//a[@data-target='#modalGetAwards']
-  Wait Until Element Is Visible  xpath=//button[@ng-click='getAwardsNextStep()']
-  Click Element  xpath=//button[@ng-click='getAwardsNextStep()']
-  Wait Until Element Is Visible  xpath=//button[@click-and-block='setDecision(1)']
-  Click Element  xpath=//button[@click-and-block='setDecision(1)']
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible    id=btn_getAwardsId1    30
+  Sleep  5
+  Click Element                    id=btn_getAwardsId1
+  Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+  Wait Until Element Is Visible    id=btn_nextStepAwards    30
+  Click Element                    id=btn_nextStepAwards
+  Wait Until Element Is Visible    xpath=(//button[@click-and-block='setDecision(1)'])[1]     30
+  Click Element                    xpath=(//button[@click-and-block='setDecision(1)'])[1]
+  Wait Until Page Contains         Кандидата ухвалено!      30
+  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
@@ -1119,6 +1125,7 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
   Wait Until Element Is Visible      id=btn_modalCancelAward    60
   sleep  60
   Execute JavaScript                document.getElementById("btn_modalCancelAward").click()

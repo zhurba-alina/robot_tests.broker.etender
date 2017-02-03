@@ -217,7 +217,7 @@ Login
   Wait Until Element Is Visible      id=CreateTenderE                60
   Focus                              id=CreateTenderE
   Click Element                      id=CreateTenderE
-  Wait Until Page Contains           Закупівлю створено!             60
+  Wait Until Page Contains           Лот створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}

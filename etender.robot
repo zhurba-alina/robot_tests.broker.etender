@@ -1149,15 +1149,18 @@ Change_date_to_month
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible      id=btn_getAwardsId1      60
   Sleep  5
   Click Element                      id=btn_getAwardsId1
-  sleep  3
+  Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
   Wait Until Page Contains           Файл додано!             30
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
+  Wait Until Page Contains           Увага!             30
+  Wait Until Keyword Succeeds      ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
 
 Ухвалили рішення про відхилення кандидата
   Reload page

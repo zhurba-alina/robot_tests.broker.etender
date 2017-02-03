@@ -1072,8 +1072,10 @@ Change_date_to_month
   ...      [Arguments] Username, tender uaid and number of the award to confirm
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
   Click Element                    id=btn_getAwardsId1
@@ -1083,6 +1085,9 @@ Change_date_to_month
   Wait Until Element Is Visible    xpath=(//button[@click-and-block='setDecision(1)'])[1]     30
   Click Element                    xpath=(//button[@click-and-block='setDecision(1)'])[1]
   Wait Until Page Contains         Кандидата ухвалено!      30
+  Sleep  15
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible    xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
 
 Завантажити угоду до тендера

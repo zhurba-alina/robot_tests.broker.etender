@@ -1176,6 +1176,10 @@ Change_date_to_month
   Wait Until Element Is Visible      id=btn_disqualify        60
   Click Element                      id=btn_disqualify
   Wait Until Page Contains           Кандидата відмінено!     60
+  Sleep  15
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

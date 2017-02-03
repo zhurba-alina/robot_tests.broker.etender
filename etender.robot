@@ -1129,6 +1129,7 @@ Change_date_to_month
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
   Wait Until Element Is Visible      id=btn_modalCancelAward    60
@@ -1136,11 +1137,14 @@ Change_date_to_month
   Execute JavaScript                document.getElementById("btn_modalCancelAward").click()
   Wait Until Page Contains           Анулювання переможця     60
   Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   60
-  Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Якась причина для скасування (для потреб автотестів)
+  Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Test - Якась причина для скасування (для потреб автотестів)
   Select From List By Label         xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  2
   Click Element                     xpath=//button[@ng-click='cancelAward()']
-  Sleep  3
+  Sleep  15
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}

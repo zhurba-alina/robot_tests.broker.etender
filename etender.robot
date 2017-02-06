@@ -217,7 +217,7 @@ Login
   Wait Until Element Is Visible      id=CreateTenderE                60
   Focus                              id=CreateTenderE
   Click Element                      id=CreateTenderE
-  Wait Until Page Contains           Закупівлю створено!             60
+  Wait Until Page Contains           Лот створено!             60
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
@@ -1072,8 +1072,10 @@ Change_date_to_month
   ...      [Arguments] Username, tender uaid and number of the award to confirm
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
   Click Element                    id=btn_getAwardsId1
@@ -1083,6 +1085,9 @@ Change_date_to_month
   Wait Until Element Is Visible    xpath=(//button[@click-and-block='setDecision(1)'])[1]     30
   Click Element                    xpath=(//button[@click-and-block='setDecision(1)'])[1]
   Wait Until Page Contains         Кандидата ухвалено!      30
+  Sleep  15
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible    xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
 
 Завантажити угоду до тендера
@@ -1124,6 +1129,7 @@ Change_date_to_month
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
   Wait Until Element Is Visible      id=btn_modalCancelAward    60
@@ -1131,24 +1137,30 @@ Change_date_to_month
   Execute JavaScript                document.getElementById("btn_modalCancelAward").click()
   Wait Until Page Contains           Анулювання переможця     60
   Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   60
-  Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Якась причина для скасування (для потреб автотестів)
+  Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Test - Якась причина для скасування (для потреб автотестів)
   Select From List By Label         xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  2
   Click Element                     xpath=//button[@ng-click='cancelAward()']
-  Sleep  3
+  Sleep  15
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
 
 Завантажити документ рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${document}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible      id=btn_getAwardsId1      60
   Sleep  5
   Click Element                      id=btn_getAwardsId1
-  sleep  3
+  Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
   Wait Until Page Contains           Файл додано!             30
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
+  Wait Until Page Contains           Увага!             30
+  Wait Until Keyword Succeeds      ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
 
 Ухвалили рішення про відхилення кандидата
   Reload page
@@ -1164,6 +1176,10 @@ Change_date_to_month
   Wait Until Element Is Visible      id=btn_disqualify        60
   Click Element                      id=btn_disqualify
   Wait Until Page Contains           Кандидата відмінено!     60
+  Sleep  15
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
 
 Дискваліфікувати постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}

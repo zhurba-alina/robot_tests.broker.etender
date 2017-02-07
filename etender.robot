@@ -1083,6 +1083,7 @@ Change_date_to_month
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
   Click Element                    id=btn_nextStepAwards
   Wait Until Element Is Visible    xpath=(//button[@click-and-block='setDecision(1)'])[1]     30
+  Sleep  15
   Click Element                    xpath=(//button[@click-and-block='setDecision(1)'])[1]
   Wait Until Page Contains         Кандидата ухвалено!      30
   Sleep  15
@@ -1160,11 +1161,12 @@ Change_date_to_month
   Choose File                        id=documentToAdd4        ${document}
   Wait Until Page Contains           Файл додано!             30
   Wait Until Page Contains           Увага!             30
-  Wait Until Keyword Succeeds      ${huge_timeout_for_visibility}  30  Ухвалили рішення про відхилення кандидата
+  Run keyword                        Ухвалили рішення про відхилення кандидата
 
 Ухвалили рішення про відхилення кандидата
   Reload page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible      id=btn_getAwardsId1      60
   sleep  5
   Click Element                      id=btn_getAwardsId1
@@ -1175,7 +1177,7 @@ Change_date_to_month
   Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
   Wait Until Element Is Visible      id=btn_disqualify        60
   Click Element                      id=btn_disqualify
-  Wait Until Page Contains           Кандидата відмінено!     60
+  Wait Until Page Contains           Кандидата дискваліфіковано!    60
   Sleep  15
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}

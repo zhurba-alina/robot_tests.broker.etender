@@ -1084,7 +1084,7 @@ Change_date_to_month
   Choose File                        id=documentToAdd4        ${file_path}
   Wait Until Page Contains           Файл додано!             30
   Wait Until Page Contains           Увага!             30
-  Sleep  30
+  Sleep  60
   Reload page
   Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
@@ -1173,7 +1173,7 @@ Change_date_to_month
   Choose File                        id=documentToAdd4        ${document}
   Wait Until Page Contains           Файл додано!             30
   Wait Until Page Contains           Увага!             30
-  Sleep  30
+  Sleep  60
   Run keyword                        Ухвалили рішення про відхилення кандидата
 
 Ухвалили рішення про відхилення кандидата

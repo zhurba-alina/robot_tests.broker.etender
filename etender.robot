@@ -1128,16 +1128,28 @@ Change_date_to_month
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  sleep  10
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible   id=btn_ContractActiveAwarded    60
-  Click Element                   id=btn_ContractActiveAwarded
-  sleep  20
-  ${contract_num_str}=  Convert To String  ${contract_num}
-  Input text  id=contractNumber  ${contract_num_str}
-  Click Element  xpath=//button[text()='Завершити аукціон']
-  sleep  1
-  sleep  20
+  Wait Until Element Is Visible      id=btn_ContractActiveAwarded    60
+  sleep  5
+  Click Element                      id=btn_ContractActiveAwarded
+  ${contract_num_str}=               Convert To String      ${contract_num}
+  Input text                         id=contractNumber      ${contract_num_str}
+  ${file_path}  ${file_name}  ${file_content}=   create_fake_doc
+  Wait Until Element Is Visible      id=tend_doc_add        30
+  Choose File                        id=tend_doc_add        ${file_path}
+  Wait Until Page Contains           Файл додано!           30
+  sleep  5
+  Wait Until Element Is Visible      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
+  Click Element                      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
+  Sleep  60
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Reload Page
+  Wait Until Page Does Not Contain         ${locator_block_overlay}
+  Wait Until Element Is Visible      id=btn_ContractActiveAwarded    60
+  sleep  5
+  Click Element                      id=btn_ContractActiveAwarded
+  Wait Until Element Is Visible      xpath=//button[contains(text(), 'Завершити аукціон')]    60
+  Click Element                      xpath=//button[contains(text(), 'Завершити аукціон')]
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}

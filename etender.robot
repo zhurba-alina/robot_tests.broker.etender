@@ -1105,21 +1105,20 @@ Change_date_to_month
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
-  log  ${username}
-  log  ${tender_uaid}
-  log  ${contract_num}
-  log  ${filepath}
-  sleep  5
   Wait Until Element Is Visible   id=btn_ContractActiveAwarded     120
   Click Element  id=btn_ContractActiveAwarded
   sleep  5
+  ${contract_num_str}=               Convert To String      ${contract_num}
+  Input text                         id=contractNumber      ${contract_num_str}
   Choose File  id=tend_doc_add  ${filepath}
+  Wait Until Page Contains           Файл додано!           30
+  sleep  5
+  Wait Until Element Is Visible      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
+  Click Element                      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
   sleep  240  #  wait till disappears "Поки не експортовано"
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Sleep  20
   ${href}=  Get Element Attribute  xpath=(//div[@ng-show='!document.isDeleted']/a)@href
-  sleep  30
   [return]  ${href}
 
 Підтвердити підписання контракту

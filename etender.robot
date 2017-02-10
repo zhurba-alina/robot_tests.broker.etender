@@ -1127,21 +1127,13 @@ Change_date_to_month
   ...      [Return] Nothing
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible      id=btn_ContractActiveAwarded    60
-  sleep  5
-  Click Element                      id=btn_ContractActiveAwarded
-  ${contract_num_str}=               Convert To String      ${contract_num}
-  Input text                         id=contractNumber      ${contract_num_str}
+  Wait Until Page Does Not Contain         ${locator_block_overlay}
+  ${tender_url}=    Get Location
   ${file_path}  ${file_name}  ${file_content}=   create_fake_doc
-  Wait Until Element Is Visible      id=tend_doc_add        30
-  Choose File                        id=tend_doc_add        ${file_path}
-  Wait Until Page Contains           Файл додано!           30
-  sleep  5
-  Wait Until Element Is Visible      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
-  Click Element                      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
-  Sleep  60
-  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Run keyword   etender.Завантажити угоду до тендера  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
+  Remove File  ${file_path}
+  Wait Until Keyword Succeeds  10 x   20 s  Дочекатися статусу завершення аукціону  ${tender_url}
+
   Reload Page
   Wait Until Page Does Not Contain         ${locator_block_overlay}
   Wait Until Element Is Visible      id=btn_ContractActiveAwarded    60

@@ -1134,13 +1134,22 @@ Change_date_to_month
   Remove File  ${file_path}
   Wait Until Keyword Succeeds  10 x   20 s  Дочекатися статусу завершення аукціону  ${tender_url}
 
+Дочекатися статусу завершення аукціону
+  [Arguments]  ${tender_url}
+  Go to        ${tender_url}
   Reload Page
   Wait Until Page Does Not Contain         ${locator_block_overlay}
   Wait Until Element Is Visible      id=btn_ContractActiveAwarded    60
   sleep  5
   Click Element                      id=btn_ContractActiveAwarded
-  Wait Until Element Is Visible      xpath=//button[contains(text(), 'Завершити аукціон')]    60
-  Click Element                      xpath=//button[contains(text(), 'Завершити аукціон')]
+  Wait Until Element Is Visible      id=btn_CompleteAuction    60
+  sleep  5
+  Execute JavaScript                 document.getElementById("btn_CompleteAuction").click()
+  sleep  5
+  Go to        ${tender_url}
+  Reload Page
+  Wait Until Page Does Not Contain         ${locator_block_overlay}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Завершений аукціон')]     30
 
 Скасування рішення кваліфікаційної комісії
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
@@ -1176,7 +1185,7 @@ Change_date_to_month
   Choose File                        id=documentToAdd4        ${document}
   Wait Until Page Contains           Файл додано!             30
   Wait Until Page Contains           Увага!             30
-  Sleep  60
+  Sleep  30
   Run keyword                        Ухвалили рішення про відхилення кандидата
 
 Ухвалили рішення про відхилення кандидата

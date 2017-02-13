@@ -1082,8 +1082,6 @@ Change_date_to_month
   ${file_path}  ${file_name}  ${file_content}=   create_fake_doc
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${file_path}
-  Wait Until Page Contains           Файл додано!             30
-  Wait Until Page Contains           Увага!             30
   Sleep  60
   Reload page
   Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
@@ -1111,7 +1109,6 @@ Change_date_to_month
   ${contract_num_str}=               Convert To String      ${contract_num}
   Input text                         id=contractNumber      ${contract_num_str}
   Choose File  id=tend_doc_add  ${filepath}
-  Wait Until Page Contains           Файл додано!           30
   sleep  5
   Wait Until Element Is Visible      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
   Click Element                      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
@@ -1183,8 +1180,6 @@ Change_date_to_month
   Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
   Wait Until Element Is Visible      id=documentToAdd4        30
   Choose File                        id=documentToAdd4        ${document}
-  Wait Until Page Contains           Файл додано!             30
-  Wait Until Page Contains           Увага!             30
   Sleep  30
   Run keyword                        Ухвалили рішення про відхилення кандидата
 

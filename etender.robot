@@ -1067,39 +1067,66 @@ Change_date_to_month
   ${bid}=   etender.Отримати пропозицію  ${field}
   [return]  ${bid.data.${field}}
 
-Підтвердити постачальника
-  [Documentation]
-  ...      [Arguments] Username, tender uaid and number of the award to confirm
-  ...      [Return] Nothing
-  [Arguments]  ${username}  ${tender_uaid}  ${award_num}
-  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Reload Page
+Завантажити протокол аукціону в авард
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
-  Click Element                    id=btn_getAwardsId1
-  ${file_path}  ${file_name}  ${file_content}=   create_fake_doc
-  Wait Until Element Is Visible      id=documentToAdd4        30
-  Choose File                        id=documentToAdd4        ${file_path}
-  Sleep  60
-  Reload page
+  Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
+  Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+  Wait Until Element Is Visible    id=documentToAdd4        30
+  Choose File                      id=documentToAdd4        ${file_path}
+  Run Keyword And Ignore Error     Wait Until Page Contains         Файл додано!              30
+
+Підтвердити наявність протоколу аукціону
+  [Arguments]  ${username}  ${tender_uaid}  ${award_index}
+  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
-  Click Element                    id=btn_getAwardsId1
+  Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
+  Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+  Wait Until Element Is Visible    id=btn_nextStepAwards    30
+  Click Element                    id=btn_nextStepAwards
+  Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+  Wait Until Element Is Visible    id=btn_PendingPayment    30
+  Click Element                    id=btn_PendingPayment
+  Run Keyword And Ignore Error     Wait Until Page Contains         Кандидата переведено в статус очікування оплати !
+
+Підтвердити постачальника
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
+  Wait Until Element Is Visible    id=btn_getAwardsId1    30
+  Sleep  5
+  Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
   Click Element                    id=btn_nextStepAwards
   Wait Until Element Is Visible    id=btn_candidateQualify2     30
-  Sleep  15
+  Sleep  5
   Click Element                    id=btn_candidateQualify2
-  Wait Until Page Contains         Кандидата ухвалено!      30
-  Sleep  15
-  Reload Page
+  Run Keyword And Ignore Error     Wait Until Page Contains         Кандидата ухвалено!      30
+
+Дискваліфікувати постачальника
+  [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
-  Remove File  ${file_path}
+  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
+  Wait Until Element Is Visible      id=btn_modalCancelAward    30
+  sleep  5
+  Execute JavaScript                 document.getElementById("btn_modalCancelAward").click()
+  Wait Until Page Contains           Анулювання переможця     30
+  Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   30
+  Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Test - ${description}
+  Select From List By Label         xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
+  sleep  2
+  Wait Until Element Is Visible     xpath=//button[@ng-click='cancelAward()']   30
+  Click Element                     xpath=//button[@ng-click='cancelAward()']
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}
@@ -1202,11 +1229,6 @@ Change_date_to_month
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
-
-Дискваліфікувати постачальника
-  [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
-  Log  Розібратись докладніше які дії в яких кейвордах мають бути
-  No Operation
 
 Отримати кількість предметів в тендері
   [Arguments]  ${username}  ${tender_uaid}
@@ -1320,5 +1342,3 @@ Change_date_to_month
   Wait Until Element Is Visible                  xpath=//a[@click-and-block='saveVdr()']          60
   Click Element                                  xpath=//a[@click-and-block='saveVdr()']
   Wait Until Page Contains            Порядку ознайомлення збережено!
-
-

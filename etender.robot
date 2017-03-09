@@ -1096,7 +1096,7 @@ Change_date_to_month
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_PendingPayment    30
   Click Element                    id=btn_PendingPayment
-  Run Keyword And Ignore Error     Wait Until Page Contains         Кандидата переведено в статус очікування оплати !
+  Wait Until Page Contains         Кандидата переведено в статус очікування оплати !
 
 Підтвердити постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
@@ -1109,6 +1109,7 @@ Change_date_to_month
   sleep  5
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
+  sleep  2
   Click Element                    id=btn_nextStepAwards
   Wait Until Element Is Visible    id=btn_candidateQualify2     30
   Sleep  5
@@ -1126,6 +1127,7 @@ Change_date_to_month
   sleep  5
   Wait Until Page Contains           Анулювання переможця     30
   Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   30
+  sleep  2
   Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Test - ${description}
   Select From List By Label         xpath=//select[@ng-model='vm.ca.causeTitles']  Відмовився від підписання договору
   sleep  2

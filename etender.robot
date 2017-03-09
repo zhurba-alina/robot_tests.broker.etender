@@ -1075,6 +1075,7 @@ Change_date_to_month
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
   Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
+  sleep  5
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=documentToAdd4        30
   Choose File                      id=documentToAdd4        ${file_path}
@@ -1088,6 +1089,7 @@ Change_date_to_month
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
   Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
+  sleep  5
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
   Click Element                    id=btn_nextStepAwards
@@ -1104,6 +1106,7 @@ Change_date_to_month
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
   Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
+  sleep  5
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
   Click Element                    id=btn_nextStepAwards
@@ -1120,6 +1123,7 @@ Change_date_to_month
   Wait Until Element Is Visible      id=btn_modalCancelAward    30
   sleep  5
   Execute JavaScript                 document.getElementById("btn_modalCancelAward").click()
+  sleep  5
   Wait Until Page Contains           Анулювання переможця     30
   Wait Until Element Is Visible     xpath=//textarea[@ng-model='cancelAwardModel.description']   30
   Input Text                        xpath=//textarea[@ng-model='cancelAwardModel.description']   Test - ${description}

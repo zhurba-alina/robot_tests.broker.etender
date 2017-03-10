@@ -141,6 +141,12 @@ def get_helper_dictionary():
         u"Місце та форма прийому заяв та банківськіх реквізитів":   u"x_dgfPlatformLegalDetails",
         u"Іллюстрації":                                             u"illustration",
         u"Інші": u"None",
+        u"award.status=кваліфікаційна комісія відмовила переможцю": u"unsuccessful",
+        u"award.status=Рішення анульовано": u"cancelled",
+        u"award.status=очікується протокол": u"pending.verification",
+        u"award.status=очікується кінець кваліфікації": u"pending.waiting",
+        u"award.status=очікується підписання договору": u"pending.payment",
+        u"award.status=Оплачено, очікується підписання договору": u"active",
 
     }
 

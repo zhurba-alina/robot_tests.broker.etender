@@ -97,6 +97,8 @@ ${locator.dgfDecisionDate}                                     id=dgfDecisionDat
 ${locator.dgfDecisionID}                                       id=dgfDecisionID_Id
 ${locator.tenderAttempts}                                      id=tenderAtempts
 ${locator_search_cav}                                          xpath=//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]
+${locator.awards[0].status}                                    xpath=(//div[@ng-repeat="award in lot.awards"])[1]//p[text()="Статус:"]/parent::div/following-sibling::div/p
+${locator.awards[1].status}                                    xpath=(//div[@ng-repeat="award in lot.awards"])[2]//p[text()="Статус:"]/parent::div/following-sibling::div/p
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -712,6 +714,16 @@ Check Is Element Loaded
   ${return_value}=   add_timezone_to_date   ${return_value.split('.')[0]}
   [return]  ${return_value}
 
+Отримати інформацію про awards[0].status
+  ${return_value}=   Отримати текст із поля і показати на сторінці  awards[0].status
+  ${return_value}=   convert_etender_string_to_common_string      award.status=${return_value}
+  [return]    ${return_value}
+
+Отримати інформацію про awards[1].status
+  ${return_value}=   Отримати текст із поля і показати на сторінці  awards[1].status
+  ${return_value}=   convert_etender_string_to_common_string      award.status=${return_value}
+  [return]    ${return_value}
+
 Change_date_to_month
   [Arguments]  @{ARGUMENTS}
   [Documentation]
@@ -1092,9 +1104,11 @@ Change_date_to_month
   sleep  5
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
+  sleep  2
   Click Element                    id=btn_nextStepAwards
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
   Wait Until Element Is Visible    id=btn_PendingPayment    30
+  sleep  2
   Click Element                    id=btn_PendingPayment
   Wait Until Page Contains         Кандидата переведено в статус очікування оплати !
 

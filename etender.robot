@@ -1079,16 +1079,19 @@ Change_date_to_month
   ${bid}=   etender.Отримати пропозицію  ${field}
   [return]  ${bid.data.${field}}
 
-Завантажити протокол аукціону в авард
-  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
-  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+Спробувати відкрити вікно рішення про Кандидата
+  Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
   Wait Until Element Is Visible    id=btn_getAwardsId1    30
   Sleep  5
   Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
   sleep  5
   Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+
+Завантажити протокол аукціону в авард
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+  etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
+  Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
   Wait Until Element Is Visible    id=documentToAdd4        30
   Choose File                      id=documentToAdd4        ${file_path}
   Run Keyword And Ignore Error     Wait Until Page Contains         Файл додано!              30
@@ -1096,13 +1099,7 @@ Change_date_to_month
 Підтвердити наявність протоколу аукціону
   [Arguments]  ${username}  ${tender_uaid}  ${award_index}
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
-  Wait Until Element Is Visible    id=btn_getAwardsId1    30
-  Sleep  5
-  Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
-  sleep  5
-  Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+  Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
   sleep  2
   Click Element                    id=btn_nextStepAwards
@@ -1115,13 +1112,7 @@ Change_date_to_month
 Підтвердити постачальника
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible    xpath=//p[contains(text(), 'Кваліфікація переможця')]     30
-  Wait Until Element Is Visible    id=btn_getAwardsId1    30
-  Sleep  5
-  Execute JavaScript               document.getElementById("btn_getAwardsId1").click()
-  sleep  5
-  Wait Until Page Contains         Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  30
+  Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
   Wait Until Element Is Visible    id=btn_nextStepAwards    30
   sleep  2
   Click Element                    id=btn_nextStepAwards

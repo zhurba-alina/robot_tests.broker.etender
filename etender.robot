@@ -1125,7 +1125,16 @@ Change_date_to_month
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}  ${description}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Wait Until Element Is Visible      xpath=//p[contains(text(), 'Оплачено, очікується підписання договору')]     30
+  sleep  5
+
+  ${status}	           ${value}=  Run Keyword And Ignore Error	 Page Should Contain Element  id=btn_modalCancelAward
+  log to console       ${status}
+
+  Run Keyword If      '${status}' == 'PASS'   Анулювати переможця  ${description}
+  Run Keyword Unless  '${status}' == 'PASS'   Дискваліфікувати кандидата
+
+Анулювати переможця
+  [Arguments]  ${description}
   Wait Until Element Is Visible      id=btn_modalCancelAward    30
   sleep  5
   Execute JavaScript                 document.getElementById("btn_modalCancelAward").click()
@@ -1138,6 +1147,18 @@ Change_date_to_month
   sleep  2
   Wait Until Element Is Visible     xpath=//button[@ng-click='cancelAward()']   30
   Click Element                     xpath=//button[@ng-click='cancelAward()']
+
+Дискваліфікувати кандидата
+  Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
+  Wait Until Element Is Visible      id=btn_nextStepAwards    30
+  sleep  3
+  Click Element                      id=btn_nextStepAwards
+  sleep  3
+  Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
+  Wait Until Element Is Visible      id=btn_disqualify        30
+  sleep  3
+  Click Element                      id=btn_disqualify
+  Run Keyword And Ignore Error       Wait Until Page Contains           Кандидата дискваліфіковано!    30
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}

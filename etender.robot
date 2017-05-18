@@ -70,7 +70,7 @@ ${locator.items[2].unit.name}                                  id=item_unit_symb
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.bids_0_amount}                                       xpath=(//form[@name='changeBidForm']//div[@class = 'row']/div/p[text() = 'Cума:']/parent::div/following-sibling::div/div/div/span)[1]  #note: mixed en/ru chars!
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
-${huge_timeout_for_visibility}  300
+${huge_timeout_for_visibility}  30
 ${grid_page_text}                                              ProZorro.продажі
 ${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
@@ -82,7 +82,7 @@ ${locator_question_title}                                      xpath=//span[cont
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
-${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
+${locator_start_auction_creation}                              xpath=//div[@ng-if='typeOfOrganization==5']/a  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@ng-model='searchString' and @ng-change='searchChange()']
 ${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
@@ -99,6 +99,7 @@ ${locator.tenderAttempts}                                      id=tenderAtempts
 ${locator_search_cav}                                          xpath=//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]
 ${locator.awards[0].status}                                    xpath=(//div[@ng-repeat="award in lot.awards"])[1]//p[text()="Статус:"]/parent::div/following-sibling::div/p
 ${locator.awards[1].status}                                    xpath=(//div[@ng-repeat="award in lot.awards"])[2]//p[text()="Статус:"]/parent::div/following-sibling::div/p
+${locator.selectProtocolType}                                  id=selectProcType2
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -175,17 +176,11 @@ Login
   Click Element                      xpath=//a[contains(@class, 'btnProfile')]
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
   Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
-  ...  Reload Page
-  ...  AND  Run Keyword  Закрити повідомлення про наявність питань
-  ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  Wait Until Element Is Visible      id=selectProcType1                      30
-  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
-  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
-  Wait Until Element Is Visible      id=goToCreate
-  Click Element                      id=goToCreate
+  Wait Until Element Is Visible      ${locator.selectProtocolType}                     30
+  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          ${locator.selectProtocolType}    dgfFinancialAssets
+  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          ${locator.selectProtocolType}    dgfOtherAssets
   Wait Until Element Is Visible      id=title
   Input text                         id=title                                            ${title}
   Wait Until Element Is Visible      id=description
@@ -216,13 +211,14 @@ Login
   \  Run Keyword If  ${index} != 0  Wait Until Element Is Visible  id=addLotItem_${index-1}  60
   \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
   \  Додати актив лоту  ${items[${index}]}  ${index}
-  Wait Until Element Is Visible      id=CreateTenderE                60
-  Focus                              id=CreateTenderE
-  Click Element                      id=CreateTenderE
+  Wait Until Element Is Visible      id=CreateAuction1              60
+  Focus                              id=CreateAuction1
+  Click Element                      id=CreateAuction1
   Wait Until Page Contains           Лот створено!             60
-  Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
+  Wait Until Keyword Succeeds        300       10        Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
+  log to console                     ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}

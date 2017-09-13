@@ -404,34 +404,28 @@ Login
 
 Подати цінову пропозицію
   [Arguments]  ${username}  ${tender_uaid}  ${bid}
-  ${amount}=    Get From Dictionary     ${bid.data.value}         amount
-  ${amount}=    float_to_string_2f      ${amount}
   Sleep  60
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   sleep  15
   ${status}	            ${value}=  Run Keyword And Ignore Error	  Get From Dictionary  ${bid.data}  qualified
-  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем  ${amount}
+  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем
   ${value}=  Convert To Boolean  ${value}
-  Run Keyword If      ${value}  Подати цінову пропозицію користувачем  ${amount}
-  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем  ${amount}
+  Run Keyword If      ${value}  Подати цінову пропозицію користувачем
+  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем
 
 Подати цінову пропозицію користувачем
-  [Arguments]  ${amount}
-  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
-  Clear Element Text	            xpath=//input[@name='amount0']
-  Input text                        xpath=//input[@name='amount0']          ${amount}
   Wait Until Element Is Enabled     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
+  Execute Javascript                window.scrollTo(0, 1600)
+  Focus                             xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
   Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
-  Wait Until Page Contains          Пропозицію додано!                      30
+  Wait Until Page Contains          Пропозицію додано!                      60
   Sleep                             5
+  Focus                             xpath=//button[@click-and-block='activateBid(bid)']
   Click Element                     xpath=//button[@click-and-block='activateBid(bid)']
   Log                               Button 'Підтвердити ставку' was created for Autotesting only
-  Wait Until Page Contains          Пропозицію підтверджено!                30
+  Wait Until Page Contains          Пропозицію підтверджено!                60
 
 Подати цінову пропозицію без кваліфікації користувачем
-  [Arguments]  ${amount}
-  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
-  Input text                        xpath=//input[@name='amount0']          ${amount}
   Wait Until Element Is Enabled     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
   Click Element                     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
   Wait Until Page Contains          Ви ще не пройшли валідацію, щоб приймати участь у торгах.           30

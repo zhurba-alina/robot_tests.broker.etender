@@ -263,11 +263,8 @@ Login
   Wait Until Page Contains Element          ${locator.button.selectDocTypeForLicence}
   Click Element                             ${locator.button.selectDocTypeForLicence}
   Select From List By Label                 ${locator.button.selectDocTypeForLicence}        Ліцензія
-  Capture Page Screenshot
   Wait Until Element Is Visible             xpath=(//*[@id='addNewDocToExistingBid_0'])[1]
-  Capture Page Screenshot
   Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'])[1]   ${filepath}
-  Capture Page Screenshot
   Run Keyword And Ignore Error              Wait Until Page Contains         Файл додано!    60
 
 Завантажити протокол аукціону

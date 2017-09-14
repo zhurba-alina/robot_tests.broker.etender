@@ -70,7 +70,7 @@ ${locator.items[2].unit.name}                                  id=item_unit_symb
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator.bids_0_amount}                                       xpath=(//form[@name='changeBidForm']//div[@class = 'row']/div/p[text() = 'Cума:']/parent::div/following-sibling::div/div/div/span)[1]  #note: mixed en/ru chars!
 ${locator.status}                                              xpath=//p[text() = 'Статус:']/parent::div/following-sibling::div/p
-${huge_timeout_for_visibility}  300
+${huge_timeout_for_visibility}  30
 ${grid_page_text}                                              ProZorro.продажі
 ${locator.eligibilityCriteria}                                 xpath=//div[@class = 'row']/div/p[text() = 'Критерії прийнятності:']/parent::div/following-sibling::div/p
 ${locator.lot_items_unit}                                      id=itemsUnit0                    #Одиниця виміру
@@ -82,7 +82,7 @@ ${locator_question_title}                                      xpath=//span[cont
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
-${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
+${locator_start_auction_creation}                              xpath=//div[@ng-if='typeOfOrganization==5']/a  # на сторінці створення
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@ng-model='searchString' and @ng-change='searchChange()']
 ${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
@@ -99,6 +99,7 @@ ${locator.tenderAttempts}                                      id=tenderAtempts
 ${locator_search_cav}                                          xpath=//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]
 ${locator.awards[0].status}                                    xpath=(//div[@ng-repeat="award in lot.awards"])[1]//p[text()="Статус:"]/parent::div/following-sibling::div/p
 ${locator.awards[1].status}                                    xpath=(//div[@ng-repeat="award in lot.awards"])[2]//p[text()="Статус:"]/parent::div/following-sibling::div/p
+${locator.selectProtocolType}                                  id=selectProcType2
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -175,17 +176,11 @@ Login
   Click Element                      xpath=//a[contains(@class, 'btnProfile')]
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
   Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
-  Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
-  ...  Reload Page
-  ...  AND  Run Keyword  Закрити повідомлення про наявність питань
-  ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  Wait Until Element Is Visible      id=selectProcType1                      30
-  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
-  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
-  Wait Until Element Is Visible      id=goToCreate
-  Click Element                      id=goToCreate
+  Wait Until Element Is Visible      ${locator.selectProtocolType}                     30
+  Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          ${locator.selectProtocolType}    dgfFinancialAssets
+  ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          ${locator.selectProtocolType}    dgfOtherAssets
   Wait Until Element Is Visible      id=title
   Input text                         id=title                                            ${title}
   Wait Until Element Is Visible      id=description
@@ -216,13 +211,14 @@ Login
   \  Run Keyword If  ${index} != 0  Wait Until Element Is Visible  id=addLotItem_${index-1}  60
   \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
   \  Додати актив лоту  ${items[${index}]}  ${index}
-  Wait Until Element Is Visible      id=CreateTenderE                60
-  Focus                              id=CreateTenderE
-  Click Element                      id=CreateTenderE
+  Wait Until Element Is Visible      id=CreateAuction1              60
+  Focus                              id=CreateAuction1
+  Click Element                      id=CreateAuction1
   Wait Until Page Contains           Лот створено!             60
-  Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
+  Wait Until Keyword Succeeds        300       10        Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
+  log to console                     ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
@@ -267,9 +263,9 @@ Login
   Wait Until Page Contains Element          ${locator.button.selectDocTypeForLicence}
   Click Element                             ${locator.button.selectDocTypeForLicence}
   Select From List By Label                 ${locator.button.selectDocTypeForLicence}        Ліцензія
-  Wait Until Element Is Visible             xpath=(//*[@id='addNewDocToExistingBid_0'][1])
-  Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'][1])   ${filepath}
-  Wait Until Page Contains                  Файл додано!                                     60
+  Wait Until Element Is Visible             xpath=(//*[@id='addNewDocToExistingBid_0'])[1]
+  Choose File	                            xpath=(//*[@id='addNewDocToExistingBid_0'])[1]   ${filepath}
+  Run Keyword And Ignore Error              Wait Until Page Contains         Файл додано!    60
 
 Завантажити протокол аукціону
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
@@ -405,32 +401,40 @@ Login
 
 Подати цінову пропозицію
   [Arguments]  ${username}  ${tender_uaid}  ${bid}
-  ${amount}=    Get From Dictionary     ${bid.data.value}         amount
-  ${amount}=    float_to_string_2f      ${amount}
   Sleep  60
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   sleep  15
   ${status}	            ${value}=  Run Keyword And Ignore Error	  Get From Dictionary  ${bid.data}  qualified
-  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем  ${amount}
+  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем  ${bid}
   ${value}=  Convert To Boolean  ${value}
-  Run Keyword If      ${value}  Подати цінову пропозицію користувачем  ${amount}
-  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем  ${amount}
+  Run Keyword If      ${value}  Подати цінову пропозицію користувачем  ${bid}
+  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем  ${bid}
 
 Подати цінову пропозицію користувачем
-  [Arguments]  ${amount}
-  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
-  Clear Element Text	            xpath=//input[@name='amount0']
-  Input text                        xpath=//input[@name='amount0']          ${amount}
+  [Arguments]  ${bid}
+  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element   xpath=//span[@ng-show='getTenderProcedureType()'][contains(text(), '(Оголошення голандського аукціону.)')]
+  Run Keyword If        '${status}' == 'PASS'         Run Keywords
+  ...   ${amount}=    Get From Dictionary     ${bid.data.value}         amount
+  ...   AND   ${amount}=    float_to_string_2f      ${amount}
+  ...   AND   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  ...   AND   Clear Element Text                xpath=//input[@name='amount0']
+  ...   AND   Input text                        xpath=//input[@name='amount0']          ${amount}
+
   Wait Until Element Is Enabled     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
+  Execute Javascript                window.scrollTo(0, 1600)
+  Focus                             xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
   Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
-  Wait Until Page Contains          Пропозицію додано!                      30
+  Wait Until Page Contains          Пропозицію додано!                      60
   Sleep                             5
+  Focus                             xpath=//button[@click-and-block='activateBid(bid)']
   Click Element                     xpath=//button[@click-and-block='activateBid(bid)']
   Log                               Button 'Підтвердити ставку' was created for Autotesting only
-  Wait Until Page Contains          Пропозицію підтверджено!                30
+  Wait Until Page Contains          Пропозицію підтверджено!                60
 
 Подати цінову пропозицію без кваліфікації користувачем
-  [Arguments]  ${amount}
+  [Arguments]  ${bid}
+  ${amount}=    Get From Dictionary     ${bid.data.value}         amount
+  ${amount}=    float_to_string_2f      ${amount}
   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
   Input text                        xpath=//input[@name='amount0']          ${amount}
   Wait Until Element Is Enabled     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])

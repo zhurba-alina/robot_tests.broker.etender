@@ -405,12 +405,21 @@ Login
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   sleep  15
   ${status}	            ${value}=  Run Keyword And Ignore Error	  Get From Dictionary  ${bid.data}  qualified
-  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем
+  Run Keyword Unless   '${status}' == 'PASS'   Run Keyword And Return  Подати цінову пропозицію користувачем  ${bid}
   ${value}=  Convert To Boolean  ${value}
-  Run Keyword If      ${value}  Подати цінову пропозицію користувачем
-  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем
+  Run Keyword If      ${value}  Подати цінову пропозицію користувачем  ${bid}
+  Run Keyword Unless  ${value}  Подати цінову пропозицію без кваліфікації користувачем  ${bid}
 
 Подати цінову пропозицію користувачем
+  [Arguments]  ${bid}
+  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element   xpath=//span[@ng-show='getTenderProcedureType()'][contains(text(), '(Оголошення голандського аукціону.)')]
+  Run Keyword If        '${status}' == 'PASS'         Run Keywords
+  ...   ${amount}=    Get From Dictionary     ${bid.data.value}         amount
+  ...   AND   ${amount}=    float_to_string_2f      ${amount}
+  ...   AND   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  ...   AND   Clear Element Text                xpath=//input[@name='amount0']
+  ...   AND   Input text                        xpath=//input[@name='amount0']          ${amount}
+
   Wait Until Element Is Enabled     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
   Execute Javascript                window.scrollTo(0, 1600)
   Focus                             xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
@@ -423,6 +432,11 @@ Login
   Wait Until Page Contains          Пропозицію підтверджено!                60
 
 Подати цінову пропозицію без кваліфікації користувачем
+  [Arguments]  ${bid}
+  ${amount}=    Get From Dictionary     ${bid.data.value}         amount
+  ${amount}=    float_to_string_2f      ${amount}
+  Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
+  Input text                        xpath=//input[@name='amount0']          ${amount}
   Wait Until Element Is Enabled     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
   Click Element                     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
   Wait Until Page Contains          Ви ще не пройшли валідацію, щоб приймати участь у торгах.           30

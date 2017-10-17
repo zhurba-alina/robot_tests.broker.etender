@@ -412,7 +412,7 @@ Login
 
 Подати цінову пропозицію користувачем
   [Arguments]  ${bid}
-  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element   xpath=//span[@ng-show='getTenderProcedureType()'][contains(text(), '(Оголошення голандського аукціону.)')]
+  ${status}  ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element   xpath=//span[@ng-show='getTenderProcedureType()'][contains(text(), '(Оголошення голландського аукціону.)')]
   Run Keyword If        '${status}' == 'PASS'         Run Keywords
   ...   ${amount}=    Get From Dictionary     ${bid.data.value}         amount
   ...   AND   ${amount}=    float_to_string_2f      ${amount}

@@ -915,19 +915,18 @@ Change_date_to_month
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep  60
-  Page Should Contain Element  xpath=//a[@id='lot_auctionUrl_0']
-  Sleep  3
-  ${url}=  Get Element Attribute  xpath=//*[@id="lot_auctionUrl_0"]@href
-  [return]  ${url}
+  Run Keyword And Return  Отримати посилання на аукціон
 
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep  60
-  Page Should Contain Element  xpath=//a[@id='participationUrl_0']
-  Sleep  3
-  ${url}=  Get Element Attribute  xpath=//*[@id="participationUrl_0"]@href
-  [return]  ${url}
+  Run Keyword And Return  Отримати посилання на аукціон
+
+Отримати посилання на аукціон
+  ${status}              ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element  xpath=//*[@id='participationUrl_0']
+  Run Keyword If        '${status}' == 'PASS'  Run Keyword And Return  Get Element Attribute   xpath=//*[@id="lot_auctionUrl_0"]@href
+  Run Keyword Unless    '${status}' == 'PASS'  Run Keyword And Return  Get Element Attribute   xpath=//*[@id='participationUrl_0']@href
 
 Отримати інформацію із предмету
   [Arguments]    ${user}    ${tender_uaid}    ${item_id}    ${fieldname}

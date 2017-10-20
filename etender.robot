@@ -103,12 +103,14 @@ ${locator.selectProtocolType}                                  id=selectProcType
 
 *** Keywords ***
 Підготувати клієнт для користувача
-  [Arguments]  @{ARGUMENTS}
+  [Arguments]  ${username}
   [Documentation]  Відкрити браузер, створити об’єкт api wrapper, тощо
-  Open Browser  ${USERS.users['${ARGUMENTS[0]}'].homepage}  ${USERS.users['${ARGUMENTS[0]}'].browser}  alias=${ARGUMENTS[0]}
-  Set Window Size  @{USERS.users['${ARGUMENTS[0]}'].size}
-  Set Window Position  @{USERS.users['${ARGUMENTS[0]}'].position}
-  Run Keyword If  '${ARGUMENTS[0]}' != 'Etender_Viewer'  Login  ${ARGUMENTS[0]}
+  ${alias}=   Catenate   SEPARATOR=   role_  ${username}
+  Set Global Variable   ${BROWSER_ALIAS}   ${alias}
+  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=${BROWSER_ALIAS}
+  Set Window Size  @{USERS.users['${username}'].size}
+  Set Window Position  @{USERS.users['${username}'].position}
+  Run Keyword If  '${username}' != 'Etender_Viewer'  Login  ${username}
 
 Підготувати дані для оголошення тендера
   [Arguments]  ${username}  ${tender_data}  ${role_name}
@@ -171,7 +173,7 @@ Login
   ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}           procurementMethodType
   ${number_of_items}=     Get Length              ${items}
 
-  Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
+  Switch Browser   ${BROWSER_ALIAS}
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'btnProfile')]
   Click Element                      xpath=//a[contains(@class, 'btnProfile')]
   Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
@@ -339,6 +341,7 @@ Login
 
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
+  Switch Browser   ${BROWSER_ALIAS}
   Wait Until Keyword Succeeds  5 x  60  Спробувати знайти тендер по ідентифікатору  ${username}  ${TENDER_UAID}
 
 Спробувати знайти тендер по ідентифікатору
@@ -377,7 +380,7 @@ Login
     ...    ${ARGUMENTS[0]} ==  username
     ...    ${ARGUMENTS[1]} ==  file
     ...    ${ARGUMENTS[2]} ==  tenderId
-  Selenium2Library.Switch Browser     ${ARGUMENTS[0]}
+  Switch Browser   ${BROWSER_ALIAS}
   Reload Page
   sleep   4
   Wait Until Element Is Visible   id=addNewDocToExistingBid_0   5
@@ -508,7 +511,7 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} =  username
   ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
+  Switch Browser    ${BROWSER_ALIAS}
   etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
 
@@ -517,7 +520,7 @@ Login
   [Documentation]
   ${title}=        Get From Dictionary  ${question_data.data}  title
   ${description}=  Get From Dictionary  ${question_data.data}  description
-  Selenium2Library.Switch Browser    ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   etender.Пошук тендера по ідентифікатору   ${username}   ${TENDER_UAID}
   Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Wait Until Element Is Visible      xpath=//a[contains(@href,'#/addQuestion/')]  ${huge_timeout_for_visibility}
@@ -574,7 +577,7 @@ Login
   Log  ${ARGUMENTS[0]}
   Log  ${ARGUMENTS[1]}
   ${description}=   Convert To String    новое описание тендера
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
+  Switch Browser   ${BROWSER_ALIAS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Wait Until Page Contains Element   xpath=//a[@class='btn btn-primary ng-scope']   ${huge_timeout_for_visibility}
   Click Element              xpath=//a[@class='btn btn-primary ng-scope']
@@ -587,7 +590,7 @@ Login
   [Arguments]  ${user}  ${tender_id}  ${fieldname}
   [Documentation]
   ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
-  Switch browser   ${user}
+  Switch Browser   ${BROWSER_ALIAS}
   ${passed} =	   Run Keyword And Return Status	Should Match Regexp    ${fieldname}      ^items\\\[
   Run Keyword And Return If  ${passed}==True	  Get Keyword From Items Index   ${fieldname}
   Run Keyword And Return  Отримати інформацію про ${fieldname}
@@ -924,6 +927,7 @@ Change_date_to_month
   Run Keyword And Return  Отримати посилання на аукціон
 
 Отримати посилання на аукціон
+  Switch Browser   ${BROWSER_ALIAS}
   ${status}              ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element  xpath=//*[@id='participationUrl_0']
   Run Keyword If        '${status}' == 'PASS'  Run Keyword And Return  Get Element Attribute   xpath=//*[@id="lot_auctionUrl_0"]@href
   Run Keyword Unless    '${status}' == 'PASS'  Run Keyword And Return  Get Element Attribute   xpath=//*[@id='participationUrl_0']@href
@@ -957,7 +961,7 @@ Change_date_to_month
 
 Отримати інформацію із документа
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   ${prepared_locator}=  Set Variable  ${locator_document_${field}.replace('XX_doc_id_XX','${doc_id}')}
   log  ${prepared_locator}
   Wait Until Page Contains Element  ${prepared_locator}  10
@@ -966,7 +970,7 @@ Change_date_to_month
 
 Отримати кількість документів в ставці
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   ${bid_index}=  Convert To Integer  ${bid_index}
@@ -993,7 +997,7 @@ Change_date_to_month
 
 Отримати документ
   [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   ${title}=  etender.Отримати інформацію із документа  ${username}  ${tender_uaid}  ${doc_id}  title
   ${prepared_locator}=  Set Variable  ${locator_document_href.replace('XX_doc_id_XX','${doc_id}')}
   log  ${prepared_locator}
@@ -1007,7 +1011,7 @@ Change_date_to_month
 
 Отримати дані із документу пропозиції
   [Arguments]  ${username}  ${tender_uaid}  ${bid_index}  ${document_index}  ${field}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Run Keyword And Return  Отримати дані із документу пропозиції про ${field}  ${bid_index}  ${document_index}
@@ -1024,7 +1028,7 @@ Change_date_to_month
 
 Отримати інформацію із документа по індексу
   [Arguments]  ${username}  ${tender_uaid}  ${document_index}  ${field}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   Reload Page
   ${document_index}=  Convert To Integer  ${document_index}
   ${prepared_locator}=  Set Variable  ${locator_tender_document_${field}.replace('XX_doc_index_XX','${document_index}')}
@@ -1042,7 +1046,7 @@ Change_date_to_month
 
 Отримати інформацію із запитання
   [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   Reload Page
   ${prepared_locator}=  Set Variable  ${locator_question_${field}.replace('XX_que_id_XX','${question_id}')}
   log  ${prepared_locator}
@@ -1255,7 +1259,7 @@ Change_date_to_month
 
 Отримати кількість предметів в тендері
   [Arguments]  ${username}  ${tender_uaid}
-  Switch browser   ${username}
+  Switch Browser   ${BROWSER_ALIAS}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   ${actives_counter_of_lot_value}=   Get Text  ${actives_counter_of_lot}
   ${actives_counter_of_lot_value}=  Convert To Integer  ${actives_counter_of_lot_value}

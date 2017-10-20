@@ -103,12 +103,14 @@ ${locator.selectProtocolType}                                  id=selectProcType
 
 *** Keywords ***
 Підготувати клієнт для користувача
-  [Arguments]  @{ARGUMENTS}
+  [Arguments]  ${username}
   [Documentation]  Відкрити браузер, створити об’єкт api wrapper, тощо
-  Open Browser  ${USERS.users['${ARGUMENTS[0]}'].homepage}  ${USERS.users['${ARGUMENTS[0]}'].browser}  alias=${ARGUMENTS[0]}
-  Set Window Size  @{USERS.users['${ARGUMENTS[0]}'].size}
-  Set Window Position  @{USERS.users['${ARGUMENTS[0]}'].position}
-  Run Keyword If  '${ARGUMENTS[0]}' != 'Etender_Viewer'  Login  ${ARGUMENTS[0]}
+  ${alias}=   Catenate   SEPARATOR=   role_  ${username}
+  Set Global Variable   ${BROWSER_ALIAS}   ${alias}
+  Open Browser  ${USERS.users['${username}'].homepage}  ${USERS.users['${username}'].browser}  alias=${BROWSER_ALIAS}
+  Set Window Size  @{USERS.users['${username}'].size}
+  Set Window Position  @{USERS.users['${username}'].position}
+  Run Keyword If  '${username}' != 'Etender_Viewer'  Login  ${username}
 
 Підготувати дані для оголошення тендера
   [Arguments]  ${username}  ${tender_data}  ${role_name}
@@ -339,6 +341,7 @@ Login
 
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
+  Switch Browser   ${BROWSER_ALIAS}
   Wait Until Keyword Succeeds  5 x  60  Спробувати знайти тендер по ідентифікатору  ${username}  ${TENDER_UAID}
 
 Спробувати знайти тендер по ідентифікатору
@@ -508,7 +511,7 @@ Login
   [Documentation]
   ...      ${ARGUMENTS[0]} =  username
   ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
+  Switch Browser    ${BROWSER_ALIAS}
   etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
 
@@ -924,6 +927,7 @@ Change_date_to_month
   Run Keyword And Return  Отримати посилання на аукціон
 
 Отримати посилання на аукціон
+  Switch Browser   ${BROWSER_ALIAS}
   ${status}              ${value}=  Run Keyword And Ignore Error  Page Should Not Contain Element  xpath=//*[@id='participationUrl_0']
   Run Keyword If        '${status}' == 'PASS'  Run Keyword And Return  Get Element Attribute   xpath=//*[@id="lot_auctionUrl_0"]@href
   Run Keyword Unless    '${status}' == 'PASS'  Run Keyword And Return  Get Element Attribute   xpath=//*[@id='participationUrl_0']@href

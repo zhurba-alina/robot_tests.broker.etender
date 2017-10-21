@@ -346,6 +346,7 @@ Login
 
 Спробувати знайти тендер по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
+  Wait Until Keyword Succeeds  5 x  60  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
   Wait Until Page Contains Element  ${locator_auction_search_field}  60
   Wait Until Element Is Visible     ${locator_auction_search_field}  60
   Input Text                        ${locator_auction_search_field}  ${TENDER_UAID}

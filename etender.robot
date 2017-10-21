@@ -346,7 +346,6 @@ Login
 
 Спробувати знайти тендер по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
-  Wait Until Keyword Succeeds  5 x  60  Подивитися список аукціонів  ${USERS.users['${username}'].homepage}
   Wait Until Page Contains Element  ${locator_auction_search_field}  60
   Wait Until Element Is Visible     ${locator_auction_search_field}  60
   Input Text                        ${locator_auction_search_field}  ${TENDER_UAID}
@@ -404,7 +403,6 @@ Login
 
 Подати цінову пропозицію
   [Arguments]  ${username}  ${tender_uaid}  ${bid}
-  Sleep  60
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   sleep  15
   ${status}	            ${value}=  Run Keyword And Ignore Error	  Get From Dictionary  ${bid.data}  qualified
@@ -492,7 +490,7 @@ Login
   Sleep  1
   Run Keyword And Ignore Error   Page Should Contain  файл додано
   # TODO: remove sleep after file upload progressbar fix
-  Sleep  120
+  Sleep  30
   Wait Until Element Is Visible  xpath=//div[@id='modalCancelTender']//button[@data-dismiss='modal'][3]
   Click Element                  xpath=//div[@id='modalCancelTender']//button[@data-dismiss='modal'][3]
   Wait Until Keyword Succeeds  5 x  30  Продовжити процедуру скасування аукціона  ${username}  ${tender_uaid}
@@ -917,13 +915,13 @@ Change_date_to_month
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  60
+  Sleep  5
   Run Keyword And Return  Отримати посилання на аукціон
 
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  60
+  Sleep  5
   Run Keyword And Return  Отримати посилання на аукціон
 
 Отримати посилання на аукціон
@@ -1178,7 +1176,7 @@ Change_date_to_month
   sleep  5
   Wait Until Element Is Visible      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
   Click Element                      xpath=//button[contains(text(), 'Опублікувати документи та завершити пізніше')]
-  sleep  240  #  wait till disappears "Поки не експортовано"
+  sleep  60  #  wait till disappears "Поки не експортовано"
   Reload Page
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   ${href}=  Get Element Attribute  xpath=(//div[@ng-show='!document.isDeleted']/a)@href

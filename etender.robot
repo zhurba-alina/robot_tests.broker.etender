@@ -82,7 +82,7 @@ ${locator_question_title}                                      xpath=//span[cont
 ${locator_question_description}                                xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//span[contains(@id,'quest_descr_')]
 ${locator_question_answer}                                     xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]/ancestor::div[contains(@ng-repeat,'question in questions')]//pre[contains(@id,'question_answer_')]
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
-${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and @data-target='#procedureType']  # на сторінці створення
+${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and contains(@href, 'createTender')]  # на сторінці МОЇ ТОРГИ
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_auction_search_field}                                xpath=//input[@ng-model='searchString' and @ng-change='searchChange()']
 ${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
@@ -162,8 +162,6 @@ Login
   ${start_date}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
   ${start_time}=          get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
   ${procurementMethodType}=     Get From Dictionary  ${ARGUMENTS[1].data}        procurementMethodType
-  ${dgfDecisionID}=       Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionID
-  ${dgfDecisionDate}=     Get From Dictionary        ${ARGUMENTS[1].data}        dgfDecisionDate
   ${tenderAttempts}=      Get From Dictionary        ${ARGUMENTS[1].data}        tenderAttempts
   ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}           procurementMethodType
   ${number_of_items}=     Get Length              ${items}
@@ -176,26 +174,23 @@ Login
   Wait Until Keyword Succeeds  ${huge_timeout_for_visibility}  30  Run Keywords
   ...  Reload Page
   ...  AND  Run Keyword  Закрити повідомлення про наявність питань
+  ...  AND  Wait Until Element Is Visible      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
+  ...  AND  Click Element                      xpath=//a[contains(@class, 'ng-binding')][./text()='Мої торги']
   ...  AND  Wait Until Element Is Visible  ${locator_start_auction_creation}  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Click Element                      ${locator_start_auction_creation}
-  Wait Until Element Is Visible      id=selectProcType1                      30
+  Wait Until Element Is Visible      xpath=//*[@id='selectProcType1' and @name='procurementMethodType']  30
   Run Keyword If  '${method_type}' == 'dgfFinancialAssets'  Select From List By Value          id=selectProcType1    dgfFinancialAssets
   ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
-  Wait Until Element Is Visible      id=goToCreate
-  Click Element                      id=goToCreate
   Wait Until Element Is Visible      id=title
   Input text                         id=title                                            ${title}
   Wait Until Element Is Visible      id=description
   Input text                         id=description                                      ${description}
   Wait Until Element Is Visible      ${locator_tender_attempts}                          30
   ${tenderAttempts_string}=          int_to_string                                       ${tenderAttempts}
-  Select From List By Label          ${locator_tender_attempts}                          ${tenderAttempts_string}
+  Select From List By Value          ${locator_tender_attempts}                          number:${tenderAttempts_string}
   Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_day"]
   Input text                         xpath=//input[@id="auctionPeriod_startDate_day"]    ${start_date}
-  Wait Until Page Contains Element   xpath=//input[@id="dgfDecisionDate"]
-  ${dgfDecisionDate_etender}=        convert_dgfDecisionDate_to_etender_format           ${dgfDecisionDate}
-  Input text                         xpath=//input[@id="dgfDecisionDate"]                ${dgfDecisionDate_etender}
   Wait Until Page Contains Element   xpath=//input[@id="auctionPeriod_startDate_time"]
   Input text                         xpath=//input[@id="auctionPeriod_startDate_time"]   ${start_time}
   Wait Until Element Is Visible      id=lotValue_0
@@ -206,10 +201,6 @@ Login
   Input text                         id=minimalStep_0                                    ${step_rateToStr}
   Wait Until Element Is Visible      id=inputGuarantee
   Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
-  Wait Until Element Is Visible      ${locator_dgfID}
-  Input text                         ${locator_dgfID}                                    ${dgfID}
-  Wait Until Element Is Visible      ${locator_dgfDecisionIDCreate}
-  Input text                         ${locator_dgfDecisionIDCreate}                      ${dgfDecisionID}
   :FOR  ${index}  IN RANGE  ${number_of_items}
   \  Run Keyword If  ${index} != 0  Wait Until Element Is Visible  id=addLotItem_${index-1}  60
   \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
@@ -313,29 +304,49 @@ Login
   [Arguments]  ${item}  ${index}
   ${items_description}=   Get From Dictionary     ${item}                           description
   ${quantity}=            Get From Dictionary     ${item}                           quantity
-  ${cav}=                 Get From Dictionary     ${item.classification}            id
+  ${cav_cpv_id}=          Get From Dictionary     ${item.classification}            id
+  ${scheme}=              Get From Dictionary     ${item.classification}            scheme
   ${unit}=                Get From Dictionary     ${item.unit}                      name
   ${latitude}=            Get From Dictionary     ${item.deliveryLocation}          latitude
   ${longitude}=           Get From Dictionary     ${item.deliveryLocation}          longitude
   ${postalCode}=          Get From Dictionary     ${item.deliveryAddress}           postalCode
   ${streetAddress}=       Get From Dictionary     ${item.deliveryAddress}           streetAddress
-  ${deliveryDate}=        Get From Dictionary     ${item.deliveryDate}              endDate
-  ${deliveryDate}=        convert_date_to_etender_format        ${deliveryDate}
+  ${region}=              Get From Dictionary     ${item.deliveryAddress}           region
+  ${region}=              convert_common_string_to_etender_string                   ${region}
+  ${locality}=            Get From Dictionary     ${item.deliveryAddress}           locality
   Wait Until Element Is Visible      id=itemsDescription${index}
   Input text                         id=itemsDescription${index}                    ${items_description}
   Wait Until Element Is Visible      id=itemsQuantity${index}
   Input text                         id=itemsQuantity${index}                       ${quantity}
   ${unit_etender}=                   convert_common_string_to_etender_string        ${unit}
   Select From List By Label          id=itemsUnit${index}                           ${unit_etender}
-  Wait Until Element Is Visible      xpath=(//input[@id='openClassificationModal'])[${index +1}]
-  Click Element                      xpath=(//input[@id='openClassificationModal'])[${index +1}]
-  Wait Until Element Is Visible      ${locator_search_cav}
-  Execute JavaScript  element = document.evaluate("//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]",document.documentElement,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0);
-  Execute JavaScript  element.value = '${cav}';
-  Execute JavaScript  angular.element(element).triggerHandler('change');
-  Wait Until Element Is Visible      xpath=//td[contains(., '${cav}')]
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
-  Click Element                      xpath=//td[contains(., '${cav}')]
+  Select From List By Label          xpath=(//select[@id='region'])[${index +1}]    ${region}
+  Wait Until Element Is Visible      xpath=(//select[@id='city'])[${index +1}]
+  Select From List By Label          xpath=(//select[@id='city'])[${index +1}]    ${locality}
+  Input text                         xpath=(//input[@id='addressStr'])[${index +1}]  ${streetAddress}
+
+  Run Keyword If        '${scheme}' == 'CPV'         Run Keywords
+  ...  Wait Until Element Is Visible      xpath=(//input[@id='openCPV'])[${index +1}]
+  ...  AND  Click Element                      xpath=(//input[@id='openCPV'])[${index +1}]
+  ...  AND  Wait Until Element Is Visible      ${locator_search_cav}
+  ...  AND  Execute JavaScript  element = document.evaluate("//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]",document.documentElement,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0);
+  ...  AND  Execute JavaScript  element.value = '${cav_cpv_id}';
+  ...  AND  Execute JavaScript  angular.element(element).triggerHandler('change');
+  ...  AND  Wait Until Element Is Visible      xpath=//td[contains(., '${cav_cpv_id}')]
+  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ...  AND  Click Element                      xpath=//td[contains(., '${cav_cpv_id}')]
+
+  Run Keyword If        '${scheme}' == 'CAV-PS'      Run Keywords
+  ...  Wait Until Element Is Visible      xpath=(//input[@id='openCAV'])[${index +1}]
+  ...  AND  Click Element                      xpath=(//input[@id='openCAV'])[${index +1}]
+  ...  AND  Wait Until Element Is Visible      ${locator_search_cav}
+  ...  AND  Execute JavaScript  element = document.evaluate("//div[@ng-controller='classificationCtrl']//input[contains(@ng-model, 'searchstring')]",document.documentElement,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null).snapshotItem(0);
+  ...  AND  Execute JavaScript  element.value = '${cav_cpv_id}';
+  ...  AND  Execute JavaScript  angular.element(element).triggerHandler('change');
+  ...  AND  Wait Until Element Is Visible      xpath=//td[contains(., '${cav_cpv_id}')]
+  ...  AND  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ...  AND  Click Element                      xpath=//td[contains(., '${cav_cpv_id}')]
+
   Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
   Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
 

@@ -127,6 +127,8 @@ def get_helper_dictionary():
         u"Протокол торгів": u"auctionProtocol", # document type
         u"Ліцензія": u"financialLicense", # document type
 
+        u"Київська область": u"місто Київ", # document type
+
         u"(Оголошення аукціону з продажу прав вимоги за кредитами.)": u"dgfFinancialAssets",
         u"(Оголошення аукціону з продажу майна банків.)": u"dgfOtherAssets",
         u"Код відповідного класифікатору лоту - CAV:": u"CAV",

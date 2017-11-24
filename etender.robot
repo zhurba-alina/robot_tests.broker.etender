@@ -64,6 +64,7 @@ ${locator.cancellations[0].reason}                             xpath=//div[conta
 ${locator.contracts[-1].status}                                xpath=//div[@ng-if='isShowContract(award)']//p[text()='Статус договору:']/parent::div/following-sibling::div/p
 ${locator.value.currency}                                      xpath=//span[@id='lotvalue_0']/parent::p
 ${locator.value.valueAddedTaxIncluded}                         xpath=//span[@id='lotvalue_0']/following-sibling::i
+${locator.guarantee.amount}                                    xpath=//div[@class = 'row']/div/p[contains(.,'Розмiр гарантiйного внеску:')]/parent::div/following-sibling::div/p  # на сторінці перегляду
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.items[1].unit.name}                                  id=item_unit_symb1
 ${locator.items[2].unit.name}                                  id=item_unit_symb2
@@ -84,7 +85,7 @@ ${locator_question_answer}                                     xpath=//span[cont
 ${locator_dgfID}                                               id=dgfID  # на сторінці створення
 ${locator_start_auction_creation}                              xpath=//a[contains(@class, 'btn btn-info') and contains(@href, 'createTender')]  # на сторінці МОЇ ТОРГИ
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
-${locator_auction_search_field}                                xpath=//input[@ng-model='searchString' and @ng-change='searchChange()']
+${locator_auction_search_field}                                xpath=//input[@ng-model='searchString' and contains(@placeholder,'Пошук')]
 ${actives_counter_of_lot}                                      xpath=//div[@class = 'row']/div/p[text() = 'Загальна кількість активів лоту:']/parent::div/following-sibling::div/p
 ${locator_tender_attempts}                                     id=tenderAttempts
 ${locator.dgfDecisionDate}                                     id=dgfDecisionDateOut
@@ -201,6 +202,8 @@ Login
   Input text                         id=minimalStep_0                                    ${step_rateToStr}
   Wait Until Element Is Visible      id=inputGuarantee
   Input text                         id=inputGuarantee                                   ${lotGuaranteeToStr}
+  Wait Until Element Is Visible      ${locator_dgfID}
+  Input text                         ${locator_dgfID}                                    ${dgfID}
   :FOR  ${index}  IN RANGE  ${number_of_items}
   \  Run Keyword If  ${index} != 0  Wait Until Element Is Visible  id=addLotItem_${index-1}  60
   \  Run Keyword If  ${index} != 0  Click Element  id=addLotItem_${index-1}
@@ -222,7 +225,7 @@ Login
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible      ${locator.auctionID}      30
   ${tender_id}=                      Get Text                  ${locator.auctionID}
-  Should Match Regexp                ${tender_id}              UA-EA-\\d{4}-\\d{2}-\\d{2}-\\d+
+  Should Match Regexp                ${tender_id}              UA-PS-\\d{4}-\\d{2}-\\d{2}-\\d+.*
 
 Завантажити документ
   [Arguments]  @{ARGUMENTS}
@@ -321,9 +324,10 @@ Login
   ${unit_etender}=                   convert_common_string_to_etender_string        ${unit}
   Select From List By Label          id=itemsUnit${index}                           ${unit_etender}
   Select From List By Label          xpath=(//select[@id='region'])[${index +1}]    ${region}
-  Wait Until Element Is Visible      xpath=(//select[@id='city'])[${index +1}]
-  Select From List By Label          xpath=(//select[@id='city'])[${index +1}]    ${locality}
+  Wait Until Element Is Visible      xpath=(//input[@id='newCity'])[${index +1}]
+  Input text                         xpath=(//input[@id='newCity'])[${index +1}]    ${locality}
   Input text                         xpath=(//input[@id='addressStr'])[${index +1}]  ${streetAddress}
+  Input text                         xpath=(//input[@id='postIndex'])[${index +1}]  ${postalCode}
 
   Run Keyword If        '${scheme}' == 'CPV'         Run Keywords
   ...  Wait Until Element Is Visible      xpath=(//input[@id='openCPV'])[${index +1}]
@@ -360,6 +364,7 @@ Login
   Wait Until Page Contains Element  ${locator_auction_search_field}  60
   Wait Until Element Is Visible     ${locator_auction_search_field}  60
   Input Text                        ${locator_auction_search_field}  ${TENDER_UAID}
+  Click Link                        jquery=a[ng-click='search()']
   sleep  2
   Wait Until Page Does Not Contain  ${locator_block_overlay}
   Click Link                        xpath=(//td[@class='title-td ng-binding'])[1]/a[1]
@@ -572,21 +577,49 @@ Login
   Wait Until Element Is Not Visible  xpath=//*[@id="questionContainer"]/form/div/span/button[1]      ${huge_timeout_for_visibility}
 
 Внести зміни в тендер
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} =  username
-  ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
-  Log  ${ARGUMENTS[0]}
-  Log  ${ARGUMENTS[1]}
+  [Arguments]  ${username}  ${tender_uaid}  ${field}  ${new_value}
   ${description}=   Convert To String    новое описание тендера
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Wait Until Page Contains Element   xpath=//a[@class='btn btn-primary ng-scope']   ${huge_timeout_for_visibility}
+  Sleep  2
   Click Element              xpath=//a[@class='btn btn-primary ng-scope']
   Sleep  2
-  Input text               id=description    ${description}
+  Редагувати поле тендера  ${field}  ${new_value}
+  Sleep  2
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Click Element            id=SaveChanges
 
+Редагувати поле тендера
+  [Arguments]  ${field}  ${new_value}
+  Run Keyword And Return  Редагувати поле ${field}  ${new_value}
+
+Редагувати поле value.amount
+  [Arguments]  ${new_value}
+  ${new_value}=  Convert To String  ${new_value}
+  Input text  id=lotValue_0  ${new_value}
+
+Редагувати поле minimalStep.amount
+  [Arguments]  ${new_value}
+  ${new_value}=  Convert To String  ${new_value}
+  Input text  id=minimalStep_0  ${new_value}
+
+Редагувати поле guarantee.amount
+  [Arguments]  ${new_value}
+  ${new_value}=  Convert To String  ${new_value}
+  Input text  id=inputGuarantee  ${new_value}
+
+Редагувати поле title
+  [Arguments]  ${new_value}
+  Input text  id=title  ${new_value}
+
+Редагувати поле tenderPeriod.startDate
+  [Arguments]  ${new_value}
+  ${date}=  convert_dgfDecisionDate_to_etender_format  ${new_value}
+  Input text  id=auctionPeriod_startDate_day  ${date}
+  ${time}=  convert_time_to_etender_format  ${new_value}
+  Input text  id=auctionPeriod_startDate_time  ${date}
 
 Отримати інформацію із тендера
   [Arguments]  ${user}  ${tender_id}  ${fieldname}
@@ -671,6 +704,11 @@ Check Is Element Loaded
   ${return_value}=   Convert To Boolean   ${return_value}
   [return]  ${return_value}
 
+Отримати інформацію про guarantee.amount
+  ${return_value}=   Отримати текст із поля і показати на сторінці   guarantee.amount
+  ${return_value}=   Set Variable  ${return_value.split(' ')[0]}
+  ${return_value}=   string_to_float   ${return_value}
+  [return]  ${return_value}
 
 Отримати інформацію про items.unit.name
   [Arguments]  ${index}

@@ -131,6 +131,7 @@ def get_helper_dictionary():
 
         u"(Оголошення аукціону з продажу прав вимоги за кредитами.)": u"dgfFinancialAssets",
         u"(Оголошення аукціону з продажу майна банків.)": u"dgfOtherAssets",
+        u"(Оголошення аукціону з продажу майна.)": u"dgfOtherAssets",
         u"Код відповідного класифікатору лоту - CAV:": u"CAV",
 
         u"Посилання на Публічний Паспорт Активу":                   u"x_dgfPublicAssetCertificate",

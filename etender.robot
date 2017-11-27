@@ -228,17 +228,14 @@ Login
   Should Match Regexp                ${tender_id}              UA-PS-\\d{4}-\\d{2}-\\d{2}-\\d+.*
 
 Завантажити документ
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  file
-  ...      ${ARGUMENTS[2]} ==  tender_uaid
+  [Arguments]  ${username}  ${file}  ${tender_uaid}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Focus                                     ${locator.button.selectDocTypeForDoc}
   Wait Until Page Contains Element          ${locator.button.selectDocTypeForDoc}
   Click Element                             ${locator.button.selectDocTypeForDoc}
   Select From List By Label                 ${locator.button.selectDocTypeForDoc}    Інші
   Wait Until Element Is Visible             ${locator.button.addDoc}
-  Choose File                               ${locator.button.addDoc}                 ${ARGUMENTS[1]}
+  Choose File                               ${locator.button.addDoc}                 ${file}
   Wait Until Page Contains                  Файл додано!                             60
 
 Завантажити ілюстрацію
@@ -569,6 +566,8 @@ Login
   etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Wait Until Element Is Visible      xpath=//span[contains(@id,'quest_title_') and contains(text(),'${question_id}') ]/ancestor::div[contains(@ng-repeat,'question in questions')] //div[contains(@id,'addAnswer')]  ${huge_timeout_for_visibility}
   Wait Until Element Is Enabled      xpath=//span[contains(@id,'quest_title_') and contains(text(),'${question_id}') ]/ancestor::div[contains(@ng-repeat,'question in questions')] //div[contains(@id,'addAnswer')]  ${huge_timeout_for_visibility}
+  Execute Javascript   document.evaluate("//p[.='Питання та відповіді']", document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).scrollIntoView();
+  Execute Javascript   document.evaluate("//p[.='Питання та відповіді']", document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).click();
   Click Element                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'${question_id}') ]/ancestor::div[contains(@ng-repeat,'question in questions')] //div[contains(@id,'addAnswer')]
   Wait Until Element Is Visible      xpath=//*[@id="questionContainer"]/form/div/textarea            ${huge_timeout_for_visibility}
   Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer_data.data.answer}

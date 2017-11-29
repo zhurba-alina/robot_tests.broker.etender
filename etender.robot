@@ -1355,7 +1355,7 @@ Change_date_to_month
   Focus                                     ${locator.button.selectDocTypeForIll}
   Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
   Click Element                             ${locator.button.selectDocTypeForIll}
-  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Публічний Паспорт Активу
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Паспорт торгів
   Wait Until Element Is Visible             ${locator.button.addDoc}
   Choose File	                            ${locator.button.addDoc}                 ${filepath}
   Wait Until Page Contains                  Файл додано!                             60

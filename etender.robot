@@ -223,6 +223,7 @@ Login
   Wait Until Keyword Succeeds        ${huge_timeout_for_visibility}  10  Дочекатися завершення обробки аукціона
   ${tender_UAid}=                    Get Text            ${locator.auctionID}
   Log                                ${tender_UAid}
+  log to console                     ${tender_UAid}
   ${Ids}=                            Convert To String   ${tender_UAid}
   Log                                ${Ids}
   Run keyword if                     '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
@@ -322,6 +323,7 @@ Login
   ${region}=              Get From Dictionary     ${item.deliveryAddress}           region
   ${region}=              convert_common_string_to_etender_string                   ${region}
   ${locality}=            Get From Dictionary     ${item.deliveryAddress}           locality
+  ${quantity}=            float to string         ${quantity}
   Wait Until Element Is Visible      id=itemsDescription${index}
   Input text                         id=itemsDescription${index}                    ${items_description}
   Wait Until Element Is Visible      id=itemsQuantity${index}

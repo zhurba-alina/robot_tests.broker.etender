@@ -50,6 +50,12 @@ ${locator.items[0].additionalClassifications[0].description}   id=additionalClas
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
 ${locator.items[1].unit.code}                                  id=item_unit_symb1
 ${locator.items[2].unit.code}                                  id=item_unit_symb2
+${locator.items[0].contractPeriod.startDate}                   xpath=(//div[@ng-if='item.contractPeriod'])[1]/div[2]/span[1]
+${locator.items[1].contractPeriod.startDate}                   xpath=(//div[@ng-if='item.contractPeriod'])[1]/div[2]/span[1]
+${locator.items[2].contractPeriod.startDate}                   xpath=(//div[@ng-if='item.contractPeriod'])[1]/div[2]/span[1]
+${locator.items[0].contractPeriod.endDate}                     xpath=(//div[@ng-if='item.contractPeriod'])[1]/div[2]/span[2]
+${locator.items[1].contractPeriod.endDate}                     xpath=(//div[@ng-if='item.contractPeriod'])[1]/div[2]/span[2]
+${locator.items[2].contractPeriod.endDate}                     xpath=(//div[@ng-if='item.contractPeriod'])[1]/div[2]/span[2]
 ${locator_item_unit.code}                                      id=item_unit_symb0
 ${locator.items[0].quantity}                                   id=item_quantity0
 ${locator.items[1].quantity}                                   id=item_quantity1
@@ -185,6 +191,8 @@ Login
   ...  ELSE IF    '${method_type}' == 'dgfOtherAssets'      Select From List By Value          id=selectProcType1    dgfOtherAssets
   Wait Until Element Is Visible      id=title
   Input text                         id=title                                            ${title}
+  # TODO deal with #Оренда and #Продаж cases
+  Click Element  xpath=//input[@type='radio' and @value='lease']  # Оренда
   Wait Until Element Is Visible      id=description
   Input text                         id=description                                      ${description}
   Wait Until Element Is Visible      ${locator_tender_attempts}                          30
@@ -350,6 +358,17 @@ Login
 
   Wait Until Element Is Visible      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
   Click Element                      xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  # TODO deal with #Оренда and #Продаж cases
+  ${contractStartDate}=   Get From Dictionary     ${item.contractPeriod}            startDate
+  ${contractEndDate}=     Get From Dictionary     ${item.contractPeriod}            endDate
+  ${contractStartDate}=              convert_date_to_etender_format                 ${contractStartDate}
+  ${contractEndDate}=                convert_date_to_etender_format                 ${contractEndDate}
+  Click Element                      id=contractPeriod_startDate${index}
+  sleep  1
+  Input text                         id=contractPeriod_startDate${index}            ${contractStartDate}
+  Click Element                      id=contractPeriod_endDate${index}
+  sleep  1
+  Input text                         id=contractPeriod_endDate${index}              ${contractEndDate}
 
 Пошук тендера по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}
@@ -797,6 +816,20 @@ Change_date_to_month
   [Arguments]  ${index}
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].classification.scheme
   ${return_value}=   convert_etender_string_to_common_string      ${return_value}
+  [return]           ${return_value}
+
+Отримати інформацію про items.contractPeriod.startDate
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].contractPeriod.startDate
+  ${return_value}=   Set Variable  ${return_value.split(' ')[1]}
+  ${return_value}=   convert_contractPeriod_date_from_etender_format_with_hack      ${return_value}
+  [return]           ${return_value}
+
+Отримати інформацію про items.contractPeriod.endDate
+  [Arguments]  ${index}
+  ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].contractPeriod.endDate
+  ${return_value}=   Set Variable  ${return_value.split(' ')[1]}
+  ${return_value}=   convert_contractPeriod_date_from_etender_format_with_hack      ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про items.classification.description
@@ -1368,5 +1401,3 @@ Change_date_to_month
   Wait Until Element Is Visible                  xpath=//a[@click-and-block='saveVdr()']          60
   Click Element                                  xpath=//a[@click-and-block='saveVdr()']
   Wait Until Page Contains            Порядку ознайомлення збережено!
-
-

@@ -2,7 +2,7 @@
 
 from iso8601 import parse_date
 import dateutil.parser
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 from pytz import timezone
 import os
 
@@ -53,6 +53,14 @@ def convert_datetime_for_delivery(isodate):
 def convert_time_to_etender_format(isodate):
     iso_dt = parse_date(isodate)
     time_string = iso_dt.strftime("%H:%M")
+    return time_string
+
+def convert_contractPeriod_date_from_etender_format_with_hack(contractPeriod_date):
+    tmp_date = datetime.strptime(contractPeriod_date, '%d-%m-%Y')
+    date_with_hours = tmp_date + timedelta(hours=2)
+    TZ = timezone(os.environ['TZ'] if 'TZ' in os.environ else 'Europe/Kiev')
+    date_with_timezone_and_shift = TZ.localize(date_with_hours)
+    time_string = date_with_timezone_and_shift.isoformat()
     return time_string
 
 def string_to_float(string):
@@ -132,6 +140,7 @@ def get_helper_dictionary():
         u"(Оголошення аукціону з продажу прав вимоги за кредитами.)": u"dgfFinancialAssets",
         u"(Оголошення аукціону з продажу майна банків.)": u"dgfOtherAssets",
         u"(Оголошення аукціону з продажу майна.)": u"dgfOtherAssets",
+        u"(Оголошення аукціону з Оренди.)": u"dgfOtherAssets",
         u"Код відповідного класифікатору лоту - CAV:": u"CAV",
 
         u"Посилання на Публічний Паспорт Активу":                   u"x_dgfPublicAssetCertificate",

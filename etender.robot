@@ -173,6 +173,7 @@ Login
   ${procurementMethodType}=     Get From Dictionary  ${ARGUMENTS[1].data}        procurementMethodType
   ${tenderAttempts}=      Get From Dictionary        ${ARGUMENTS[1].data}        tenderAttempts
   ${method_type}=         Get From Dictionary     ${ARGUMENTS[1].data}           procurementMethodType
+  ${minNumberOfQualifiedBids}=  Get From Dictionary  ${ARGUMENTS[1].data}        minNumberOfQualifiedBids
   ${number_of_items}=     Get Length              ${items}
 
   Selenium2Library.Switch Browser   ${ARGUMENTS[0]}
@@ -195,6 +196,7 @@ Login
   Input text                         id=title                                            ${title}
   # TODO deal with #Оренда and #Продаж cases
   Click Element  xpath=//input[@type='radio' and @value='lease']  # Оренда
+  Click Element                      xpath=//input[@type="radio" and contains(@ng-model,"minNumberOfQualifiedBids") and @value="${minNumberOfQualifiedBids}"]
   Wait Until Element Is Visible      id=description
   Input text                         id=description                                      ${description}
   Wait Until Element Is Visible      ${locator_tender_attempts}                          30

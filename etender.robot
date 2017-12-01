@@ -1368,7 +1368,7 @@ Change_date_to_month
   Focus                                     ${locator.button.selectDocTypeForIll}
   Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
   Click Element                             ${locator.button.selectDocTypeForIll}
-  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Паспорт торгів
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Публічний Паспорт Активу
   Wait Until Element Is Visible             ${locator.button.addDoc}
   Choose File	                            ${locator.button.addDoc}                 ${filepath}
   Wait Until Page Contains                  Файл додано!                             60
@@ -1390,10 +1390,12 @@ Change_date_to_month
   Focus                                     ${locator.button.selectDocTypeForIll}
   Wait Until Page Contains Element          ${locator.button.selectDocTypeForIll}
   Click Element                             ${locator.button.selectDocTypeForIll}
-  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Паспорт торгів
+  Select From List By Label                 ${locator.button.selectDocTypeForIll}    Публічний Паспорт Активу
   Wait Until Element Is Visible             ${locator.button.addDoc}
   Choose File	                            ${locator.button.addDoc}                 ${filepath}
   Wait Until Page Contains                  Файл додано!                             60
+  # CLOSE WARNING "Увага! Час синхронізації файлів на ЦБД може зайняти до 20 хвилин..."
+  Run Keyword And Ignore Error  Click Element  xpath=//div[@id='modalDocNotification']//button[@type='button' and contains(@class,'close')]
 
 Додати офлайн документ
   [Arguments]  ${username}  ${tender_uaid}  ${accessDetails}  ${title}=Familiarization with bank asset

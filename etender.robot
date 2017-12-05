@@ -457,6 +457,7 @@ Login
   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
   Clear Element Text	            xpath=//input[@name='amount0']
   Input text                        xpath=//input[@name='amount0']          ${amount}
+  Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])/following-sibling::input[contains(@ng-model,'bidderAgreeChk.state')]  # Погоджуюсь
   Wait Until Element Is Enabled     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
   Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])
   Wait Until Page Contains          Пропозицію додано!                      30

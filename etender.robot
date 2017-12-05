@@ -505,6 +505,7 @@ Login
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Wait Until Element Is Visible  xpath=//button[contains(@class, 'btn-sm btn-danger')]  ${huge_timeout_for_visibility}
+  Execute JavaScript  document.evaluate("//button[contains(@class, 'btn-sm btn-danger')]/ancestor::form", document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).scrollIntoView();
   Click Element               xpath=//button[contains(@class, 'btn-sm btn-danger')]
   Wait Until Page Does Not Contain  Скасувати${SPACE}пропозицію  ${huge_timeout_for_visibility}
 
@@ -512,6 +513,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}  ${cancellation_reason}  ${document}  ${new_description}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Element Is Visible  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']  ${huge_timeout_for_visibility}
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Click Element                  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Почати процедуру скасування торгів']
   Wait Until Element Is Visible  xpath=//select[@id='reasonSelect1']  ${huge_timeout_for_visibility}
   Select From List By Value      xpath=//select[@id='reasonSelect1']  ${cancellation_reason}
@@ -531,6 +533,7 @@ Login
   [Arguments]  ${username}  ${tender_uaid}
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   Wait Until Element Is Visible  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Продовжити процедуру скасування аукціона']
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Click Element                  xpath=//span[contains(@ng-if,'detailes.cancellations') and text()='Продовжити процедуру скасування аукціона']
   Wait Until Element Is Visible  xpath=//button[@ng-click='endCancelTender()']  ${huge_timeout_for_visibility}  # Скасувати аукціон
   Click Element                  xpath=//button[@ng-click='endCancelTender()']  # Скасувати аукціон

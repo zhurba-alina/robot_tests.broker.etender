@@ -369,6 +369,7 @@ Login
   ${contractEndDate}=     Get From Dictionary     ${item.contractPeriod}            endDate
   ${contractStartDate}=              convert_date_to_etender_format                 ${contractStartDate}
   ${contractEndDate}=                convert_date_to_etender_format                 ${contractEndDate}
+  Wait Until Element Is Visible      id=contractPeriod_startDate${index}
   Click Element                      id=contractPeriod_startDate${index}
   sleep  1
   Input text                         id=contractPeriod_startDate${index}            ${contractStartDate}
@@ -470,6 +471,7 @@ Login
   [Arguments]  ${amount}
   Wait Until Page Contains Element  xpath=//input[@name='amount0']          30
   Input text                        xpath=//input[@name='amount0']          ${amount}
+  Click Element                     xpath=(//button[@click-and-block='canBid(lot)'][contains(text(), 'Реєстрація пропозиції')])/following-sibling::input[contains(@ng-model,'bidderAgreeChk.state')]  # Погоджуюсь
   Wait Until Element Is Enabled     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
   Click Element                     xpath=(//button[contains(text(), 'Реєстрація пропозиції (автотест)')])
   Wait Until Page Contains          Ви ще не пройшли валідацію, щоб приймати участь у торгах.           30
@@ -1182,6 +1184,7 @@ Change_date_to_month
   etender.Пошук тендера по ідентифікатору   ${username}  ${tender_uaid}
   Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
   Wait Until Element Is Visible    id=documentToAdd4        30
+  Select From List By Label        xpath=//input[@id='documentToAdd4']/preceding-sibling::select[@id='docType']  Протокол торгів
   Choose File                      id=documentToAdd4        ${file_path}
   Run Keyword And Ignore Error     Wait Until Page Contains         Файл додано!              30
 
@@ -1261,6 +1264,15 @@ Change_date_to_month
 
 Дискваліфікувати кандидата
   Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
+  ${file_path}  ${file_name}  ${file_content}=   create_fake_doc
+  Wait Until Element Is Visible    id=documentToAdd4        30
+  Select From List By Label        xpath=//input[@id='documentToAdd4']/preceding-sibling::select[@id='docType']  Пропозиція, що перемогла
+  Choose File                      id=documentToAdd4        ${file_path}
+  Run Keyword And Ignore Error     Wait Until Page Contains         Файл додано!              30
+  # TODO: remove sleep someday?
+  Sleep  120
+  Reload page
+  Wait Until Keyword Succeeds  10 x   20 s  Спробувати відкрити вікно рішення про Кандидата
   Wait Until Element Is Visible      id=btn_nextStepAwards    30
   sleep  3
   Click Element                      id=btn_nextStepAwards
@@ -1268,6 +1280,7 @@ Change_date_to_month
   Wait Until Page Contains           Ви ухвалили рішення про підтвердження чи відхилення Кандидата?  60
   Wait Until Element Is Visible      id=btn_disqualify        30
   sleep  3
+  Select From List By Value          xpath=//select[contains(@ng-model,'reasonDisqualify')]  Переможець торгів документально не підтвердив свою відповідність вимогам замовника
   Click Element                      id=btn_disqualify
   Run Keyword And Ignore Error       Wait Until Page Contains           Кандидата дискваліфіковано!    30
 

@@ -5,7 +5,7 @@ Library  etender_service.py
 
 *** Variables ***
 ${locator.auctionID}                                           id=tenderidua
-${locator.title}                                               jquery=tender-subject-info>div.row:contains('Загальний опис процедури:')>:eq(1)>
+${locator.title}                                               xpath=//div[@class = 'row']/div/p[text() = 'Предмет оренди:']/parent::div/following-sibling::div/p  #jquery=tender-subject-info>div.row:contains('Загальний опис процедури:')>:eq(1)>
 ${locator.description}                                         id=descriptionOut
 ${locator.minimalStep.amount}                                  xpath=//div[@class = 'row']/div/p[text() = 'Мінімальний крок аукціону:']/parent::div/following-sibling::div/p
 ${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
@@ -18,7 +18,7 @@ ${locator.button.selectDocTypeForLicence}                      id=selectDoctype2
 ${locator.button.selectDocTypeForProtocol}                     id=selectDoctype1
 ${locator.button.addProtocol}                                  id=addNewDocToExistingBid2_0
 ${locator.button.addDoc}                                       id=tend_doc_add
-${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту в ФГВ:']/parent::div/following-sibling::div/p  # на сторінці перегляду
+${locator.dgfID}                                               xpath=//div[@class = 'row']/div/p[text() = 'Номер лоту:']/parent::div/following-sibling::div/p   # на сторінці перегляду
 ${locator.tenderPeriod.endDate}                                xpath=//div[@class = 'row']/div/p[text() = 'Завершення прийому пропозицій:']/parent::div/following-sibling::div/p
 ${locator.auctionPeriod.startDate}                             xpath=//span[@ng-if='lot.auctionPeriod.startDate']
 ${locator_item_description}                                    xpath=//div[@class = 'row']/div/p[text() = 'Опис активу:']/parent::div/following-sibling::div/p  #id=x25
@@ -33,9 +33,9 @@ ${locator.items[0].deliveryAddress.countryName}                id=delivery_count
 ${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
 ${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
 ${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div//*[@id='item_classification0']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
-${locator.items[1].classification.scheme}                      xpath=//div//*[@id='item_classification1']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
-${locator.items[2].classification.scheme}                      xpath=//div//*[@id='item_classification2']/../../..//p[contains( text(),'Код відповідного класифікатору лоту - CAV:')]
+${locator.items[0].classification.scheme}                      xpath=(//p[@id="qa-label-item_classification0"]/span)
+${locator.items[1].classification.scheme}                      xpath=(//p[@id="qa-label-item_classification1"]/span)
+${locator.items[2].classification.scheme}                      xpath=(//p[@id="qa-label-item_classification2"]/span)
 ${locator.items[0].classification.id}                          id=item_classification0
 ${locator.items[1].classification.id}                          id=item_classification1
 ${locator.items[2].classification.id}                          id=item_classification2
@@ -46,7 +46,9 @@ ${locator_item_classification.description}                     id=item_class_des
 ${locator_item_classification.scheme}                          xpath=//div[@ng-repeat='item in lot.items']//p[contains(text(),'Класифікатор')]
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
-${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
+${locator.items[0].additionalClassifications[0].description}   xpath=//span[@id="item_add_class_descr0"]
+${locator.items[1].additionalClassifications[0].description}   xpath=//span[@id="item_add_class_descr1"]
+${locator.items[2].additionalClassifications[0].description}   xpath=//span[@id="item_add_class_descr2"]
 ${locator.items[0].unit.code}                                  id=item_unit_symb0
 ${locator.items[1].unit.code}                                  id=item_unit_symb1
 ${locator.items[2].unit.code}                                  id=item_unit_symb2

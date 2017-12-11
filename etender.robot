@@ -844,14 +844,14 @@ Change_date_to_month
   [Arguments]  ${index}
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].contractPeriod.startDate
   ${return_value}=   Set Variable  ${return_value.split(' ')[1]}
-  ${return_value}=   convert_contractPeriod_date_from_etender_format_with_hack      ${return_value}
+  ${return_value}=   convert_contractPeriod_date_from_etender_format_to_isoformat  ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про items.contractPeriod.endDate
   [Arguments]  ${index}
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[${index}].contractPeriod.endDate
   ${return_value}=   Set Variable  ${return_value.split(' ')[1]}
-  ${return_value}=   convert_contractPeriod_date_from_etender_format_with_hack      ${return_value}
+  ${return_value}=   convert_contractPeriod_date_from_etender_format_to_isoformat  ${return_value}
   [return]           ${return_value}
 
 Отримати інформацію про items.classification.description
@@ -1283,6 +1283,7 @@ Change_date_to_month
   Select From List By Value          xpath=//select[contains(@ng-model,'reasonDisqualify')]  Переможець торгів документально не підтвердив свою відповідність вимогам замовника
   Click Element                      id=btn_disqualify
   Run Keyword And Ignore Error       Wait Until Page Contains           Кандидата дискваліфіковано!    30
+  Remove File  ${file_path}
 
 Завантажити угоду до тендера
   [Arguments]  ${username}  ${tender_uaid}  ${contract_num}  ${filepath}

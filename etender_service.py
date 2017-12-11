@@ -55,11 +55,10 @@ def convert_time_to_etender_format(isodate):
     time_string = iso_dt.strftime("%H:%M")
     return time_string
 
-def convert_contractPeriod_date_from_etender_format_with_hack(contractPeriod_date):
+def convert_contractPeriod_date_from_etender_format_to_isoformat(contractPeriod_date):
     tmp_date = datetime.strptime(contractPeriod_date, '%d-%m-%Y')
-    date_with_hours = tmp_date + timedelta(hours=2)
     TZ = timezone(os.environ['TZ'] if 'TZ' in os.environ else 'Europe/Kiev')
-    date_with_timezone_and_shift = TZ.localize(date_with_hours)
+    date_with_timezone_and_shift = TZ.localize(tmp_date)
     time_string = date_with_timezone_and_shift.isoformat()
     return time_string
 
@@ -77,6 +76,10 @@ def float_to_string_2f(value):
 
 def adapt_data(initial_data):
     initial_data['data']['procuringEntity']['name'] = u"Likvidator3"
+    for cur_item in initial_data['data']['items']:
+        old_date = cur_item['contractPeriod']['endDate']
+        new_date = (parse_date(old_date) + timedelta(days=1)).isoformat()
+        cur_item['contractPeriod']['endDate'] = new_date
     return initial_data
 
 def convert_etender_string_to_common_string(string):

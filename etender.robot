@@ -447,12 +447,11 @@ Enter enquiry date
 
 
 Отримати інформацію із тендера
-  [Arguments]  @{ARGUMENTS}
+  [Arguments]  ${user}  ${tender_id}  ${fieldname}
   [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  fieldname
-  Switch browser   ${ARGUMENTS[0]}
-  Run Keyword And Return  Отримати інформацію про ${ARGUMENTS[1]}
+  ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
+  Switch browser   ${user}
+  Run Keyword And Return  Отримати інформацію про ${fieldname}
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}

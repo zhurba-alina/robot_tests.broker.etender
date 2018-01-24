@@ -264,15 +264,19 @@ Enter enquiry date
   ...      ${ARGUMENTS[1]} ==  ${INDEX}
   ${dkpp_desc}=     Get From Dictionary   ${ARGUMENTS[0].additionalClassifications[0]}   description
   ${dkpp_id}=       Get From Dictionary   ${ARGUMENTS[0].additionalClassifications[0]}   id
+  #TODO: remove temporary hardcode
+  ${dkpp_desc}=  Set Variable  Складальники виробів з картону, тканини та подібних матеріалів
+  ${dkpp_id}=    Set Variable  8286
   Sleep  2
   Click Element                      xpath=(//input[starts-with(@ng-click, 'openAddClassificationModal')])[${ARGUMENTS[1]}+1]
-  Wait Until Element Is Visible      xpath=//div[contains(@id,'addClassification')]
   Sleep  1
-  Input text                         xpath=//div[contains(@class, 'modal fade ng-scope in')]//input[@ng-model='searchstring']    ${dkpp_desc}
+  Input text                         xpath=//div[@id='addClassification']//input  ${dkpp_desc}
   Wait Until Element Is Visible      xpath=//td[contains(., '${dkpp_id}')]
   Sleep  2
   Click Element                      xpath=//td[contains(., '${dkpp_id}')]
-  Click Element                      xpath=//div[@id='addClassification']//button[starts-with(@ng-click, 'choose(')]
+  Sleep  2
+  Wait Until Element Is Visible      xpath=//div[@id="addClassification"]//*[@id="addClassification_choose"]
+  Click Element                      xpath=//div[@id="addClassification"]//*[@id="addClassification_choose"]
   Sleep  2
 
 

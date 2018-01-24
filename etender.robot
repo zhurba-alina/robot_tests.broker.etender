@@ -189,9 +189,7 @@ Login
   Click Element   id=createTender
   Sleep   60
   Reload Page
-  Sleep  10
-  Click Element   xpath=//*[text()='${title}']
-  Sleep   5
+  Wait Until Keyword Succeeds        10 min  20 x  Дочекатися завершення обробки тендера
   ${tender_UAid}=  Get Text  ${locator.tenderId}
   Sleep  1
   Log   ${tender_UAid}
@@ -201,6 +199,14 @@ Login
   Run keyword if   '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]  ${Ids}
 
+
+Дочекатися завершення обробки тендера
+  Reload Page
+  Sleep   25
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      ${locator.tenderId}  30
+  ${tender_id}=                      Get Text  ${locator.tenderId}
+  Should Match Regexp                ${tender_id}  UA-\\d{4}-\\d{2}-\\d{2}-\\d+.*
 
 Завантажити документ
   [Arguments]  @{ARGUMENTS}

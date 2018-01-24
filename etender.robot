@@ -5,18 +5,18 @@ Library  DateTime
 Library  etender_service.py
 
 *** Variables ***
-${locator.tenderId}                                            id=tenderidua
+${locator.tenderId}                                            xpath=//*[@id='tenderidua']/b
 ${locator.title}                                               jquery=tender-subject-info>div.row:contains("Конкрентна назва предмету закупівлі:")>:eq(1)>
 ${locator.description}                                         jquery=tender-subject-info>div.row:contains("Загальні відомості про закупівлю:")>:eq(1)>
-${locator.minimalStep.amount}                                  xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[9]
-${locator.procuringEntity.name}                                jquery=customer-info>div.row:contains("Найменування:")>:eq(1)>
-${locator.value.amount}                                        id=totalvalue
-${locator.tenderPeriod.startDate}                              xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[3]
-${locator.tenderPeriod.endDate}                                xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[4]
-${locator.enquiryPeriod.startDate}                             xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[1]
-${locator.enquiryPeriod.endDate}                               xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[2]
-${locator.items[0].description}                                xpath=//div[6]/div[4]/div[2]/p
-${locator.items[0].deliveryDate.endDate}                       xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[14]
+${locator.minimalStep.amount}                                  id=lotMinimalStep_0
+${locator.procuringEntity.name}                                id=tenderOwner
+${locator.value.amount}                                        id=tenderBudget
+${locator.tenderPeriod.startDate}                              id=tenderStart
+${locator.tenderPeriod.endDate}                                id=tenderEnd
+${locator.enquiryPeriod.startDate}                             id=enquiryStart
+${locator.enquiryPeriod.endDate}                               id=enquiryEnd
+${locator.items[0].description}                                id=item_description_00
+${locator.items[0].deliveryDate.endDate}                       id=delivery_end_00
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
 ${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
 ${locator.items[0].deliveryAddress.postalCode}                 id=delivery_postIndex_0
@@ -36,10 +36,12 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
-${locator.value.currency}                                      id=id_UAH
-${locator.value.valueAddedTaxIncluded}                         xpath=//div[2]/p/i
+${locator.value.currency}                                      id=tenderCurrency
+${locator.value.valueAddedTaxIncluded}                         id=excludeVat
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
+${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
+${huge_timeout_for_visibility}                                 300
 
 
 *** Keywords ***

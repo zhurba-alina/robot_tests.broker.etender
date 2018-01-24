@@ -141,23 +141,25 @@ Login
   Sleep   1
   Run Keyword If  '${methodType}' != 'aboveThresholdUA'  Input text    xpath=//input[@id="startDate_time"]   ${start_time}
   Sleep   1
-  Click Element    id=addLot_        ##click to button addLot
-  Sleep     2
-  Input text    id=lotTitle          ${title}
   Input text    xpath=//input[@id="endDate"]   ${end_date}
   Sleep   1
-  Input text    id=lotDescription    ${description}
   Input text    xpath=//input[@id="endDate_time"]   ${end_time}
   Sleep   1
+#  Click Element    id=addLot_        ##click to button addLot
+#  Sleep     2
+#  Input text    id=lotTitle          ${title}
+#  Sleep   1
+#  Input text    id=itemsDescription00   ${description}
+#  Sleep   1
   Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
   Click Element    xpath=//div[contains(@class,'row') and (not(contains(@class,'controls')))]/div/label/input[@id='valueAddedTaxIncluded']
   Input text    id=minimalStep_0        ${step_rateToStr}
   Sleep   1
   #Input text    name=minimalStepPer_0     1
-  Sleep   1
-  Click Element    id=addLotItem_0
-  Sleep    2
+#  Sleep   1
+#  Click Element    id=addLotItem_0
+#  Sleep    2
   Input text    id=itemsDescription00      ${items_description}
   Sleep   1
   Input text    id=itemsQuantity00         ${quantity}

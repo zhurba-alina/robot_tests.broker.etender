@@ -122,24 +122,22 @@ Login
   Sleep   3
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
-  Wait Until Page Contains Element  xpath=//input[@id="enquiryPeriod_endDate_day"]
-  Input text    xpath=//input[@id="enquiryPeriod_endDate_day"]   ${enquiry_end_date}
-  Sleep   1
-  Input text    xpath=//input[@id="enquiryPeriod_endDate_time"]   ${enquiry_end_time}
-  Sleep   1
   Input text    xpath=//input[@id="tenderPeriod_startDate_day"]   ${start_date}
-  Sleep   1
   Input text    xpath=//input[@id="tenderPeriod_startDate_time"]   ${start_time}
+
+  ${status}	           ${value}=  Run Keyword And Ignore Error  Should Not Be Empty  ${enquiry_end_date}
+  log to console       check do we have enquiry_end_date: ${status}
+  Run Keyword If      '${status}' == 'PASS'  Enter enquiry date  ${enquiry_end_date}  ${enquiry_end_time}
+
   Sleep   1
-  Input text    xpath=//input[@id="tenderPeriod_endDate_day"]   ${end_date}
-  Sleep   1
-  Input text    xpath=//input[@id="tenderPeriod_endDate_time"]   ${end_time}
   Sleep   1
   Click Element    id=addLot_        ##click to button addLot
   Sleep     2
   Input text    id=lotTitle          ${title}
+  Input text    xpath=//input[@id="endDate"]   ${end_date}
   Sleep   1
   Input text    id=lotDescription    ${description}
+  Input text    xpath=//input[@id="endDate_time"]   ${end_time}
   Sleep   1
   Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
@@ -214,6 +212,13 @@ Login
   Click Element  xpath=//td[contains(., 'atracurium')]
   Sleep  1
   Click Element  xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//button[@id="addClassification_choose"]
+
+Enter enquiry date
+  [Arguments]  ${enquiry_end_date}  ${enquiry_end_time}
+  Input text    xpath=//input[@id="enquiryPeriod"]   ${enquiry_end_date}
+  Sleep   1
+  Input text    xpath=//input[@id="enquiryPeriod_time"]   ${enquiry_end_time}
+  Sleep   1
 
 
 Дочекатися завершення обробки тендера

@@ -430,21 +430,30 @@ Enter enquiry date
   sleep  5
 
 Внести зміни в тендер
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} =  username
-  ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
-  Log  ${ARGUMENTS[0]}
-  Log  ${ARGUMENTS[1]}
+  [Arguments]  ${username}  ${tender_uaid}  ${field}  ${new_value}
   ${description}=   Convert To String    новое описание тендера
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Wait Until Page Contains Element   xpath=//a[@class='btn btn-primary ng-scope']   10
-  Click Element              xpath=//a[@class='btn btn-primary ng-scope']
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Wait Until Page Contains Element   xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']   ${huge_timeout_for_visibility}
   Sleep  2
-  Input text               id=description    ${description}
+  Click Element              xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']
+  Sleep  2
+  Редагувати поле тендера  ${field}  ${new_value}
+  Sleep  2
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Click Element            id=SaveChanges
 
+Редагувати поле тендера
+  [Arguments]  ${field}  ${new_value}
+  Run Keyword And Return  Редагувати поле ${field}  ${new_value}
+
+Редагувати поле tenderPeriod.endDate
+  [Arguments]  ${new_value_isodate}
+  ${date}=  convert_date_to_etender_format  ${new_value_isodate}
+  Input text  id=enquiryPeriod  ${date}
+  ${time}=  convert_time_to_etender_format  ${new_value_isodate}
+  Input text  id=enquiryPeriod_time  ${time}
 
 Отримати інформацію із тендера
   [Arguments]  ${user}  ${tender_id}  ${fieldname}

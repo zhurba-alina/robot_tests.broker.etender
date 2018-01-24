@@ -110,6 +110,11 @@ Login
   ${end_date}=           get_all_etender_dates   ${ARGUMENTS[1]}         EndDate            date
   ${end_time}=           get_all_etender_dates   ${ARGUMENTS[1]}         EndDate            time
 
+  ${methodType}=         Set Variable  ${EMPTY}
+  ${status}  ${methodType}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  procurementMethodType
+  log to console  check presence of procurementMethodType in dictionary: ${status}
+  ${methodType}=  Run Keyword IF  '${status}' != 'PASS'  Set Variable  belowThreshold
+  ...             ELSE  Set Variable  ${methodType}
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Wait Until Page Does Not Contain   ${locator_block_overlay}
@@ -118,18 +123,23 @@ Login
   Sleep  10
   Click Element                     xpath=//a[@data-target='#procedureType']  # Створити оголошення
   Sleep  3
+
+  &{procedure_types}=  Create Dictionary  aboveThresholdUA=Відкриті торги  belowThreshold=Допорогові закупівлі
+  Select From List By Label         id=chooseProcedureType  &{procedure_types}[${methodType}]
+  Sleep  3
+
   Click Element                     id=goToCreate  # Продовжити
   Sleep   3
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
-  Input text    xpath=//input[@id="tenderPeriod_startDate_day"]   ${start_date}
-  Input text    xpath=//input[@id="tenderPeriod_startDate_time"]   ${start_time}
 
   ${status}	           ${value}=  Run Keyword And Ignore Error  Should Not Be Empty  ${enquiry_end_date}
   log to console       check do we have enquiry_end_date: ${status}
   Run Keyword If      '${status}' == 'PASS'  Enter enquiry date  ${enquiry_end_date}  ${enquiry_end_time}
 
+  Run Keyword If  '${methodType}' != 'aboveThresholdUA'  Input text    xpath=//input[@id="startDate"]   ${start_date}
   Sleep   1
+  Run Keyword If  '${methodType}' != 'aboveThresholdUA'  Input text    xpath=//input[@id="startDate_time"]   ${start_time}
   Sleep   1
   Click Element    id=addLot_        ##click to button addLot
   Sleep     2

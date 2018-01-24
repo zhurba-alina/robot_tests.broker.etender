@@ -55,9 +55,11 @@ ${huge_timeout_for_visibility}                                 300
 
 
 Підготувати дані для оголошення тендера
-  [Arguments]  ${username}  ${tender_data}
+  [Arguments]  ${username}  ${tender_data}  ${username_2}
   ${tender_data}=  change_data  ${tender_data}
   Log  ${tender_data}
+  Log  ${username}
+  Log  ${username_2}
   [return]  ${tender_data}
 
 

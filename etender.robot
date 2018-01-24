@@ -475,7 +475,9 @@ Enter enquiry date
 
 Отримати інформацію про value.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці  value.amount
-  ${return_value}=   Convert To Number   ${return_value}
+  ${return_value}=   Set Variable  ${return_value.replace(u'\xa0','')}  # nbsp converting attempt
+  ${return_value}=   Set Variable  ${return_value.replace(' ','')}
+  ${return_value}=   Convert To Number   ${return_value.replace(',','.')}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].deliveryLocation.latitude
@@ -525,22 +527,28 @@ Enter enquiry date
 
 Отримати інформацію про tenderPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  tenderPeriod.startDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   Set Variable  ${return_value.replace(u'з ','')}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
+#  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про tenderPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  tenderPeriod.endDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   Set Variable  ${return_value.replace(u'по ','')}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про enquiryPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  enquiryPeriod.startDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=  Set Variable  ${return_value.replace(u'з ','')}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про enquiryPeriod.endDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  enquiryPeriod.endDate
-  ${return_value}=   Change_date_to_month   ${return_value}
+  ${return_value}=   Set Variable  ${return_value.replace(u'по ','')}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
+#  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
 Change_date_to_month
@@ -669,3 +677,7 @@ Change_date_to_month
   Sleep  3
   ${url}=  Get Element Attribute  xpath=//*[@id="participationUrl_0"]@href
   [return]  ${url}
+
+Отримати інформацію із предмету
+  [Arguments]    ${user}    ${tender_uaid}    ${item_id}    ${fieldname}
+  Fail  Temporary using keyword 'Отримати інформацію із тендера' until will be updated keyword 'Отримати інформацію із предмету'

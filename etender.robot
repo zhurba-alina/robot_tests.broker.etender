@@ -180,6 +180,13 @@ Login
   Click Element  xpath=//td[contains(., '${cpv}')]
   Sleep  1
   Click Element  id=classification_choose
+  Sleep  3
+
+  #TODO: need conditional processing of additional configurations available in input data
+  ${status}	           ${value}=  Run Keyword And Ignore Error  Click Element  xpath=//input[@id='openAddClassificationInnModal00']
+  log to console       Attempt to add one more classification: ${status}
+  Run Keyword If      '${status}' == 'PASS'   Додати ще одну дотаткову класифікацію
+
   Sleep  1
   Додати предмет   ${items[0]}   0
   Sleep   2
@@ -198,6 +205,15 @@ Login
   Log   ${Ids}
   Run keyword if   '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]  ${Ids}
+
+Додати ще одну дотаткову класифікацію
+  Sleep  3
+  Input text     xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//input  Atracurium
+  Wait Until Element Is Visible  xpath=//td[contains(., 'atracurium')]
+  Sleep  2
+  Click Element  xpath=//td[contains(., 'atracurium')]
+  Sleep  1
+  Click Element  xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//button[@id="addClassification_choose"]
 
 
 Дочекатися завершення обробки тендера

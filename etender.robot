@@ -65,9 +65,9 @@ ${huge_timeout_for_visibility}                                 300
 
 Login
   [Arguments]  @{ARGUMENTS}
-  Wait Until Page Contains Element   id=btnLogin    180
+  Wait Until Page Contains Element   xpath=//div[contains(@class,'buttons')]/a[contains(@class,'login')]    180
   Sleep    1
-  Click Link    id=btnLogin
+  Click Link    xpath=//div[contains(@class,'buttons')]/a[contains(@class,'login')]
   Sleep    1
   Wait Until Page Contains Element   id=inputUsername   180
   Sleep  1

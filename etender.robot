@@ -87,13 +87,18 @@ Login
   ${title}=             Get From Dictionary     ${ARGUMENTS[1].data}               title
   ${description}=       Get From Dictionary     ${ARGUMENTS[1].data}               description
   ${budget}=            Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
+  ${budgetToStr}=       float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
   ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
+  ${step_rateToStr}=    float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
   ${items_description}=   Get From Dictionary   ${items[0]}         description
   ${quantity}=          Get From Dictionary     ${items[0]}                        quantity
   ${cpv}=               Get From Dictionary     ${items[0].classification}         id
   ${unit}=              Get From Dictionary     ${items[0].unit}                   name
   ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
   ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
+  ${region}=            Get From Dictionary     ${items[0].deliveryAddress}       region
+  ${region}=            convert_common_string_to_etender_string                   ${region}
+  ${locality}=          Get From Dictionary     ${items[0].deliveryAddress}       locality
   ${postalCode}=        Get From Dictionary     ${items[0].deliveryAddress}       postalCode
   ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
   ${deliveryDate}=      Get From Dictionary     ${items[0].deliveryDate}          endDate
@@ -107,14 +112,13 @@ Login
 
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'btnProfile')]
-  Sleep  15
-  Click Element                     xpath=//a[contains(@class, 'ng-binding')][./text()='Мої закупівлі']
+  Click Element                     id=qa_myTenders  # Мої закупівлі
   Sleep  10
-  Click Element                     xpath=//a[contains(@class, 'btn btn-info')]
+  Click Element                     xpath=//a[@data-target='#procedureType']  # Створити оголошення
   Sleep  3
-  Click Element                     id=goToCreate
+  Click Element                     id=goToCreate  # Продовжити
   Sleep   3
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
@@ -137,56 +141,58 @@ Login
   Sleep   1
   Input text    id=lotDescription    ${description}
   Sleep   1
-  Input text    id=lotValue_0        ${budget}
+  Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
-  Click Element    id=valueAddedTaxIncluded
-  Input text    id=minimalStep_0        ${step_rate}
+  Click Element    xpath=//div[contains(@class,'row') and (not(contains(@class,'controls')))]/div/label/input[@id='valueAddedTaxIncluded']
+  Input text    id=minimalStep_0        ${step_rateToStr}
   Sleep   1
   #Input text    name=minimalStepPer_0     1
   Sleep   1
   Click Element    id=addLotItem_0
   Sleep    2
-  Input text    id=itemsDescription0      ${items_description}
+  Input text    id=itemsDescription00      ${items_description}
   Sleep   1
-  Input text    id=itemsQuantity0         ${quantity}
-  Click Element   xpath=//select[@id='itemsUnit0']//option[@label='кг.']
+  Input text    id=itemsQuantity00         ${quantity}
+  Click Element   xpath=//div[contains(@ng-model,'unit.selected')]//input
+  Sleep   3
+  Click Element   xpath=//div[contains(@ng-model,'unit.selected')]//span[contains(@ng-bind-html,'unit.nameUA') and .='кілограми']
   Sleep  2
-  Click Element   xpath=//select[@id='region']//option[@label='Київська область']
+  Select From List By Label  id=region_00  ${region}
   Sleep  2
-  Click Element   xpath=//select[@id='city']//option[@label='м. Київ']
-  Input text    id=addressStr   ${streetAddress}
+  Select From List By Label  id=city_00  ${locality}
+  Input text    id=street_00   ${streetAddress}
   Sleep   1
-  Input text    id=postIndex    ${postalCode}
+  Input text    id=postIndex_00    ${postalCode}
   Sleep   1
 #  Input text    id=latitude0    ${latitude}
 #  Sleep   1
 #  Input text    id=longitude0   ${longitude}
 #  Sleep   1
-  Input text    id=deliveryDate0        ${deliveryDate}
+  Input text    id=delStartDate00        ${deliveryDate}
   Sleep  2
-  Input text    id=deliveryDate_endDate          ${deliveryDate}
+  Input text    id=delEndDate00          ${deliveryDate}
   Sleep   1
   Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
   Sleep  1
-  Input text     xpath=//div[contains(@class, 'modal-content')]//input[@ng-model='searchstring']  ${cpv}
+  Input text     id=classificationCode  ${cpv}
   Wait Until Element Is Visible  xpath=//td[contains(., '${cpv}')]
   Sleep  2
   Click Element  xpath=//td[contains(., '${cpv}')]
   Sleep  1
-  Click Element  xpath=//div[@id='classification']//button[starts-with(@ng-click, 'choose(')]
+  Click Element  id=classification_choose
   Sleep  1
   Додати предмет   ${items[0]}   0
   Sleep   2
   Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
   Sleep  1
-  Wait Until Page Contains Element   xpath=//div[contains(@class, 'form-actions')]//button[@type='submit']
-  Click Element   xpath=//div[contains(@class, 'form-actions')]//button[@type='submit']
+  Wait Until Page Contains Element   id=createTender
+  Click Element   id=createTender
   Sleep   60
   Reload Page
   Sleep  10
   Click Element   xpath=//*[text()='${title}']
   Sleep   5
-  ${tender_UAid}=  Get Text  id=tenderidua
+  ${tender_UAid}=  Get Text  ${locator.tenderId}
   Sleep  1
   Log   ${tender_UAid}
   ${Ids}=   Convert To String   ${tender_UAid}

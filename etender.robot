@@ -453,9 +453,13 @@ Enter enquiry date
 Редагувати поле tenderPeriod.endDate
   [Arguments]  ${new_value_isodate}
   ${date}=  convert_date_to_etender_format  ${new_value_isodate}
-  Input text  id=enquiryPeriod  ${date}
+  Input text  id=endDate  ${date}
   ${time}=  convert_time_to_etender_format  ${new_value_isodate}
-  Input text  id=enquiryPeriod_time  ${time}
+  Input text  id=endDate_time  ${time}
+
+Редагувати поле description
+  [Arguments]  ${new_value}
+  Input text  id=description  ${new_value}
 
 Отримати інформацію із тендера
   [Arguments]  ${user}  ${tender_id}  ${fieldname}

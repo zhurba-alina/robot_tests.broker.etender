@@ -302,20 +302,22 @@ Enter enquiry date
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
   Wait Until Page Contains Element    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    10
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  1
   Wait Until Element Is Visible    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    10
   sleep  3
   Input Text    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    ${ARGUMENTS[1]}
   sleep  2
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   ${timeout_on_wait}=  Get Broker Property By Username  ${ARGUMENTS[0]}  timeout_on_wait
   ${passed}=  Run Keyword And Return Status  Wait Until Keyword Succeeds  ${timeout_on_wait} s  0 s  Шукати і знайти
   Run Keyword Unless  ${passed}  Fatal Error  Тендер не знайдено за ${timeout_on_wait} секунд
   sleep  3
-  Wait Until Element Is Visible    jquery=a[href^="#/tenderDetailes"]  10
-  Wait Until Element Is Enabled    jquery=a[href^="#/tenderDetailes"]  20
+  Wait Until Element Is Visible    xpath=//td[contains(.,'${ARGUMENTS[1]}')]/p/a[contains(@href,'#/tenderDetailes')]  10
+  Wait Until Element Is Enabled    xpath=//td[contains(.,'${ARGUMENTS[1]}')]/p/a[contains(@href,'#/tenderDetailes')]  20
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  1
-  Click Link    jquery=a[href^="#/tenderDetailes"]
+  Click Link    xpath=//td[contains(.,'${ARGUMENTS[1]}')]/p/a[contains(@href,'#/tenderDetailes')]
   Wait Until Page Contains    ${ARGUMENTS[1]}   10
   sleep  1
 

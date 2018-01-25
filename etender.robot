@@ -251,9 +251,10 @@ Enter enquiry date
   Execute Javascript     $('#lot_doc_add:first').removeAttr('disabled','false');
   Sleep   10
   Log   Multiple docType dropdowns on page   WARN
-  Select From List By Index  id=docType  1
+  Select From List By Label  xpath=//div[@id="tree-01-02"]//select[@id="docType"]  Інші
+  log  ${ARGUMENTS[1]}
   Sleep   10
-  Choose File     id=lot_doc_add     ${ARGUMENTS[1]}
+  Choose File     id=tend_doc_add  ${ARGUMENTS[1]}
   Sleep   4
   Capture Page Screenshot
 

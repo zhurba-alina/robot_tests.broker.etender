@@ -1,5 +1,6 @@
 *** Settings ***
 Library  Selenium2Screenshots
+Library  Selenium2Library
 Library  String
 Library  DateTime
 Library  etender_service.py
@@ -66,15 +67,11 @@ ${huge_timeout_for_visibility}                                 300
 
 Login
   [Arguments]  @{ARGUMENTS}
-  Wait Until Page Contains Element   xpath=//div[contains(@class,'buttons')]/a[contains(@class,'login')]    180
-  Sleep    1
-  Click Link    xpath=//div[contains(@class,'buttons')]/a[contains(@class,'login')]
-  Sleep    1
+  Wait Until Page Contains Element   css=a.login    180
+  Click Link    css=a.login
   Wait Until Page Contains Element   id=inputUsername   180
-  Sleep  1
   Input text   id=inputUsername      ${USERS.users['${ARGUMENTS[0]}'].login}
   Wait Until Page Contains Element   id=inputPassword   180
-  Sleep  1
   Input text   id=inputPassword      ${USERS.users['${ARGUMENTS[0]}'].password}
   Click Button   id=btn_submit
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
@@ -216,6 +213,47 @@ Login
   Log   ${Ids}
   Run keyword if   '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]  ${Ids}
+
+Створити план
+  [Arguments]  ${username}  ${arguments}
+#  [Documentation]
+#  ...      ${ARGUMENTS[0]} ==  username
+#  ...      ${ARGUMENTS[1]} ==  plan_data
+  Log  ${arguments}
+  ${plan}=              Get From Dictionary     ${arguments}                    data
+  ${items}=             Get From Dictionary     ${plan}                         items
+  ${description}=       Get From Dictionary     ${plan.budget}                  description
+  ${amount}=            Get From Dictionary     ${plan.budget}                  amount
+  ${amount}=            float_to_string_2f      ${amount}
+  ${number_of_items}=   Get Length              ${items}
+  ${cpv_id}=          Get From Dictionary       ${plan.classification}          id
+  Wait Until Element Is Visible     id=qa_myPlans
+  Click Element         id=qa_myPlans
+  Wait Until Element Is Visible     jquery=a[href^="#/createPlan"]
+  Click element         jquery=a[href^="#/createPlan"]
+  Wait Until Element Is Visible     id=description
+  Input text            id=description          ${description}
+  Input text            id=value                ${amount}
+  Select From List By Index     xpath=//select[@name="startDateMonth"]          6
+  Click element         css=input.btn-cpv
+  Wait Until Element Is Visible     css=#planClassification input
+  Input text            css=#planClassification input                           ${cpv_id}
+  Sleep  3
+  Click element         xpath=//td[contains(.,'${cpv_id}')]
+  Click element         xpath=//button[contains(.,'Зберегти та вийти')]
+  :FOR  ${i}  IN RANGE  ${number_of_items}
+  \     Wait Until Element Is Visible       //button[@ng-click="addItem()"]
+  \     Click element           xpath=//button[@ng-click='addItem()']
+  \     ${item_description}=    Get From Dictionary         ${items[${i}]}          description
+  \     Input text              id=itemsDescription${i}     ${item_description}
+  \     ${item_quantity}=       Get From Dictionary         ${items[${i}]}          quantity
+  \     Input text              id=itemsQuantity${i}        ${item_quantity}
+  \     ${item_unit}=           Get From Dictionary         ${items[${i}].unit}     name
+  \     Input text              xpath=//unit[@id='unit_${i}']//input[@type="search"]                 ${item_unit}
+  \     Press Key               xpath=//unit[@id='unit_${i}']//input[@type="search"]                 \\13
+  \     Sleep   2
+  \     Click Element   //div[contains(@ng-model,'unit.selected')]//span[@class="ui-select-highlight"]
+  Click element         xpath=//button[contains(., 'Створити план')]
 
 Додати ще одну дотаткову класифікацію
   Sleep  3

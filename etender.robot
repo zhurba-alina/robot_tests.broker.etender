@@ -41,6 +41,7 @@ ${locator.value.valueAddedTaxIncluded}                         id=excludeVat
 ${locator.items[0].unit.name}                                  id=item_unit_symb0
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
+${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
 ${huge_timeout_for_visibility}                                 300
 
 
@@ -415,22 +416,55 @@ Enter enquiry date
   Input text                         id=description           ${description}
   Click Element                      xpath=//button[@type='submit']
 
-Відповісти на питання
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = 0
-  ...      ${ARGUMENTS[3]} = answer_data
-  ${answer}=     Get From Dictionary  ${ARGUMENTS[3].data}  answer
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+Відповісти на запитання
+  [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${question_id}
+  ${answer}=     Get From Dictionary  ${answer_data.data}  answer
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   sleep   10
+  Відкрити розділ запитань
+  sleep   10
+  scrollIntoView by script using xpath  //*[@id="addAnswer_0"]  # scroll to addAnswer button
+  sleep   4
+  JavaScript scrollBy  0  -100
+  sleep   4
   Click Element                      id=addAnswer_0
+
+  scrollIntoView by script using xpath  //*[@id="questionContainer"]/form/div/textarea  # scroll to questionContainer
+  sleep   4
+  JavaScript scrollBy  0  -100
+  sleep   4
   Input text                         xpath=//*[@id="questionContainer"]/form/div/textarea            ${answer}
+
   sleep   2
+  scrollIntoView by script using xpath  //*[@id="questionContainer"]/form/div/span/button[1]  # scroll to submit answer V-button
+  sleep   4
+  JavaScript scrollBy  100  -100
+  sleep   4
   Click Element                      xpath=//*[@id="questionContainer"]/form/div/span/button[1]
   sleep  5
+
+Відкрити розділ запитань
+  scrollIntoView by script using xpath  //li[@id="naviTitle2"]/span  # scroll to questions tab
+  sleep   4
+  JavaScript scrollBy  0  -100
+  sleep   4
+  Click Element                      xpath=//li[@id="naviTitle2"]/span  # go to questions tab
+
+scrollIntoView by script using xpath
+  [Arguments]  ${xpath_locator}
+  Execute JavaScript  document.evaluate('${xpath_locator}', document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).scrollIntoView();
+
+JavaScript scrollBy
+  [Arguments]  ${x_offset}  ${y_offset}
+  Execute JavaScript  window.scrollBy(${x_offset}, ${y_offset})
+
+Check Is Element Loaded
+  [Arguments]  ${locator}
+  ${text_value}=   Get Text  ${locator}
+  Log  ${text_value}
+  Should Not Be Empty  ${text_value}
+  Should Not Be Equal  ${text_value}  -
 
 Внести зміни в тендер
   [Arguments]  ${username}  ${tender_uaid}  ${field}  ${new_value}
@@ -648,9 +682,10 @@ Change_date_to_month
   Run Keyword And Return  Convert To String  ${year}${month}${day}${time}
 
 Отримати інформацію про questions[0].title
+  sleep   10
+  Відкрити розділ запитань
+  sleep   10
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].title
-  Sleep   3
-  ${return_value}=    Get text   id=quest_title_0
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].description
@@ -697,3 +732,21 @@ Change_date_to_month
 Отримати інформацію із предмету
   [Arguments]    ${user}    ${tender_uaid}    ${item_id}    ${fieldname}
   Fail  Temporary using keyword 'Отримати інформацію із тендера' until will be updated keyword 'Отримати інформацію із предмету'
+
+Отримати інформацію із запитання
+  [Arguments]  ${username}  ${tender_uaid}  ${question_id}  ${field}
+  Switch browser   ${username}
+  Reload Page
+  ${prepared_locator}=  Set Variable  ${locator_question_${field}.replace('XX_que_id_XX','${question_id}')}
+  log  ${prepared_locator}
+  sleep   10
+  Відкрити розділ запитань
+  sleep   10
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  Wait Until Keyword Succeeds  10 x  5  Check Is Element Loaded  ${prepared_locator}
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із запитання про ${field}  ${raw_value}
+
+Конвертувати інформацію із запитання про title
+  [Arguments]  ${return_value}
+  [return]  ${return_value}

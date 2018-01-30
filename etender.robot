@@ -102,9 +102,10 @@ Login
   ...             ELSE  Set Variable  ${methodType}
 
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Sleep  15
   Click Element                     id=qa_myTenders  # Мої закупівлі
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible     xpath=//a[@data-target='#procedureType']  # Створити оголошення
   Sleep  10
   Click Element                     xpath=//a[@data-target='#procedureType']  # Створити оголошення
   Sleep  3

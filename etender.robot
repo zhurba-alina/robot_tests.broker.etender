@@ -88,19 +88,6 @@ Login
   ${budgetToStr}=       float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
   ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
   ${step_rateToStr}=    float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
-  ${items_description}=   Get From Dictionary   ${items[0]}         description
-  ${quantity}=          Get From Dictionary     ${items[0]}                        quantity
-  ${cpv}=               Get From Dictionary     ${items[0].classification}         id
-  ${unit}=              Get From Dictionary     ${items[0].unit}                   name
-  ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
-  ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
-  ${region}=            Get From Dictionary     ${items[0].deliveryAddress}       region
-  ${region}=            convert_common_string_to_etender_string                   ${region}
-  ${locality}=          Get From Dictionary     ${items[0].deliveryAddress}       locality
-  ${postalCode}=        Get From Dictionary     ${items[0].deliveryAddress}       postalCode
-  ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
-  ${deliveryDate}=      Get From Dictionary     ${items[0].deliveryDate}          endDate
-  ${deliveryDate}=      convert_date_to_etender_format        ${deliveryDate}
   ${enquiry_end_date}=   get_all_etender_dates   ${ARGUMENTS[1]}         EndPeriod          date
   ${enquiry_end_time}=   get_all_etender_dates   ${ARGUMENTS[1]}         EndPeriod          time
   ${start_date}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
@@ -158,44 +145,6 @@ Login
 #  Sleep   1
 #  Click Element    id=addLotItem_0
 #  Sleep    2
-  Input text    id=itemsDescription00      ${items_description}
-  Sleep   1
-  Input text    id=itemsQuantity00         ${quantity}
-  Click Element   xpath=//div[contains(@ng-model,'unit.selected')]//input
-  Sleep   3
-  Click Element   xpath=//div[contains(@ng-model,'unit.selected')]//span[contains(@ng-bind-html,'unit.nameUA') and .='кілограми']
-  Sleep  2
-  Select From List By Label  id=region_00  ${region}
-  Sleep  2
-  Select From List By Label  id=city_00  ${locality}
-  Input text    id=street_00   ${streetAddress}
-  Sleep   1
-  Input text    id=postIndex_00    ${postalCode}
-  Sleep   1
-#  Input text    id=latitude0    ${latitude}
-#  Sleep   1
-#  Input text    id=longitude0   ${longitude}
-#  Sleep   1
-  Input text    id=delStartDate00        ${deliveryDate}
-  Sleep  2
-  Input text    id=delEndDate00          ${deliveryDate}
-  Sleep   1
-  Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
-  Sleep  1
-  Input text     id=classificationCode  ${cpv}
-  Wait Until Element Is Visible  xpath=//td[contains(., '${cpv}')]
-  Sleep  2
-  Click Element  xpath=//td[contains(., '${cpv}')]
-  Sleep  1
-  Click Element  id=classification_choose
-  Sleep  3
-
-  #TODO: need conditional processing of additional configurations available in input data
-  ${status}	           ${value}=  Run Keyword And Ignore Error  Click Element  xpath=//input[@id='openAddClassificationInnModal00']
-  log to console       Attempt to add one more classification: ${status}
-  Run Keyword If      '${status}' == 'PASS'   Додати ще одну дотаткову класифікацію
-
-  Sleep  1
   Додати предмет   ${items[0]}   0
   Sleep   2
   Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
@@ -261,14 +210,55 @@ Login
   [Return]  ${plan_id}
 
 
-Додати ще одну дотаткову класифікацію
+Опрацювати дотаткові класифікації
+  [Arguments]  ${additionalClassifications}
+  # TODO: Обробляти випадок коли є більше однієї додаткової класифікації
+  ${scheme}=  Get From Dictionary  ${additionalClassifications[0]}  scheme
+  Run Keyword And Return  Вказати ${scheme} дотаткову класифікацію  ${additionalClassifications[0]}
+
+Вказати INN дотаткову класифікацію
+  [Arguments]  ${additionalClassification}
+  ${description}=  Get From Dictionary  ${additionalClassification}  description
+  Click Element  xpath=//input[@id='openAddClassificationInnModal00']
   Sleep  3
-  Input text     xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//input  Atracurium
-  Wait Until Element Is Visible  xpath=//td[contains(., 'atracurium')]
+  Input text     xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//input  ${description}
+  Wait Until Element Is Visible  xpath=//td[contains(., '${description}')]
   Sleep  2
-  Click Element  xpath=//td[contains(., 'atracurium')]
+  Click Element  xpath=//td[contains(., '${description}')]
   Sleep  1
   Click Element  xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//button[@id="addClassification_choose"]
+
+Вказати ДК003 дотаткову класифікацію
+  [Arguments]  ${additionalClassification}
+  ${description}=  Get From Dictionary  ${additionalClassification}  description
+  Click Element  id=openAddClassificationModal000
+  Sleep  3
+  Select From List By Value  xpath=//div[@id="addClassification" and contains(@class,"modal")]//select[@name="dkScheme"]  ДК003
+  Sleep  3
+  Input text     xpath=//div[@id="addClassification" and contains(@class,"modal")]//input  ${description}
+  Wait Until Element Is Visible  xpath=//td[contains(., '${description}')]
+  Sleep  2
+  Click Element  xpath=//td[contains(., '${description}')]
+  Sleep  1
+  Click Element  xpath=//div[@id="addClassification" and contains(@class,"modal")]//*[@id="addClassification_choose"]
+
+Вказати ДК018 дотаткову класифікацію
+  [Arguments]  ${additionalClassification}
+  ${description}=  Get From Dictionary  ${additionalClassification}  description
+  Click Element  id=openAddClassificationModal000
+  Sleep  3
+  Select From List By Value  xpath=//div[@id="addClassification" and contains(@class,"modal")]//select[@name="dkScheme"]  ДК018
+  Sleep  3
+  Input text     xpath=//div[@id="addClassification" and contains(@class,"modal")]//input  ${description}
+  Wait Until Element Is Visible  xpath=//td[contains(., '${description}')]
+  Sleep  2
+  Click Element  xpath=//td[contains(., '${description}')]
+  Sleep  1
+  Click Element  xpath=//div[@id="addClassification" and contains(@class,"modal")]//*[@id="addClassification_choose"]
+
+Вказати ДКПП дотаткову класифікацію
+  [Arguments]  ${additionalClassification}
+  log  Це щось старе, і його мають прибрати. Не буду нічого тут робити!  WARN
 
 Enter enquiry date
   [Arguments]  ${enquiry_end_date}  ${enquiry_end_time}
@@ -317,23 +307,63 @@ Enter enquiry date
   [Documentation]
   ...      ${ARGUMENTS[0]} ==  items
   ...      ${ARGUMENTS[1]} ==  ${INDEX}
+  # TODO: rework this, change ARGUMENTS list to named arguments;
+  # TODO: change items[0] below to item argument
+  ${items}=  Set Variable  ${ARGUMENTS}
+  ${items_description}=   Get From Dictionary   ${items[0]}                       description
+  ${quantity}=          Get From Dictionary     ${items[0]}                       quantity
+  ${unit}=              Get From Dictionary     ${items[0].unit}                  name
+  ${cpv}=               Get From Dictionary     ${items[0].classification}        id
   ${dkpp_desc}=     Get From Dictionary   ${ARGUMENTS[0].additionalClassifications[0]}   description
   ${dkpp_id}=       Get From Dictionary   ${ARGUMENTS[0].additionalClassifications[0]}   id
-  #TODO: remove temporary hardcode
-  ${dkpp_desc}=  Set Variable  Складальники виробів з картону, тканини та подібних матеріалів
-  ${dkpp_id}=    Set Variable  8286
-  Sleep  2
-  Click Element                      xpath=(//input[starts-with(@ng-click, 'openAddClassificationModal')])[${ARGUMENTS[1]}+1]
-  Sleep  1
-  Input text                         xpath=//div[@id='addClassification']//input  ${dkpp_desc}
-  Wait Until Element Is Visible      xpath=//td[contains(., '${dkpp_id}')]
-  Sleep  2
-  Click Element                      xpath=//td[contains(., '${dkpp_id}')]
-  Sleep  2
-  Wait Until Element Is Visible      xpath=//div[@id="addClassification"]//*[@id="addClassification_choose"]
-  Click Element                      xpath=//div[@id="addClassification"]//*[@id="addClassification_choose"]
-  Sleep  2
+  ${deliveryDateStart}=    Get From Dictionary  ${items[0].deliveryDate}          startDate
+  ${deliveryDateEnd}=      Get From Dictionary  ${items[0].deliveryDate}          endDate
+  ${deliveryDateStart}=    convert_date_to_etender_format        ${deliveryDateStart}
+  ${deliveryDateEnd}=      convert_date_to_etender_format        ${deliveryDateEnd}
+  ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
+  ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
+  ${region}=            Get From Dictionary     ${items[0].deliveryAddress}       region
+  ${region}=            convert_common_string_to_etender_string                   ${region}
+  ${locality}=          Get From Dictionary     ${items[0].deliveryAddress}       locality
+  ${postalCode}=        Get From Dictionary     ${items[0].deliveryAddress}       postalCode
+  ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
 
+  Sleep  1
+  Input text    id=itemsDescription00      ${items_description}
+  Sleep  1
+  Input text    id=itemsQuantity00         ${quantity}
+  Click Element   xpath=//div[contains(@ng-model,'unit.selected')]//input
+  Sleep  3
+  Input text    xpath=//input[@type='search']  ${unit}
+  Sleep  2
+  Click Element   xpath=//div[contains(@class,"selectize-dropdown") and contains(@repeat,"unit")]//div[@role="option" and contains(@class,"active")]
+  Sleep  1
+  Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Sleep  1
+  Input text     id=classificationCode  ${cpv}
+  Wait Until Element Is Visible  xpath=//td[contains(., '${cpv}')]
+  Sleep  2
+  Click Element  xpath=//td[contains(., '${cpv}')]
+  Sleep  1
+  Click Element  id=classification_choose
+  Sleep  3
+  ${status}  ${value}=  Run Keyword And Ignore Error  Get From Dictionary  ${items[0]}  additionalClassifications
+  log to console       Attempt to get 1st additonal classification scheme: ${status}
+  Run Keyword If      '${status}' == 'PASS'   Опрацювати дотаткові класифікації  ${items[0].additionalClassifications}
+#  Input text    id=latitude0    ${latitude}
+#  Sleep   1
+#  Input text    id=longitude0   ${longitude}
+  Sleep  2
+  Input text    id=delStartDate00        ${deliveryDateStart}
+  Sleep  2
+  Input text    id=delEndDate00          ${deliveryDateEnd}
+  Sleep  2
+  Select From List By Label  id=region_00  ${region}
+  Sleep  2
+  Select From List By Label  id=city_00  ${locality}
+  Input text    id=street_00   ${streetAddress}
+  Sleep  1
+  Input text    id=postIndex_00    ${postalCode}
 
 
 Клацнути і дочекатися

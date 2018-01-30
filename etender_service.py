@@ -60,8 +60,6 @@ def change_data(initial_data):
     #TODO: remove redundant hardcoded values
     initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
     initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
-    initial_data['data']['items'][0]['classification']['description'] = u"Паперові чи картонні реєстраційні журнали, бухгалтерські книги, швидкозшивачі, бланки та інші паперові канцелярські вироби"
-    initial_data['data']['items'][0]['unit']['name'] = u"кілограми"
     initial_data['data']['procuringEntity']['name'] = u"TenderOwner#"
     return initial_data
 
@@ -87,8 +85,6 @@ def convert_etender_string_to_common_string(string):
 
 def get_helper_dictionary():
     return {
-        u"Київська область": u"м. Київ",
-        u"Київ": u"м. Київ",
         u"кг.": u"кілограм",
         u"грн.": u"UAH",
         u"(включаючи ПДВ)": True,

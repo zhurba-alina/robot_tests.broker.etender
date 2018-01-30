@@ -193,6 +193,7 @@ Login
   Click element         xpath=//button[contains(.,'Зберегти та вийти')]
   :FOR  ${i}  IN RANGE  ${number_of_items}
   \     Wait Until Element Is Visible       //button[@ng-click="addItem()"]
+  \     scrollIntoView by script using xpath  //button[@ng-click="addItem()"]
   \     Click element           xpath=//button[@ng-click='addItem()']
   \     ${item_description}=    Get From Dictionary         ${items[${i}]}          description
   \     Input text              id=itemsDescription${i}     ${item_description}
@@ -203,6 +204,7 @@ Login
   \     Press Key               xpath=//unit[@id='unit_${i}']//input[@type="search"]                 \\13
   \     Sleep   2
   \     Click Element           xpath=//div[contains(@ng-model,'unit.selected')]//span[@class="ui-select-highlight"]
+  scrollIntoView by script using xpath  //button[contains(., "Створити план")]
   Click element         xpath=//button[contains(., 'Створити план')]
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Keyword Succeeds   2x  10 sec  Дочекатися завершення обробки плану

@@ -89,3 +89,30 @@ def get_helper_dictionary():
         u"грн.": u"UAH",
         u"(включаючи ПДВ)": True,
     }
+
+
+def convert_unit_name_to_unit_code(string):
+    return {
+        u"блок": u"D64",
+        u"гектар": u"HAR",
+        u"кілограми": u"KGM",
+        u"кілометри": u"KMT",
+        u"літр": u"LTR",
+        u"лот": u"LO",
+        u"метри квадратні": u"MTK",
+        u"метри кубічні": u"MTQ",
+        u"метри": u"MTR",
+        u"місяць": u"MON",
+        u"набір": u"SET",
+        u"пара": u"PR",
+        u"пачка": u"RM",
+        u"пачок": u"NMP",
+        u"послуга": u"E48",
+        u"рейс": u"E54",
+        u"тони": u"TNE",
+        u"упаковка": u"PK",
+        u"Флакон": u"VI",
+        u"штуки": u"H87",
+        u"ящик": u"BX",
+    }.get(string, string)
+

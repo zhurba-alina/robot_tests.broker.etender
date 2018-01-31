@@ -636,8 +636,8 @@ Check Is Element Loaded
 
 Отримати інформацію про minimalStep.amount
   ${return_value}=   Отримати текст із поля і показати на сторінці   minimalStep.amount
-  ${return_value}=   Convert To Number   ${return_value.split(' ')[0]}
-  ${return_value}=   convert_etender_string_to_common_string      ${return_value}
+  ${return_value}=   parse_currency_value_with_spaces   ${return_value}
+  ${return_value}=   Convert To Number   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про value.amount
@@ -734,7 +734,8 @@ Change_date_to_month
 
 Отримати інформацію про items[0].unit.code
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].unit.code
-  Run Keyword And Return If  '${return_value}'== 'кг.'   Convert To String  KGM
+  ${return_value}=   convert_unit_name_to_unit_code  ${return_value}
+  [return]  ${return_value}
 
 Отримати інформацію про items[0].quantity
   ${return_value}=   Отримати текст із поля і показати на сторінці   items[0].quantity
@@ -747,8 +748,10 @@ Change_date_to_month
 
 Отримати інформацію про items[0].classification.scheme
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.scheme
-  ${return_value}=   Get Substring  ${return_value}   0   -1
-  [return]  ${return_value.split(' ')[1]}
+  ${return_value}=   Set Variable  ${return_value.split(u'КЛАСИФІКАТОР ')[1]}
+  ${return_value}=   Set Variable  ${return_value.split(':')[0]}
+  ${return_value}=   Set Variable  ${return_value.replace(' ', '')}
+  [return]  ${return_value}
 
 Отримати інформацію про items[0].classification.description
   ${return_value}=   Отримати текст із поля і показати на сторінці  items[0].classification.description
@@ -789,14 +792,17 @@ Change_date_to_month
 Отримати інформацію про items[0].deliveryAddress.streetAddress
   Run Keyword And Return  Отримати текст із поля і показати на сторінці  items[0].deliveryAddress.streetAddress
 
+Отримати інформацію про items[0].deliveryDate.startDate
+  ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryDate.startDate
+  ${return_value}=   Set Variable  ${return_value.replace(u'з ','')}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}, 00:00
+  [return]  ${return_value}
+
 Отримати інформацію про items[0].deliveryDate.endDate
   ${return_value}=  Отримати текст із поля і показати на сторінці  items[0].deliveryDate.endDate
-  ${time}=  Отримати текст із поля і показати на сторінці  enquiryPeriod.startDate
-  ${time}=  Get Substring  ${time}  11
-  ${day}=  Get Substring  ${return_value}  16  18
-  ${month}=  Get Substring  ${return_value}  18  22
-  ${year}=  Get Substring  ${return_value}  22
-  Run Keyword And Return  Convert To String  ${year}${month}${day}${time}
+  ${return_value}=   Set Variable  ${return_value.replace(u'по ','')}
+  ${return_value}=   convert_etender_date_to_iso_format   ${return_value}, 00:00
+  [return]  ${return_value}
 
 Отримати інформацію про questions[0].title
   sleep   10
@@ -806,9 +812,10 @@ Change_date_to_month
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].description
+  Sleep   10
+  Відкрити розділ запитань
+  Sleep   10
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].description
-  Sleep   3
-  ${return_value}=    Get text   id=quest_descr_0
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].date
@@ -821,20 +828,19 @@ Change_date_to_month
   Sleep   3
   Reload Page
   Sleep   10
+  Відкрити розділ запитань
+  Sleep   10
   ${return_value}=     Отримати текст із поля і показати на сторінці     questions[0].answer
-  Sleep   4
-  ${return_value}=    Get text   xpath=//div[@textarea='question.answer']
   [return]  ${return_value}
-  Capture Page Screenshot
 
 
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Sleep  60
-  Page Should Contain Element  xpath=//a[@id='lot_auctionUrl_0']
+  Page Should Contain Element  xpath=//p[contains(@ng-if,"auctionUrl")]/a
   Sleep  3
-  ${url}=  Get Element Attribute  xpath=//*[@id="lot_auctionUrl_0"]@href
+  ${url}=  Get Element Attribute  xpath=//p[contains(@ng-if,"auctionUrl")]/a@href
   [return]  ${url}
 
 Отримати посилання на аукціон для учасника

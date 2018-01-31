@@ -54,7 +54,7 @@ ${huge_timeout_for_visibility}                                 300
   Open Browser  ${USERS.users['${ARGUMENTS[0]}'].homepage}  ${USERS.users['${ARGUMENTS[0]}'].browser}  alias=${ARGUMENTS[0]}
   Set Window Size  @{USERS.users['${ARGUMENTS[0]}'].size}
   Set Window Position  @{USERS.users['${ARGUMENTS[0]}'].position}
-  Run Keyword If  '${ARGUMENTS[0]}' != 'E-tender_Viewer'  Login  ${ARGUMENTS[0]}
+  Run Keyword If  '${ARGUMENTS[0]}' != 'Etender_Viewer'  Login  ${ARGUMENTS[0]}
 
 
 Підготувати дані для оголошення тендера

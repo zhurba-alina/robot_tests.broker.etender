@@ -39,6 +39,9 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
+${locator_document_title}                                      xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]
+${locator_document_href}                                       xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]@href
+${locator_document_description}                                xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]/following-sibling::p
 ${locator.value.currency}                                      id=tenderCurrency
 ${locator.value.valueAddedTaxIncluded}                         id=includeVat
 ${locator.bids}                                                id=ParticipiantInfo_0
@@ -873,3 +876,32 @@ Change_date_to_month
 Конвертувати інформацію із запитання про title
   [Arguments]  ${return_value}
   [return]  ${return_value}
+
+Отримати інформацію із документа
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}  ${field}
+  Switch browser   ${username}
+  ${prepared_locator}=  Set Variable  ${locator_document_${field}.replace('XX_doc_id_XX','${doc_id}')}
+  log  ${prepared_locator}
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із документа про ${field}  ${raw_value}
+
+Конвертувати інформацію із документа про title
+  [Arguments]  ${raw_value}
+  ${return_value}=  Set Variable  ${raw_value.split(',')[0]}
+  [return]  ${return_value}
+
+Конвертувати інформацію із документа про description
+  [Arguments]  ${raw_value}
+  ${return_value}=  Set Variable  ${raw_value.split('(')[1].replace(')','')}
+  [return]  ${return_value}
+
+Отримати документ
+  [Arguments]  ${username}  ${tender_uaid}  ${doc_id}
+  Switch browser   ${username}
+  ${title}=  etender.Отримати інформацію із документа  ${username}  ${tender_uaid}  ${doc_id}  title
+  ${prepared_locator}=  Set Variable  ${locator_document_href.replace('XX_doc_id_XX','${doc_id}')}
+  log  ${prepared_locator}
+  ${href}=  Get Element Attribute  ${prepared_locator}
+  ${document_file}=  download_file_from_url  ${href}  ${OUTPUT_DIR}${/}${title}
+  [return]  ${document_file}

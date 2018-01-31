@@ -227,6 +227,7 @@ Login
   ${amount}=            float_to_string_2f      ${amount}
   ${number_of_items}=   Get Length              ${items}
   ${cpv_id}=          Get From Dictionary       ${plan.classification}          id
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Element Is Visible     id=qa_myPlans
   Click Element         id=qa_myPlans
   Wait Until Element Is Visible     jquery=a[href^="#/createPlan"]
@@ -252,8 +253,13 @@ Login
   \     Input text              xpath=//unit[@id='unit_${i}']//input[@type="search"]                 ${item_unit}
   \     Press Key               xpath=//unit[@id='unit_${i}']//input[@type="search"]                 \\13
   \     Sleep   2
-  \     Click Element   //div[contains(@ng-model,'unit.selected')]//span[@class="ui-select-highlight"]
+  \     Click Element           xpath=//div[contains(@ng-model,'unit.selected')]//span[@class="ui-select-highlight"]
   Click element         xpath=//button[contains(., 'Створити план')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Keyword Succeeds   2x  10 sec  Дочекатися завершення обробки плану
+  ${plan_id}=                        Get Text  id=planId_0
+  [Return]  ${plan_id}
+
 
 Додати ще одну дотаткову класифікацію
   Sleep  3
@@ -279,6 +285,15 @@ Enter enquiry date
   Wait Until Element Is Visible      ${locator.tenderId}  30
   ${tender_id}=                      Get Text  ${locator.tenderId}
   Should Match Regexp                ${tender_id}  UA-\\d{4}-\\d{2}-\\d{2}-\\d+.*
+
+
+Дочекатися завершення обробки плану
+  Reload Page
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Element Is Visible      id=planId_0  30
+  ${plan_id}=                        Get Text  id=planId_0
+  Log  ${plan_id}
+  Should Match Regexp                ${plan_id}  UA-P-\\d{4}-.*
 
 Завантажити документ
   [Arguments]  @{ARGUMENTS}
@@ -361,6 +376,23 @@ Enter enquiry date
   Wait Until Page Contains    ${ARGUMENTS[1]}   10
   sleep  1
 
+Пошук плану по ідентифікатору
+  [Arguments]  ${username}  ${TENDER_UAID}
+  Log  ${username}
+  Go To  ${USERS.users['${username}'].homepage}
+  Wait Until Element Is Visible         id=naviTitle2
+  Sleep  3
+  JavaScript scrollBy  0  -2000
+  Click Element                         id=naviTitle2
+  #Wait Until Page Contains Element    xpath=//input[@type='text' and @placeholder='Пошук за номером плану']    10
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  sleep  1
+  Wait Until Element Is Visible    xpath=//input[@type='text' and @placeholder='Пошук за номером плану']    10
+  sleep  3
+  Input Text    xpath=//input[@type='text' and @placeholder='Пошук за номером плану']   ${TENDER_UAID}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Page Contains  ${TENDER_UAID}  10
+
 
 Завантажити документ в ставку
   [Arguments]  @{ARGUMENTS}
@@ -434,6 +466,10 @@ Enter enquiry date
   ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  Reload Page
+
+Оновити сторінку з планом
+  [Arguments]  @{ARGUMENTS}
   Reload Page
 
 Задати питання

@@ -78,6 +78,14 @@ def convert_common_string_to_etender_string(string):
     return string
 
 
+def parse_currency_value_with_spaces(raw_value):
+    # to convert raw values like '2 216 162,83 UAH' to string which is ready for conversion to float
+    exploded = raw_value.split(' ')
+    result = ''.join(exploded[:-1])
+    result = result.replace(',', '.')
+    return result
+
+
 def convert_etender_string_to_common_string(string):
     dict = get_helper_dictionary()
     return dict.get(string, string)

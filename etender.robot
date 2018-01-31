@@ -7,8 +7,8 @@ Library  etender_service.py
 
 *** Variables ***
 ${locator.tenderId}                                            xpath=//*[@id='tenderidua']/b
-${locator.title}                                               jquery=tender-subject-info>div.row:contains("Конкрентна назва предмету закупівлі:")>:eq(1)>
-${locator.description}                                         jquery=tender-subject-info>div.row:contains("Загальні відомості про закупівлю:")>:eq(1)>
+${locator.title}                                               id=tenderTitle
+${locator.description}                                         id=tenderDescription
 ${locator.minimalStep.amount}                                  id=lotMinimalStep_0
 ${locator.procuringEntity.name}                                id=tenderOwner
 ${locator.value.amount}                                        id=tenderBudget
@@ -17,29 +17,30 @@ ${locator.tenderPeriod.endDate}                                id=tenderEnd
 ${locator.enquiryPeriod.startDate}                             id=enquiryStart
 ${locator.enquiryPeriod.endDate}                               id=enquiryEnd
 ${locator.items[0].description}                                id=item_description_00
+${locator.items[0].deliveryDate.startDate}                     id=delivery_start_00
 ${locator.items[0].deliveryDate.endDate}                       id=delivery_end_00
 ${locator.items[0].deliveryLocation.latitude}                  id=delivery_latitude0
 ${locator.items[0].deliveryLocation.longitude}                 id=delivery_longitude0
-${locator.items[0].deliveryAddress.postalCode}                 id=delivery_postIndex_0
-${locator.items[0].deliveryAddress.countryName}                id=delivery_country_0
-${locator.items[0].deliveryAddress.region}                     id=delivery_region_0
-${locator.items[0].deliveryAddress.locality}                   xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.city.title']
-${locator.items[0].deliveryAddress.streetAddress}              xpath=//div[@class='col-sm-8']//span[@ng-if='item.deliveryAddress.addressStr']
-${locator.items[0].classification.scheme}                      xpath=//div[6]/div[2]/div/p
-${locator.items[0].classification.id}                          xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[10]//span[1]
-${locator.items[0].classification.description}                 xpath=(//div[@class = 'col-sm-8']/p[@class='ng-binding'])[10]//span[2]
+${locator.items[0].deliveryAddress.postalCode}                 id=delivery_postIndex_00
+${locator.items[0].deliveryAddress.countryName}                id=delivery_country_00
+${locator.items[0].deliveryAddress.region}                     id=delivery_region_00
+${locator.items[0].deliveryAddress.locality}                   id=delivery_city_00
+${locator.items[0].deliveryAddress.streetAddress}              id=delivery_addressStr_00
+${locator.items[0].classification.scheme}                      xpath=//table[contains(@class,"itemTable")]//th[contains(.,"Класифікатор ")]
+${locator.items[0].classification.id}                          id=classification_code_00
+${locator.items[0].classification.description}                 id=classification_name_00
 ${locator.items[0].additionalClassifications[0].scheme}        xpath=//div[6]/div[3]/div/p
 ${locator.items[0].additionalClassifications[0].id}            id=additionalClassification_id0
 ${locator.items[0].additionalClassifications[0].description}   id=additionalClassification_desc0
-${locator.items[0].unit.code}                                  id=item_unit_symb0
-${locator.items[0].quantity}                                   id=item_quantity0
+${locator.items[0].unit.code}                                  id=item_unit_00
+${locator.items[0].quantity}                                   id=item_quantity_00
+${locator.items[0].unit.name}                                  id=item_unit_00
 ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
 ${locator.value.currency}                                      id=tenderCurrency
-${locator.value.valueAddedTaxIncluded}                         id=excludeVat
-${locator.items[0].unit.name}                                  id=item_unit_symb0
+${locator.value.valueAddedTaxIncluded}                         id=includeVat
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]

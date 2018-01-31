@@ -390,6 +390,7 @@ Enter enquiry date
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
+  Run Keyword If  '${ARGUMENTS[0]}' == 'Etender_Viewer'  Run Keyword And Return  Тимчасовий Пошук тендера по ідентифікатору для Viewer  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
   Wait Until Page Contains Element    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    10
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  1
@@ -409,6 +410,14 @@ Enter enquiry date
   Click Link    xpath=//td[contains(.,'${ARGUMENTS[1]}')]/p/a[contains(@href,'#/tenderDetailes')]
   Wait Until Page Contains    ${ARGUMENTS[1]}   10
   sleep  1
+
+Тимчасовий Пошук тендера по ідентифікатору для Viewer
+  [Arguments]  ${username}  ${TENDER_UAID}
+  # TODO: У майбутньому треба буде запровадити більш коректне рішення
+  # Виникла необхідність обійти пошук по ідентифікатору через особливість тестового оточення майданчика
+  ${cleared_homepage_site}=  Set Variable  ${USERS.users['${username}'].homepage}
+  ${cleared_homepage_site}=  Set Variable  ${cleared_homepage_site.split('#')[0]}
+  Go To  ${cleared_homepage_site}tender?tenderid=${TENDER_UAID}
 
 Пошук плану по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}

@@ -299,15 +299,21 @@ Enter enquiry date
   ...      ${ARGUMENTS[1]} ==  file
   ...      ${ARGUMENTS[2]} ==  tender_uaid
   sleep   2
-  Execute Javascript     $('#lot_doc_add:first').removeAttr('disabled','false');
-  Sleep   10
-  Log   Multiple docType dropdowns on page   WARN
   Select From List By Label  xpath=//div[@id="tree-01-02"]//select[@id="docType"]  Інші
   log  ${ARGUMENTS[1]}
   Sleep   10
-  Choose File     id=tend_doc_add  ${ARGUMENTS[1]}
+  # TODO: Rework this tricky behavior someday?
+  # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
+  # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
+  ${tmp_location}=  Get Location
+  Click Element   id=tend_doc_add
+  Choose File     xpath=//input[@type="file"]  ${ARGUMENTS[1]}
   Sleep   4
   Capture Page Screenshot
+  Close Browser
+  etender.Підготувати клієнт для користувача  ${ARGUMENTS[0]}
+  Go To  ${tmp_location}
+  Sleep  5
 
 Додати предмет
   [Arguments]  @{ARGUMENTS}

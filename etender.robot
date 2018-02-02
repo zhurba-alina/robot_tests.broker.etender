@@ -705,7 +705,6 @@ Check Is Element Loaded
   ${return_value}=   Отримати текст із поля і показати на сторінці  tenderPeriod.startDate
   ${return_value}=   Set Variable  ${return_value.replace(u'з ','')}
   ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
-#  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
 Отримати інформацію про tenderPeriod.endDate
@@ -724,17 +723,8 @@ Check Is Element Loaded
   ${return_value}=   Отримати текст із поля і показати на сторінці  enquiryPeriod.endDate
   ${return_value}=   Set Variable  ${return_value.replace(u'по ','')}
   ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
-#  ${return_value}=   Change_date_to_month   ${return_value}
   [return]  ${return_value}
 
-Change_date_to_month
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]}  ==  date
-  ${day}=   Get Substring   ${ARGUMENTS[0]}   0   2
-  ${month}=   Get Substring   ${ARGUMENTS[0]}  3   6
-  ${year}=   Get Substring   ${ARGUMENTS[0]}   5
-  ${return_value}=   Convert To String  ${month}${day}${year}
   [return]  ${return_value}
 
 Отримати інформацію про items[0].description

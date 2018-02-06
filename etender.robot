@@ -366,6 +366,10 @@ Enter enquiry date
   Sleep  2
   Click Element   xpath=//div[contains(@class,"selectize-dropdown") and contains(@repeat,"unit")]//div[@role="option" and contains(@class,"active")]
   Sleep  1
+  scrollIntoView by script using xpath  //input[starts-with(@ng-click, "openClassificationModal")]  # openClassificationModal - main
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
   Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
   Sleep  1
   Input text     id=classificationCode  ${cpv}

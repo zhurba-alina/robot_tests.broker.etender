@@ -663,6 +663,33 @@ Check Is Element Loaded
   [Arguments]  ${new_value}
   Input text  id=description  ${new_value}
 
+Змінити лот
+  [Arguments]  ${username}  ${tender_uaid}  ${lot_id}  ${field}  ${new_value}
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Wait Until Page Contains Element   xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']   ${huge_timeout_for_visibility}
+  Sleep  2
+  Click Element              xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']
+  Sleep  2
+  Run Keyword  Редагувати поле лота ${field}  ${lot_id}  ${new_value}
+  Sleep  2
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Click Element            id=SaveChanges
+  Sleep  2
+  Run Keyword And Ignore Error  Click Element  xpath=//div[@id="SignModal" and //div[contains(@class,"modal-dialog")]//div[contains(.,"будь ласка, перевірте статус")]]//button[.="Закрити"]  #close info dialog, if present
+
+Редагувати поле лота value.amount
+  [Arguments]  ${lot_id}  ${new_value}
+  ${new_value}=  float_to_string_2f  ${new_value}  # at least 2 fractional point precision, avoid rounding
+  Input text  id=lotValue_0  ${new_value}
+
+Редагувати поле лота minimalStep.amount
+  [Arguments]  ${lot_id}  ${new_value}
+  ${new_value}=  float_to_string_2f  ${new_value}  # at least 2 fractional point precision, avoid rounding
+  Input text  id=minimalStep_0  ${new_value}
+
+
 Отримати інформацію із тендера
   [Arguments]  ${user}  ${tender_id}  ${fieldname}
   [Documentation]

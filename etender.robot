@@ -143,6 +143,10 @@ Login
 #  Sleep   1
   Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
+  scrollIntoView by script using xpath  //div[contains(@class,"row") and (not(contains(@class,"controls")))]/div/label/input[@id="valueAddedTaxIncluded"]  # checkbox ПДВ
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
   Click Element    xpath=//div[contains(@class,'row') and (not(contains(@class,'controls')))]/div/label/input[@id='valueAddedTaxIncluded']
   Input text    id=minimalStep_0        ${step_rateToStr}
   Sleep   1
@@ -154,6 +158,8 @@ Login
   Sleep   2
   Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
   Sleep  1
+  scrollIntoView by script using xpath  //*[@id="createTender"]  # scroll to createTender button
+  sleep   2
   Wait Until Page Contains Element   id=createTender
   Click Element   id=createTender
   Sleep   60

@@ -503,6 +503,24 @@ Enter enquiry date
   Sleep  1
   Input text    id=postIndex_00    ${postalCode}
 
+Додати неціновий показник на предмет
+  [Arguments]  ${username}  ${tender_uaid}  ${feature_data}  ${object_id}
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Wait Until Page Contains Element   xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']   ${huge_timeout_for_visibility}
+  Sleep  2
+  Click Element              xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']
+  Sleep  2
+  ${feature_of}=  Get From Dictionary  ${feature_data}  featureOf
+  Run Keyword If  '${feature_of}' == 'lot'       add feature lot     ${feature_data}  1
+  Run Keyword If  '${feature_of}' == 'tenderer'  add feature tender  ${feature_data}  1
+  Run Keyword If  '${feature_of}' == 'item'      add feature item    ${feature_data}  1
+  Sleep  2
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Click Element            id=SaveChanges
+  Sleep  2
+  Run Keyword And Ignore Error  Click Element  xpath=//div[@id="SignModal" and //div[contains(@class,"modal-dialog")]//div[contains(.,"будь ласка, перевірте статус")]]//button[.="Закрити"]  #close info dialog, if present
 
 Клацнути і дочекатися
   [Arguments]  ${click_locator}  ${wanted_locator}  ${timeout}

@@ -491,6 +491,24 @@ Enter enquiry date
   Choose File       id=updatebid_doc_add     ${ARGUMENTS[1]}
   Sleep   2
 
+Завантажити документ в лот
+  [Arguments]  ${username}  ${document_file}  ${tender_uaid}  ${lot_id}
+  sleep   2
+  Select From List By Label  xpath=//div[@id="treetree-01-02-0"]//select[@id="docType"]  Інші
+  Sleep   5
+  # TODO: Rework this tricky behavior someday?
+  # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
+  # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
+  ${tmp_location}=  Get Location
+  Click Element   id=lot_doc_add
+  Choose File     xpath=//input[@type="file"]  ${document_file}
+  Sleep   4
+  Capture Page Screenshot
+  Close Browser
+  etender.Підготувати клієнт для користувача  ${username}
+  Go To  ${tmp_location}
+  Sleep  5
+
 Подати цінову пропозицію
   [Arguments]  @{ARGUMENTS}
   [Documentation]

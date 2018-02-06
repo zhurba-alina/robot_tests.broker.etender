@@ -522,6 +522,35 @@ Enter enquiry date
   Sleep  2
   Run Keyword And Ignore Error  Click Element  xpath=//div[@id="SignModal" and //div[contains(@class,"modal-dialog")]//div[contains(.,"будь ласка, перевірте статус")]]//button[.="Закрити"]  #close info dialog, if present
 
+Видалити неціновий показник
+  [Arguments]  ${username}  ${tender_uaid}  ${feature_id}
+  Selenium2Library.Switch Browser    ${username}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Wait Until Page Contains Element   xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']   ${huge_timeout_for_visibility}
+  Sleep  2
+  Click Element              xpath=//a[contains(@class,'btn btn-primary') and .='Редагувати закупівлю']
+  Sleep  2
+  ${features_count}=  Selenium2Library.Get Element Count  xpath=//input[contains(@name,"feature-item") and @ng-model="feature.title"]
+  :FOR  ${i}  IN RANGE  ${features_count}
+  \     ${feature_title}=  Get Value  name=feature-item${i}
+  \     ${contains}=  Evaluate   "${feature_id}" in """${feature_title}"""
+  \     Run Keyword If  '${contains}' == 'True'  Видалити вказаний неціновий показник з предмету  ${i}  # delete feature
+  Sleep  2
+  Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
+  Click Element            id=SaveChanges
+  Sleep  2
+  Run Keyword And Ignore Error  Click Element  xpath=//div[@id="SignModal" and //div[contains(@class,"modal-dialog")]//div[contains(.,"будь ласка, перевірте статус")]]//button[.="Закрити"]  #close info dialog, if present
+
+Видалити вказаний неціновий показник з предмету
+  [Arguments]  ${feature_index}
+  ${delete_button_xpath}=  Set Variable  (//add-features[contains(@feature-sector,"item")]//button[@ng-click="removeFeature($index)"])[${feature_index}+1]
+  scrollIntoView by script using xpath  ${delete_button_xpath}
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=${delete_button_xpath}  # delete feature button - item
+
 Клацнути і дочекатися
   [Arguments]  ${click_locator}  ${wanted_locator}  ${timeout}
   [Documentation]

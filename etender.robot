@@ -115,11 +115,18 @@ Login
   Sleep  3
 
   &{procedure_types}=  Create Dictionary  aboveThresholdUA=Відкриті торги  belowThreshold=Допорогові закупівлі
+  ${lots}=         Set Variable  ${EMPTY}
+  ${lots_count}=   Set Variable  ${EMPTY}
+  ${status}  ${lots}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  lots
+  log to console  presence of lots: ${status}
+  ${lots_count}=  Run Keyword IF  '${status}' != 'PASS'  Set Variable  0
+  ...             ELSE  Get Length  ${lots}
+
   Select From List By Label         id=chooseProcedureType  &{procedure_types}[${methodType}]
   Sleep  3
-
   Click Element                     id=goToCreate  # Продовжити
   Sleep   3
+  Додати лот при наявності і внести значення  ${lots_count}  ${lots}
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
 
@@ -135,12 +142,6 @@ Login
   Sleep   1
   Input text    xpath=//input[@id="endDate_time"]   ${end_time}
   Sleep   1
-#  Click Element    id=addLot_        ##click to button addLot
-#  Sleep     2
-#  Input text    id=lotTitle          ${title}
-#  Sleep   1
-#  Input text    id=itemsDescription00   ${description}
-#  Sleep   1
   Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
   scrollIntoView by script using xpath  //div[contains(@class,"row") and (not(contains(@class,"controls")))]/div/label/input[@id="valueAddedTaxIncluded"]  # checkbox ПДВ
@@ -150,10 +151,6 @@ Login
   Click Element    xpath=//div[contains(@class,'row') and (not(contains(@class,'controls')))]/div/label/input[@id='valueAddedTaxIncluded']
   Input text    id=minimalStep_0        ${step_rateToStr}
   Sleep   1
-  #Input text    name=minimalStepPer_0     1
-#  Sleep   1
-#  Click Element    id=addLotItem_0
-#  Sleep    2
   Додати предмет   ${items[0]}   0
   Sleep   2
   Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
@@ -173,6 +170,18 @@ Login
   Log   ${Ids}
   Run keyword if   '${mode}' == 'multi'   Set Multi Ids   ${ARGUMENTS[0]}   ${tender_UAid}
   [return]  ${Ids}
+
+Додати лот при наявності і внести значення
+  [Arguments]  ${lots_count}  ${lots}
+  Return From Keyword If  '${lots_count}' == '0'
+  ${title}=        Get From Dictionary  ${lots[0]}  title
+  ${description}=  Get From Dictionary  ${lots[0]}  description
+  Click Element  id=isMultilots  # checkbox Мультилотова закупівля
+  Sleep  2
+  Input text     id=lotTitle0  ${title}
+  Sleep  1
+  Input text     id=lotDescription0  ${description}
+  Sleep  1
 
 Створити план
   [Arguments]  ${username}  ${arguments}

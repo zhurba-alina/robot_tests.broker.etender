@@ -133,6 +133,13 @@ Login
   Додати лот при наявності і внести значення  ${lots_count}  ${lots}
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
+  ${features}=        Set Variable  ${EMPTY}
+  ${features_count}=  Set Variable  ${EMPTY}
+  ${status}  ${features}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  features
+  log to console  presence of features: ${status}
+  ${features_count}=  Run Keyword IF  '${status}' != 'PASS'  Set Variable  0
+  ...                 ELSE  Get Length  ${features}
+  Додати нецінові показники при наявності  ${features_count}  ${features}
 
   ${status}	           ${value}=  Run Keyword And Ignore Error  Should Not Be Empty  ${enquiry_end_date}
   log to console       check do we have enquiry_end_date: ${status}
@@ -186,6 +193,101 @@ Login
   Sleep  1
   Input text     id=lotDescription0  ${description}
   Sleep  1
+
+Додати нецінові показники при наявності
+  [Arguments]  ${features_count}  ${features}
+  Return From Keyword If  '${features_count}' == '0'
+  :FOR  ${i}  IN RANGE  ${features_count}
+  \     ${feature_of}=  Get From Dictionary  ${features[${i}]}  featureOf
+  \     Run Keyword If  '${feature_of}' == 'lot'       add feature lot     ${features[${i}]}  0
+  \     Run Keyword If  '${feature_of}' == 'tenderer'  add feature tender  ${features[${i}]}  0
+  \     Run Keyword If  '${feature_of}' == 'item'      add feature item    ${features[${i}]}  0
+
+add feature tender
+  [Arguments]  ${feature}  ${feature_index}
+  ${title}=        Get From Dictionary  ${feature}  title
+  ${description}=  Get From Dictionary  ${feature}  description
+  ${options}=      Get From Dictionary  ${feature}  enum
+  scrollIntoView by script using xpath  //add-features[contains(@feature-sector,"tender")]//span[@ng-click="addFeature()"]  # scroll to addFeature button - tender
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click element  xpath=//add-features[contains(@feature-sector,"tender")]//span[@ng-click="addFeature()"]
+  Sleep    2
+  Input text  name=feature-tender${feature_index}  ${title}
+  Input text  xpath=//input[@name="feature-tender${feature_index}"]/parent::td/following-sibling::td/input[@type="text"]  ${description}
+  Sleep    2
+  ${number_of_options}=  Get Length  ${options}
+  :FOR  ${i}  IN RANGE  ${number_of_options}
+  \     Click element  xpath=//add-features[contains(@feature-sector,"tender")]//button[@ng-click="addFeatureOption(feature)"]
+  \     Sleep    2
+  \     ${opt_title}=  Get From Dictionary  ${feature.enum[${i}]}  title
+  \     ${opt_value}=  Get From Dictionary  ${feature.enum[${i}]}  value
+  \     ${opt_value}=  Convert To Number  ${opt_value}
+  \     ${opt_value}=  Convert To Integer  ${opt_value*100}
+  \     ${opt_value}=  Convert To String  ${opt_value}
+  \     Input text  name=feature-tenderOption${feature_index}${i}  ${opt_title}
+  \     Input text  id=feature-tenderOptionValue${feature_index}${i}  ${opt_value}
+
+add feature item
+  [Arguments]  ${feature}  ${feature_index}
+  ${title}=        Get From Dictionary  ${feature}  title
+  ${description}=  Get From Dictionary  ${feature}  description
+  ${options}=      Get From Dictionary  ${feature}  enum
+  scrollIntoView by script using xpath  //add-features[contains(@feature-sector,"item")]//span[@ng-click="addFeature()"]  # scroll to addFeature button - item
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click element  xpath=//add-features[contains(@feature-sector,"item")]//span[@ng-click="addFeature()"]
+  Sleep    2
+  Input text  name=feature-item${feature_index}  ${title}
+  Input text  xpath=//input[@name="feature-item${feature_index}"]/parent::td/following-sibling::td/input[@type="text"]  ${description}
+  Sleep    2
+  ${number_of_options}=   Get Length              ${options}
+  :FOR  ${i}  IN RANGE  ${number_of_options}
+  \     scrollIntoView by script using xpath  (//add-features[contains(@feature-sector,"item")]//button[@ng-click="addFeatureOption(feature)"])[${feature_index}+1]  # addFeatureOption - item
+  \     sleep   2
+  \     JavaScript scrollBy  0  -100
+  \     sleep   2
+  \     Click element  xpath=(//add-features[contains(@feature-sector,"item")]//button[@ng-click="addFeatureOption(feature)"])[${feature_index}+1]
+  \     Sleep    2
+  \     ${opt_title}=  Get From Dictionary  ${feature.enum[${i}]}  title
+  \     ${opt_value}=  Get From Dictionary  ${feature.enum[${i}]}  value
+  \     ${opt_value}=  Convert To Number  ${opt_value}
+  \     ${opt_value}=  Convert To Integer  ${opt_value*100}
+  \     ${opt_value}=  Convert To String  ${opt_value}
+  \     Input text  name=feature-itemOption${feature_index}${i}  ${opt_title}
+  \     Input text  id=feature-itemOptionValue${feature_index}${i}  ${opt_value}
+
+add feature lot
+  [Arguments]  ${feature}  ${feature_index}
+  ${title}=        Get From Dictionary  ${feature}  title
+  ${description}=  Get From Dictionary  ${feature}  description
+  ${options}=      Get From Dictionary  ${feature}  enum
+  scrollIntoView by script using xpath  //add-features[contains(@feature-sector,"lot")]//span[@ng-click="addFeature()"]  # scroll to addFeature button - lot
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click element  xpath=//add-features[contains(@feature-sector,"lot")]//span[@ng-click="addFeature()"]
+  Sleep    2
+  Input text  name=feature-lot${feature_index}  ${title}
+  Input text  xpath=//input[@name="feature-lot${feature_index}"]/parent::td/following-sibling::td/input[@type="text"]  ${description}
+  Sleep    2
+  ${number_of_options}=   Get Length              ${options}
+  :FOR  ${i}  IN RANGE  ${number_of_options}
+  \     scrollIntoView by script using xpath  //add-features[contains(@feature-sector,"lot")]//button[@ng-click="addFeatureOption(feature)"]  # addFeatureOption - lot
+  \     sleep   2
+  \     JavaScript scrollBy  0  -100
+  \     sleep   2
+  \     Click element  xpath=//add-features[contains(@feature-sector,"lot")]//button[@ng-click="addFeatureOption(feature)"]
+  \     Sleep    2
+  \     ${opt_title}=  Get From Dictionary  ${feature.enum[${i}]}  title
+  \     ${opt_value}=  Get From Dictionary  ${feature.enum[${i}]}  value
+  \     ${opt_value}=  Convert To Number  ${opt_value}
+  \     ${opt_value}=  Convert To Integer  ${opt_value*100}
+  \     ${opt_value}=  Convert To String  ${opt_value}
+  \     Input text  name=feature-lotOption${feature_index}${i}  ${opt_title}
+  \     Input text  id=feature-lotOptionValue${feature_index}${i}  ${opt_value}
 
 Створити план
   [Arguments]  ${username}  ${arguments}

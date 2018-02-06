@@ -50,6 +50,7 @@ ${locator.value.valueAddedTaxIncluded}                         id=includeVat
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
+${locator_feature_title}                                       xpath=//div[contains(@ng-repeat,"eature")]//span[contains(@ng-bind,"eature.title") and contains(.,"XX_feature_id_XX")]
 ${huge_timeout_for_visibility}                                 300
 
 
@@ -999,3 +1000,24 @@ Check Is Element Loaded
   ${return_value}=  Convert To Number  ${return_value}
   [return]  ${return_value}
 
+Отримати інформацію із нецінового показника
+  [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field_name}
+  Switch browser   ${username}
+  Reload Page
+  Sleep  4
+  ${prepared_locator}=  Set Variable  ${locator_feature_${field_name}.replace('XX_feature_id_XX','${object_id}')}
+  log  ${prepared_locator}
+  ${open_item_feature_locator}=  Set Variable  //div[contains(@ng-if,"lot.items") and contains(@id,"tree")]//span[@data-toggle="collapse"]/span[contains(.,"критерії оцінки")]
+  Run Keyword And Ignore Error  scrollIntoView by script using xpath  ${open_item_feature_locator}
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Run Keyword And Ignore Error  Click Element  xpath=${open_item_feature_locator}  # open Нецінові (якісні) критерії оцінки section to make its text visible
+  Sleep  2
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із нецінового показника про ${field_name}  ${raw_value}
+
+Конвертувати інформацію із нецінового показника про title
+  [Arguments]  ${return_value}
+  [return]  ${return_value}

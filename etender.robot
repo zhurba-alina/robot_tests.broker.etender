@@ -42,6 +42,9 @@ ${locator.questions[0].answer}                                 id=question_answe
 ${locator_document_title}                                      xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]
 ${locator_document_href}                                       xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]@href
 ${locator_document_description}                                xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]/following-sibling::p
+${locator_lot_title}                                           xpath=//div[@id="treeLot-00-0"]//span[@id="lotTitle_0"]
+${locator_lot_value.amount}                                    id=lotValue_0
+${locator_lot_minimalStep.amount}                              id=lotMinimalStep_0
 ${locator.value.currency}                                      id=tenderCurrency
 ${locator.value.valueAddedTaxIncluded}                         id=includeVat
 ${locator.bids}                                                id=ParticipiantInfo_0
@@ -969,3 +972,30 @@ Check Is Element Loaded
   ${href}=  Get Element Attribute  ${prepared_locator}
   ${document_file}=  download_file_from_url  ${href}  ${OUTPUT_DIR}${/}${title}
   [return]  ${document_file}
+
+Отримати інформацію із лоту
+  [Arguments]  ${username}  ${tender_uaid}  ${object_id}  ${field_name}
+  Switch browser   ${username}
+  ${prepared_locator}=  Set Variable  ${locator_lot_${field_name}}
+  ${prepared_locator}=  Set Variable  ${prepared_locator.replace('XX_lot_id_XX','${object_id}')}
+  log  ${prepared_locator}
+  Wait Until Page Contains Element  ${prepared_locator}  10
+  ${raw_value}=   Get Text  ${prepared_locator}
+  Run Keyword And Return  Конвертувати інформацію із лоту про ${field_name}  ${raw_value}
+
+Конвертувати інформацію із лоту про title
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із лоту про value.amount
+  [Arguments]  ${raw_value}
+  ${return_value}=  parse_currency_value_with_spaces  ${raw_value} XX
+  ${return_value}=  Convert To Number  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із лоту про minimalStep.amount
+  [Arguments]  ${raw_value}
+  ${return_value}=  parse_currency_value_with_spaces  ${raw_value}
+  ${return_value}=  Convert To Number  ${return_value}
+  [return]  ${return_value}
+

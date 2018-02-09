@@ -110,7 +110,7 @@ Login
   Click Element                     xpath=//a[@data-target='#procedureType']  # Створити оголошення
   Sleep  3
 
-  &{procedure_types}=  Create Dictionary  aboveThresholdUA=Відкриті торги  belowThreshold=Допорогові закупівлі
+  &{procedure_types}=  Create Dictionary  aboveThresholdUA=Відкриті торги  belowThreshold=Допорогові закупівлі  negotiation=Переговорна процедура
   ${lots}=         Set Variable  ${EMPTY}
   ${lots_count}=   Set Variable  ${EMPTY}
   ${status}  ${lots}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  lots

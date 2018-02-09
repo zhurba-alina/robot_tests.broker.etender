@@ -125,6 +125,7 @@ Login
   Додати лот при наявності і внести значення  ${lots_count}  ${lots}
   Input text    id=title                  ${title}
   Input text    id=description            ${description}
+  Додати причину з описом при наявності  ${ARGUMENTS[1].data}
   ${features}=        Set Variable  ${EMPTY}
   ${features_count}=  Set Variable  ${EMPTY}
   ${status}  ${features}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  features
@@ -193,6 +194,15 @@ Login
   Return From Keyword If  '${status}' != 'PASS'
   ${step_rateToStr}=  float_to_string_2f  ${step_rate}   # at least 2 fractional point precision, avoid rounding
   Input text  id=minimalStep_0  ${step_rateToStr}
+
+Додати причину з описом при наявності
+  [Arguments]  ${data}
+  ${status}  ${cause}=  Run Keyword And Ignore Error  Get From Dictionary  ${data}  cause
+  log to console  check presence of cause in dictionary: ${status}
+  Return From Keyword If  '${status}' != 'PASS'
+  ${cause_desc}=  Get From Dictionary  ${data}  causeDescription
+  Select From List By Value  id=cause             ${cause}
+  Input text                 id=causeDescription  ${cause_desc}
 
 Додати start_date_time при наявності
   [Arguments]  ${dada_data}  ${methodType}

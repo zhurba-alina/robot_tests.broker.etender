@@ -139,11 +139,11 @@ Login
   Додати end_date_time при наявності          ${ARGUMENTS[1]}
   Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
-  scrollIntoView by script using xpath  //div[contains(@class,"row") and (not(contains(@class,"controls")))]/div/label/input[@id="valueAddedTaxIncluded"]  # checkbox ПДВ
+  scrollIntoView by script using xpath  //div[contains(@class,"row") and (not(contains(@class,"controls")))]//div[(not(contains(@class,"hidden")))]/label/input[@id="valueAddedTaxIncluded"]  # checkbox ПДВ
   sleep   2
   JavaScript scrollBy  0  -100
   sleep   2
-  Click Element    xpath=//div[contains(@class,'row') and (not(contains(@class,'controls')))]/div/label/input[@id='valueAddedTaxIncluded']
+  Click Element    xpath=//div[contains(@class,"row") and (not(contains(@class,"controls")))]//div[(not(contains(@class,"hidden")))]/label/input[@id="valueAddedTaxIncluded"]
   Додати мінімальний крок при наявності  ${ARGUMENTS[1].data}
   Sleep   1
   Додати предмет   ${items[0]}   0

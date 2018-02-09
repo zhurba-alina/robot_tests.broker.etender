@@ -94,8 +94,6 @@ Login
   ${description}=       Get From Dictionary     ${ARGUMENTS[1].data}               description
   ${budget}=            Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
   ${budgetToStr}=       float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
-  ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
-  ${step_rateToStr}=    float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
 
   ${methodType}=         Set Variable  ${EMPTY}
   ${status}  ${methodType}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  procurementMethodType
@@ -145,7 +143,7 @@ Login
   JavaScript scrollBy  0  -100
   sleep   2
   Click Element    xpath=//div[contains(@class,'row') and (not(contains(@class,'controls')))]/div/label/input[@id='valueAddedTaxIncluded']
-  Input text    id=minimalStep_0        ${step_rateToStr}
+  Додати мінімальний крок при наявності  ${ARGUMENTS[1].data}
   Sleep   1
   Додати предмет   ${items[0]}   0
   Sleep   2
@@ -187,6 +185,14 @@ Login
   \     Run Keyword If  '${feature_of}' == 'lot'       add feature lot     ${features[${i}]}  0
   \     Run Keyword If  '${feature_of}' == 'tenderer'  add feature tender  ${features[${i}]}  0
   \     Run Keyword If  '${feature_of}' == 'item'      add feature item    ${features[${i}]}  0
+
+Додати мінімальний крок при наявності
+  [Arguments]  ${data}
+  ${status}  ${step_rate}=  Run Keyword And Ignore Error  Get From Dictionary  ${data.minimalStep}  amount
+  log to console  check presence of minimalStep.amount in dictionary: ${status}
+  Return From Keyword If  '${status}' != 'PASS'
+  ${step_rateToStr}=  float_to_string_2f  ${step_rate}   # at least 2 fractional point precision, avoid rounding
+  Input text  id=minimalStep_0  ${step_rateToStr}
 
 Додати start_date_time при наявності
   [Arguments]  ${dada_data}  ${methodType}

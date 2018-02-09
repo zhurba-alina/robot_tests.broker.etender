@@ -603,7 +603,7 @@ Enter enquiry date
   ...      ${ARGUMENTS[0]} ==  username
   ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
   Go To  ${USERS.users['${ARGUMENTS[0]}'].homepage}
-  Run Keyword If  '${ARGUMENTS[0]}' == 'Etender_Viewer'  Run Keyword And Return  Тимчасовий Пошук тендера по ідентифікатору для Viewer  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
+  Run Keyword If  '${ARGUMENTS[0]}' != 'Etender_Owner'  Run Keyword And Return  Тимчасовий Пошук тендера по ідентифікатору для Viewer  ${ARGUMENTS[0]}  ${ARGUMENTS[1]}
   Wait Until Page Contains Element    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    10
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  1

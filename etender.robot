@@ -96,12 +96,6 @@ Login
   ${budgetToStr}=       float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
   ${step_rate}=         Get From Dictionary     ${ARGUMENTS[1].data.minimalStep}   amount
   ${step_rateToStr}=    float_to_string_2f      ${step_rate}   # at least 2 fractional point precision, avoid rounding
-  ${enquiry_end_date}=   get_all_etender_dates   ${ARGUMENTS[1]}         EndPeriod          date
-  ${enquiry_end_time}=   get_all_etender_dates   ${ARGUMENTS[1]}         EndPeriod          time
-  ${start_date}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          date
-  ${start_time}=         get_all_etender_dates   ${ARGUMENTS[1]}         StartDate          time
-  ${end_date}=           get_all_etender_dates   ${ARGUMENTS[1]}         EndDate            date
-  ${end_time}=           get_all_etender_dates   ${ARGUMENTS[1]}         EndDate            time
 
   ${methodType}=         Set Variable  ${EMPTY}
   ${status}  ${methodType}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  procurementMethodType
@@ -141,18 +135,9 @@ Login
   ...                 ELSE  Get Length  ${features}
   Додати нецінові показники при наявності  ${features_count}  ${features}
 
-  ${status}	           ${value}=  Run Keyword And Ignore Error  Should Not Be Empty  ${enquiry_end_date}
-  log to console       check do we have enquiry_end_date: ${status}
-  Run Keyword If      '${status}' == 'PASS'  Enter enquiry date  ${enquiry_end_date}  ${enquiry_end_time}
-
-  Run Keyword If  '${methodType}' != 'aboveThresholdUA'  Input text    xpath=//input[@id="startDate"]   ${start_date}
-  Sleep   1
-  Run Keyword If  '${methodType}' != 'aboveThresholdUA'  Input text    xpath=//input[@id="startDate_time"]   ${start_time}
-  Sleep   1
-  Input text    xpath=//input[@id="endDate"]   ${end_date}
-  Sleep   1
-  Input text    xpath=//input[@id="endDate_time"]   ${end_time}
-  Sleep   1
+  Додати enquiry_end_date_time при наявності  ${ARGUMENTS[1]}
+  Додати start_date_time при наявності        ${ARGUMENTS[1]}  ${methodType}
+  Додати end_date_time при наявності          ${ARGUMENTS[1]}
   Input text    id=lotValue_0        ${budgetToStr}
   Sleep   1
   scrollIntoView by script using xpath  //div[contains(@class,"row") and (not(contains(@class,"controls")))]/div/label/input[@id="valueAddedTaxIncluded"]  # checkbox ПДВ
@@ -202,6 +187,37 @@ Login
   \     Run Keyword If  '${feature_of}' == 'lot'       add feature lot     ${features[${i}]}  0
   \     Run Keyword If  '${feature_of}' == 'tenderer'  add feature tender  ${features[${i}]}  0
   \     Run Keyword If  '${feature_of}' == 'item'      add feature item    ${features[${i}]}  0
+
+Додати start_date_time при наявності
+  [Arguments]  ${dada_data}  ${methodType}
+  Return From Keyword If  '${methodType}' != 'belowThreshold'  # Специфічна поведінка нашого майданчика
+  ${status}  ${start_date}=  Run Keyword And Ignore Error  get_all_etender_dates  ${dada_data}  StartDate  date
+  log to console  check presence of StartDate in dictionary: ${status}
+  Return From Keyword If  '${status}' != 'PASS'
+  ${start_date}=  get_all_etender_dates  ${dada_data}  StartDate  date
+  ${start_time}=  get_all_etender_dates  ${dada_data}  StartDate  time
+  Input text  xpath=//input[@id="startDate"]       ${start_date}
+  Input text  xpath=//input[@id="startDate_time"]  ${start_time}
+
+Додати end_date_time при наявності
+  [Arguments]  ${dada_data}
+  ${status}  ${end_date}=  Run Keyword And Ignore Error  get_all_etender_dates  ${dada_data}  EndDate  date
+  log to console  check presence of EndDate in dictionary: ${status}
+  Return From Keyword If  '${status}' != 'PASS'
+  ${end_date}=  get_all_etender_dates   ${dada_data}  EndDate  date
+  ${end_time}=  get_all_etender_dates   ${dada_data}  EndDate  time
+  Input text  xpath=//input[@id="endDate"]       ${end_date}
+  Input text  xpath=//input[@id="endDate_time"]  ${end_time}
+
+Додати enquiry_end_date_time при наявності
+  [Arguments]  ${dada_data}
+  ${status}  ${enquiry_end_date}=  Run Keyword And Ignore Error  get_all_etender_dates  ${dada_data}  EndPeriod  date
+  log to console  check presence of enquiry_end_date in dictionary: ${status}
+  Return From Keyword If  '${status}' != 'PASS'
+  ${enquiry_end_date}=  get_all_etender_dates  ${dada_data}  EndPeriod  date
+  ${enquiry_end_time}=  get_all_etender_dates  ${dada_data}  EndPeriod  time
+  Input text  xpath=//input[@id="enquiryPeriod"]       ${enquiry_end_date}
+  Input text  xpath=//input[@id="enquiryPeriod_time"]  ${enquiry_end_time}
 
 add feature tender
   [Arguments]  ${feature}  ${feature_index}

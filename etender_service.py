@@ -26,6 +26,9 @@ def get_all_etender_dates(initial_tender_data, key, subkey=None):
             'date': end_period.strftime("%d-%m-%Y"),
             'time': end_period.strftime("%H:%M"),
         }
+    else:
+        if 'EndPeriod' in key:
+            raise
     dt = data.get(key, {})
     return dt.get(subkey) if subkey else dt
 

@@ -1357,3 +1357,118 @@ Wait for upload
   Click Element  xpath=//a[@data-target="#modalGetAwards"]              # button - Оцінка документів Кандидата
   Sleep  5
   Page Should Not Contain  Не всі документи експортовані
+
+Підтвердити підписання контракту
+  [Arguments]  ${username}  ${tender_uaid}  ${contract_index}
+  Log  Temporary sleep to compensate timings, let's wait for 1 minute to be sure  WARN
+  Sleep  60
+  Reload Page
+  Sleep  5
+  Відкрити розділ пропозицій
+  ${tmp_location_tender}=  Get Location
+
+# ==================  1 - enter values into fields, save
+  Sleep  5
+  Click Element  xpath=//a[.="Внести інформацію про договір"]
+  Sleep  10
+  Input text  id=contractNumber  ${contract_index}
+  Input text  name=dateSigned  15-02-2018
+  ${time_now_tmp}=  get_time_now
+  Input text  name=timeSigned  ${time_now_tmp}
+  Input text  name=endDate  24-02-2018
+  Capture Page Screenshot
+  Sleep  4
+  scrollIntoView by script using xpath  //button[@data-target="#saveData"]  # button - Опублікувати документи та завершити пізніше
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+#  scrollIntoView by script using xpath  //button[@data-target="#saveData"]  # button - Опублікувати документи та завершити пізніше
+#  sleep   2
+#  JavaScript scrollBy  0  -100
+#  sleep   2
+  Click Element  xpath=//button[@data-target="#saveData"]  # button - Опублікувати документи та завершити пізніше
+  Sleep  10
+  Click Element  xpath=//div[@id="saveData"]//button[@ng-click="save(documentsToAdd)"]
+
+
+# ==================  2 - wait for upload
+  Sleep  60  # wait for upload
+  Go To  ${tmp_location_tender}
+  Sleep  5
+  Capture Page Screenshot
+  Відкрити розділ пропозицій
+  Sleep  5
+  scrollIntoView by script using xpath  //a[.="Редагувати інформацію про договір "]
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=//a[.="Редагувати інформацію про договір "]
+  Sleep  10
+
+# ==================  3 - upload doc
+
+  Select From List By Label  id=docType  Підписаний договір
+  Sleep   5
+  # TODO: Rework this tricky behavior someday?
+  # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
+  # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
+  Click Element   xpath=//button[@ng-model="documentsToAdd"]
+  ${file_path}  ${file_name}  ${file_content}=   create_fake_doc
+  Choose File     xpath=//input[@type="file" and @ng-model="documentsToAdd"]  ${file_path}
+  Sleep   1
+  Capture Page Screenshot
+  Sleep   2
+
+  Sleep  60  # wait for upload
+  Close Browser
+  etender.Підготувати клієнт для користувача  ${username}
+  Go To  ${tmp_location_tender}
+  Sleep  5
+  Capture Page Screenshot
+  Відкрити розділ пропозицій
+  Sleep  5
+
+  scrollIntoView by script using xpath  //a[.="Редагувати інформацію про договір "]
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=//a[.="Редагувати інформацію про договір "]
+  Sleep  10
+
+  scrollIntoView by script using xpath  //button[@click-and-block="showSignModalContract(contract)"]
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=//button[@click-and-block="showSignModalContract(contract)"]  # button - Накласти ЕЦП на договір
+
+  # now - sign! again ---------------------------------------------------------
+  Select From List By Label  id=CAsServersSelect  Тестовий ЦСК АТ "ІІТ"
+  ${key_dir}=  Normalize Path  ${CURDIR}/../../
+  Choose File  id=PKeyFileInput  ${key_dir}/Key-6.dat
+  Sleep  5
+  ${PKeyPassword}=  Get File  password.txt
+  Input text  id=PKeyPassword  ${PKeyPassword}
+  Click Element  id=PKeyReadButton
+  Sleep  10
+  Click Element  id=SignDataButton
+  Sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//div[@id="modalSign"]//button[contains(@class,"close")]
+  Sleep  1
+  Capture Page Screenshot
+  Sleep  30
+# shall be signed here -------------------------------------------------------------
+  Capture Page Screenshot
+  Sleep  30
+  Capture Page Screenshot
+  Reload Page
+  Sleep  5
+
+  scrollIntoView by script using xpath  //button[@click-and-block="sign()"]
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=//button[@click-and-block="sign()"]  # button - Завершити закупівлю
+  Sleep  1
+  Capture Page Screenshot
+  Wait Until Page Contains  Підтверджено!  60

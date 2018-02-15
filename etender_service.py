@@ -86,6 +86,11 @@ def convert_etender_date_to_iso_format_and_add_timezone(date):
     return TZ.localize(parse_etender_date(date)).isoformat()
 
 
+def get_time_now():
+    time_string = datetime.now().strftime("%H:%M")
+    return time_string
+
+
 def convert_common_string_to_etender_string(string):
     dict = get_helper_dictionary()
     for key, val in dict.iteritems():

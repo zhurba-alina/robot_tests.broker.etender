@@ -3,6 +3,8 @@
 from iso8601 import parse_date
 from datetime import datetime, date, time, timedelta
 import dateutil.parser
+from pytz import timezone
+import os
 
 
 def get_all_etender_dates(initial_tender_data, key, subkey=None):
@@ -70,6 +72,14 @@ def change_data(initial_data):
 def convert_etender_date_to_iso_format(date_time_from_ui):
     new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y, %H:%M')
     new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
+    return new_date_time_string
+
+
+def convert_etender_date_to_iso_format_and_add_timezone(date_time_from_ui):
+    new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y, %H:%M')
+    TZ = timezone(os.environ['TZ'] if 'TZ' in os.environ else 'Europe/Kiev')
+    new_date_timezone = TZ.localize(new_timedata)
+    new_date_time_string = new_date_timezone.strftime("%Y-%m-%d %H:%M:%S%z")
     return new_date_time_string
 
 

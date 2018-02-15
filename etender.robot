@@ -39,6 +39,7 @@ ${locator.questions[0].title}                                  id=quest_title_0
 ${locator.questions[0].description}                            id=quest_descr_0
 ${locator.questions[0].date}                                   id=quest_date_0
 ${locator.questions[0].answer}                                 id=question_answer_0
+${locator.awards[0].complaintPeriod.endDate}                   xpath=//div[@ng-if="award.complaintPeriod.endDate"]/div[2]/span
 ${locator_document_title}                                      xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]
 ${locator_document_href}                                       xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]@href
 ${locator_document_description}                                xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]/following-sibling::p
@@ -880,6 +881,7 @@ Check Is Element Loaded
   [Documentation]
   ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
   Switch browser   ${user}
+  Run keyword if  '${fieldname}' == 'awards[0].complaintPeriod.endDate'  etender.Пошук тендера по ідентифікатору  ${user}  ${tender_id}
   Run Keyword And Return  Отримати інформацію про ${fieldname}
 
 Отримати текст із поля і показати на сторінці
@@ -1083,6 +1085,14 @@ Check Is Element Loaded
   ${return_value}=     Отримати текст із поля і показати на сторінці     questions[0].answer
   [return]  ${return_value}
 
+Отримати інформацію про awards[0].complaintPeriod.endDate
+  Sleep   10
+  Відкрити розділ пропозицій
+  Sleep   10
+  ${return_value}=  Отримати текст із поля і показати на сторінці     awards[0].complaintPeriod.endDate
+  ${return_value}=  Set Variable  ${return_value.replace(u'по ','')}
+  ${return_value}=  convert_etender_date_to_iso_format_and_add_timezone   ${return_value}
+  [return]  ${return_value}
 
 Отримати посилання на аукціон для глядача
   [Arguments]  @{ARGUMENTS}
@@ -1200,3 +1210,11 @@ Check Is Element Loaded
 Конвертувати інформацію із нецінового показника про title
   [Arguments]  ${return_value}
   [return]  ${return_value}
+
+Відкрити розділ пропозицій
+  scrollIntoView by script using xpath  //li[@id="naviTitle1"]/span  # scroll to bids tab
+  sleep   4
+  JavaScript scrollBy  0  -100
+  sleep   4
+  Click Element                      xpath=//li[@id="naviTitle1"]/span  # go to bids tab
+

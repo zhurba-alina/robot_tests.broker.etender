@@ -1218,3 +1218,142 @@ Check Is Element Loaded
   sleep   4
   Click Element                      xpath=//li[@id="naviTitle1"]/span  # go to bids tab
 
+Створити постачальника, додати документацію і підтвердити його
+  [Arguments]  ${username}  ${tender_uaid}  ${object}  ${document}
+  Sleep  30
+  Reload Page
+  Sleep  5
+  scrollIntoView by script using xpath  //button[contains(.,"Перейти до підпису")]
+  Click Element  xpath=//button[contains(.,"Перейти до підпису")]
+  Sleep  10
+  Select From List By Label  id=CAsServersSelect  Тестовий ЦСК АТ "ІІТ"
+  ${key_dir}=  Normalize Path  ${CURDIR}/../../
+  dbg2  ${key_dir}/Key-6.dat
+  Choose File  id=PKeyFileInput  ${key_dir}/Key-6.dat
+  Sleep  5
+  ${PKeyPassword}=  Get File  password.txt
+  Input text  id=PKeyPassword  ${PKeyPassword}
+  Click Element  id=PKeyReadButton
+  Sleep  10
+  Click Element  id=SignDataButton
+  Sleep  5
+  Click Element  xpath=//div[@id="modalSign"]//button[contains(@class,"close")]
+  Sleep  30
+
+  Reload Page
+  Sleep  5
+  Відкрити розділ пропозицій
+  Sleep  5
+  ${amount}=             Get From Dictionary  ${object.data.value}  amount
+  ${supplier_name}=      Get From Dictionary  ${object.data.suppliers[0]}               name
+  ${supplier_code}=      Get From Dictionary  ${object.data.suppliers[0].identifier}    id
+  ${supplier_subcInfo}=  Get From Dictionary  ${object.data.suppliers[0].identifier}    legalName
+#  ${qualified}=          Get From Dictionary  ${object.data}                            qualified
+  ${countryName}=        Get From Dictionary  ${object.data.suppliers[0].address}       countryName
+  ${region}=             Get From Dictionary  ${object.data.suppliers[0].address}       region
+  ${locality}=           Get From Dictionary  ${object.data.suppliers[0].address}       locality
+  ${streetAddress}=      Get From Dictionary  ${object.data.suppliers[0].address}       streetAddress
+  ${postalCode}=         Get From Dictionary  ${object.data.suppliers[0].address}       postalCode
+  ${contact_name}=       Get From Dictionary  ${object.data.suppliers[0].contactPoint}  name
+  ${contact_email}=      Get From Dictionary  ${object.data.suppliers[0].contactPoint}  email
+  ${contact_url}=        Get From Dictionary  ${object.data.suppliers[0].contactPoint}  url
+  ${contact_phone}=      Get From Dictionary  ${object.data.suppliers[0].contactPoint}  telephone
+  ${contact_fax}=        Get From Dictionary  ${object.data.suppliers[0].contactPoint}  faxNumber
+
+  ${amount}=  float_to_string_2f  ${amount}
+  Input text  name=amount0  ${amount}
+  # TODO: read curency from dict
+  Select From List By Label  id=currency  грн
+  Input text  name=orgName0  ${supplier_name}
+  Input text  name=orgCode0  ${supplier_code}
+  Input text  name=subcInfo  ${supplier_subcInfo}
+# TODO: use qualified from dict
+  Click Element              xpath=//div[@ng-if="!detailes.isLimitedReporting"]//input[1]  # Відповідність кваліфікаційним критеріям: Відповідає
+  Select From List By Label  xpath=//select[@ng-model="data.country"]  ${countryName}
+  Run Keyword If  '${region}' == 'місто Київ'  Select From List By Label  xpath=//*[contains(@id,"_region")]  Київ
+  Run Keyword If  '${region}' != 'місто Київ'  Run Keywords
+  ...  Select From List By Label  xpath=//*[contains(@id,"_region")]     ${region}
+  ...  AND  Input text            xpath=//*[contains(@name,"_newCity")]  ${locality}
+  Input text  xpath=//*[contains(@name,"_addressStr")]  ${streetAddress}
+  Input text  xpath=//*[contains(@name,"_postIndex")]   ${postalCode}
+  Input text  name=cpName0  ${contact_name}
+  Input text  id=email  ${contact_email}
+  Input text  id=url  ${contact_url}
+  Input text  id=phone  ${contact_phone}
+  Input text  id=fax  ${contact_fax}
+  Click Element  id=btnCreateAward
+
+  Sleep  30
+  Reload Page
+  Sleep  5
+  Відкрити розділ пропозицій
+  Sleep  5
+  Click Element  xpath=//a[@data-target="#modalGetAwards"]  # button - Оцінка документів Кандидата
+  Select From List By Label  id=docType  Повідомлення про рішення
+  Sleep   5
+  # TODO: Rework this tricky behavior someday?
+  # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
+  # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
+  ${tmp_location}=  Get Location
+  Click Element   xpath=//button[@ng-model="lists.documentsToAdd"]
+  Choose File     xpath=//input[@type="file" and @ng-model="lists.documentsToAdd"]  ${document}
+  Sleep   4
+  Click Element   xpath=//button[@ng-click="downloadDocsGetAward(lists.documentsToAdd)"]
+  Sleep   1
+  Capture Page Screenshot
+  Sleep   2
+  Close Browser
+  etender.Підготувати клієнт для користувача  ${username}
+  Go To  ${tmp_location}
+  Sleep  5
+  Відкрити розділ пропозицій
+  Sleep  5
+  Capture Page Screenshot
+  Wait Until Keyword Succeeds   10 min  20 x  Wait for upload  # there: button - Оцінка документів Кандидата
+
+  Click Element  xpath=//button[@ng-click="getAwardsNextStep()"]        # button - Наступний крок
+  Sleep  5
+  Click Element  xpath=//button[@ng-click="showSignModalAward(award)"]  # button - Підписати рішення
+  Sleep  10
+  # now - sign! again ---------------------------------------------------------
+  Select From List By Label  id=CAsServersSelect  Тестовий ЦСК АТ "ІІТ"
+  ${key_dir}=  Normalize Path  ${CURDIR}/../../
+  Choose File  id=PKeyFileInput  ${key_dir}/Key-6.dat
+  Sleep  5
+  ${PKeyPassword}=  Get File  password.txt
+  Input text  id=PKeyPassword  ${PKeyPassword}
+  Click Element  id=PKeyReadButton
+  Sleep  10
+  Click Element  id=SignDataButton
+  Sleep  5
+  Sleep  5
+  Click Element  xpath=//div[@id="modalSign"]//button[contains(@class,"close")]
+  Sleep  30
+# shall be signed here -------------------------------------------------------------
+  Reload Page
+  Sleep  5
+  Відкрити розділ пропозицій
+  Sleep  5
+  Click Element  xpath=//a[@data-target="#modalGetAwards"]              # button - Оцінка документів Кандидата
+  Capture Page Screenshot
+  Sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//button[@ng-click="getAwardsNextStep()"]        # button - Наступний крок
+  Capture Page Screenshot
+  Sleep  5
+  Capture Page Screenshot
+  Click Element  xpath=//button[@click-and-block="setDecision(1)"]      # button - Підтвердити
+  Sleep  5
+  Capture Page Screenshot
+  Sleep   2
+
+Wait for upload
+  Reload Page
+  Sleep  10
+  scrollIntoView by script using xpath  //a[@data-target="#modalGetAwards"]  # button - Оцінка документів Кандидата
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=//a[@data-target="#modalGetAwards"]              # button - Оцінка документів Кандидата
+  Sleep  5
+  Page Should Not Contain  Не всі документи експортовані

@@ -1242,7 +1242,6 @@ Check Is Element Loaded
   Sleep  10
   Select From List By Label  id=CAsServersSelect  Тестовий ЦСК АТ "ІІТ"
   ${key_dir}=  Normalize Path  ${CURDIR}/../../
-  dbg2  ${key_dir}/Key-6.dat
   Choose File  id=PKeyFileInput  ${key_dir}/Key-6.dat
   Sleep  5
   ${PKeyPassword}=  Get File  password.txt

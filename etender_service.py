@@ -79,6 +79,14 @@ def change_data(initial_data):
     initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
     initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
     initial_data['data']['procuringEntity']['name'] = u"TenderOwner#"
+    initial_data['data']['procuringEntity']['address']['locality']       = u"Алупка"
+    initial_data['data']['procuringEntity']['address']['postalCode']     = u"13531"
+    initial_data['data']['procuringEntity']['address']['region']         = u"АР Крим"
+    initial_data['data']['procuringEntity']['address']['streetAddress']  = u"Фрунзе, 666"
+    initial_data['data']['procuringEntity']['contactPoint']['name']      = u"Владелец Этого Тендера"
+    initial_data['data']['procuringEntity']['contactPoint']['telephone'] = u"613371488228"
+    initial_data['data']['procuringEntity']['identifier']['legalName']   = u"TenderOwner#"
+    initial_data['data']['procuringEntity']['identifier']['id']          = u"88008800"
     return initial_data
 
 

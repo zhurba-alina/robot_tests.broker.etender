@@ -6,6 +6,7 @@ import dateutil.parser
 from pytz import timezone
 import os
 
+TZ = timezone(os.environ['TZ'] if 'TZ' in os.environ else 'Europe/Kiev')
 
 def get_all_etender_dates(initial_tender_data, key, subkey=None):
     tender_period = initial_tender_data.data.tenderPeriod
@@ -33,6 +34,18 @@ def get_all_etender_dates(initial_tender_data, key, subkey=None):
             raise
     dt = data.get(key, {})
     return dt.get(subkey) if subkey else dt
+
+
+def parse_etender_date(date):
+    # converts date from ui to datetime
+    return datetime.strptime(date, '%d-%m-%Y, %H:%M')
+
+
+def to_iso(date):
+    return date.isoformat()
+
+def convert_etender_date_to_iso_format(date):
+    return parse_etender_date(date).isoformat()
 
 
 def convert_date_to_etender_format(isodate):
@@ -69,18 +82,8 @@ def change_data(initial_data):
     return initial_data
 
 
-def convert_etender_date_to_iso_format(date_time_from_ui):
-    new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y, %H:%M')
-    new_date_time_string = new_timedata.strftime("%Y-%m-%d %H:%M:%S.%f")
-    return new_date_time_string
-
-
-def convert_etender_date_to_iso_format_and_add_timezone(date_time_from_ui):
-    new_timedata = datetime.strptime(date_time_from_ui, '%d-%m-%Y, %H:%M')
-    TZ = timezone(os.environ['TZ'] if 'TZ' in os.environ else 'Europe/Kiev')
-    new_date_timezone = TZ.localize(new_timedata)
-    new_date_time_string = new_date_timezone.strftime("%Y-%m-%d %H:%M:%S%z")
-    return new_date_time_string
+def convert_etender_date_to_iso_format_and_add_timezone(date):
+    return TZ.localize(parse_etender_date(date)).isoformat()
 
 
 def convert_common_string_to_etender_string(string):
@@ -91,12 +94,9 @@ def convert_common_string_to_etender_string(string):
     return string
 
 
-def parse_currency_value_with_spaces(raw_value):
+def parse_currency_value_with_spaces(raw):
     # to convert raw values like '2 216 162,83 UAH' to string which is ready for conversion to float
-    exploded = raw_value.split(' ')
-    result = ''.join(exploded[:-1])
-    result = result.replace(',', '.')
-    return result
+    return ''.join(raw.split(' ')[:-1]).replace(',','.')
 
 
 def convert_etender_string_to_common_string(string):

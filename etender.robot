@@ -102,6 +102,10 @@ Login
   ${methodType}=  Run Keyword IF  '${status}' != 'PASS'  Set Variable  belowThreshold
   ...             ELSE  Set Variable  ${methodType}
 
+  ${search_tab}=  Run Keyword IF  '${methodType}' != 'negotiation'  Set Variable  КОНКУРЕНТНІ ПРОЦЕДУРИ
+  ...             ELSE  Set Variable  НЕКОНКУРЕНТНІ ПРОЦЕДУРИ
+  Set To Dictionary  ${USERS.users['${ARGUMENTS[0]}']}  HELPER_SEARCH_TAB=${search_tab}
+
   Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
   Sleep  15
   Click Element                     id=qa_myTenders  # Мої закупівлі
@@ -609,6 +613,7 @@ Enter enquiry date
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  1
   Wait Until Element Is Visible    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    10
+  Перейти на вкладку іншого типу процедур за потреби  ${ARGUMENTS[0]}
   sleep  3
   Input Text    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    ${ARGUMENTS[1]}
   sleep  2
@@ -632,6 +637,15 @@ Enter enquiry date
   ${cleared_homepage_site}=  Set Variable  ${USERS.users['${username}'].homepage}
   ${cleared_homepage_site}=  Set Variable  ${cleared_homepage_site.split('#')[0]}
   Go To  ${cleared_homepage_site}tender?tenderid=${TENDER_UAID}
+
+Перейти на вкладку іншого типу процедур за потреби
+  [Arguments]  ${username}
+  ${search_tab}=  Get From Dictionary  ${USERS.users['${username}']}  HELPER_SEARCH_TAB
+  Return From Keyword If  '${search_tab}' == 'КОНКУРЕНТНІ ПРОЦЕДУРИ'
+  Click Element  id=naviTitle1
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  sleep  1
+  Wait Until Element Is Visible    xpath=//input[@type='text' and @placeholder='Пошук за номером закупівлі']    10
 
 Пошук плану по ідентифікатору
   [Arguments]  ${username}  ${TENDER_UAID}

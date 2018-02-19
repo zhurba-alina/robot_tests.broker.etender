@@ -844,8 +844,8 @@ Check Is Element Loaded
   Execute Javascript   window.scrollTo(0, document.body.scrollHeight)
   Click Element            id=SaveChanges
   Sleep  2
-  ${close_btn}= Set Variable //div[@id="SignModal" and //div[contains(@class,"modal-dialog")]
-  ${close_btn}= Set Variable ${close_btn}//div[contains(.,"будь ласка, перевірте статус")]]//button[.="Закрити"]
+  ${close_btn}=  Set Variable  //div[@id="SignModal" and //div[contains(@class,"modal-dialog")]
+  ${close_btn}=  Set Variable  ${close_btn}//div[contains(.,"будь ласка, перевірте статус")]]//button[.="Закрити"]
   Run Keyword And Ignore Error  Click Element  xpath=${close_btn}  #close info dialog, if present
 
 Редагувати поле тендера

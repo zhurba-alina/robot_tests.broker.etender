@@ -151,9 +151,7 @@ Login
   Click Element    xpath=//div[contains(@class,"row") and (not(contains(@class,"controls")))]//div[(not(contains(@class,"hidden")))]/label/input[@id="valueAddedTaxIncluded"]
   Додати мінімальний крок при наявності  ${ARGUMENTS[1].data}
   Sleep   1
-  Додати предмет   ${items[0]}   0
-  Sleep   2
-  Run Keyword if   '${mode}' == 'multi'   Додати багато предметів   items
+  Додати предмети  ${items}
   Sleep  1
   scrollIntoView by script using xpath  //*[@id="createTender"]  # scroll to createTender button
   sleep   2
@@ -473,31 +471,31 @@ Enter enquiry date
   Go To  ${tmp_location}
   Sleep  5
 
+Додати предмети
+  [Arguments]  ${items}
+  ${items_count}=  Get Length  ${items}
+  :FOR  ${i}  IN RANGE  ${items_count}
+  \     Run Keyword If  '${i}' == '0'  Додати предмет  ${items[${i}]}  ${i}
+
 Додати предмет
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  items
-  ...      ${ARGUMENTS[1]} ==  ${INDEX}
-  # TODO: rework this, change ARGUMENTS list to named arguments;
-  # TODO: change items[0] below to item argument
-  ${items}=  Set Variable  ${ARGUMENTS}
-  ${items_description}=   Get From Dictionary   ${items[0]}                       description
-  ${quantity}=          Get From Dictionary     ${items[0]}                       quantity
-  ${unit}=              Get From Dictionary     ${items[0].unit}                  name
-  ${cpv}=               Get From Dictionary     ${items[0].classification}        id
-  ${dkpp_desc}=     Get From Dictionary   ${ARGUMENTS[0].additionalClassifications[0]}   description
-  ${dkpp_id}=       Get From Dictionary   ${ARGUMENTS[0].additionalClassifications[0]}   id
-  ${deliveryDateStart}=    Get From Dictionary  ${items[0].deliveryDate}          startDate
-  ${deliveryDateEnd}=      Get From Dictionary  ${items[0].deliveryDate}          endDate
-  ${deliveryDateStart}=    convert_date_to_etender_format        ${deliveryDateStart}
-  ${deliveryDateEnd}=      convert_date_to_etender_format        ${deliveryDateEnd}
-  ${latitude}=          Get From Dictionary     ${items[0].deliveryLocation}      latitude
-  ${longitude}=         Get From Dictionary     ${items[0].deliveryLocation}      longitude
-  ${region}=            Get From Dictionary     ${items[0].deliveryAddress}       region
-  ${region}=            convert_common_string_to_etender_string                   ${region}
-  ${locality}=          Get From Dictionary     ${items[0].deliveryAddress}       locality
-  ${postalCode}=        Get From Dictionary     ${items[0].deliveryAddress}       postalCode
-  ${streetAddress}=     Get From Dictionary     ${items[0].deliveryAddress}       streetAddress
+  [Arguments]  ${item}  ${index}
+  ${items_description}=  Get From Dictionary  ${item}                   description
+  ${quantity}=           Get From Dictionary  ${item}                   quantity
+  ${unit}=               Get From Dictionary  ${item.unit}              name
+  ${cpv}=                Get From Dictionary  ${item.classification}    id
+  ${dkpp_desc}=          Get From Dictionary  ${item.additionalClassifications[0]}  description
+  ${dkpp_id}=            Get From Dictionary  ${item.additionalClassifications[0]}  id
+  ${deliveryDateStart}=  Get From Dictionary  ${item.deliveryDate}      startDate
+  ${deliveryDateEnd}=    Get From Dictionary  ${item.deliveryDate}      endDate
+  ${deliveryDateStart}=  convert_date_to_etender_format  ${deliveryDateStart}
+  ${deliveryDateEnd}=    convert_date_to_etender_format  ${deliveryDateEnd}
+  ${latitude}=           Get From Dictionary  ${item.deliveryLocation}  latitude
+  ${longitude}=          Get From Dictionary  ${item.deliveryLocation}  longitude
+  ${region}=             Get From Dictionary  ${item.deliveryAddress}   region
+  ${region}=             convert_common_string_to_etender_string  ${region}
+  ${locality}=           Get From Dictionary  ${item.deliveryAddress}   locality
+  ${postalCode}=         Get From Dictionary  ${item.deliveryAddress}   postalCode
+  ${streetAddress}=      Get From Dictionary  ${item.deliveryAddress}   streetAddress
 
   Sleep  1
   Input text    id=itemsDescription00      ${items_description}
@@ -522,9 +520,9 @@ Enter enquiry date
   Sleep  1
   Click Element  id=classification_choose
   Sleep  3
-  ${status}  ${value}=  Run Keyword And Ignore Error  Get From Dictionary  ${items[0]}  additionalClassifications
+  ${status}  ${value}=  Run Keyword And Ignore Error  Get From Dictionary  ${item}  additionalClassifications
   log to console       Attempt to get 1st additonal classification scheme: ${status}
-  Run Keyword If      '${status}' == 'PASS'   Опрацювати дотаткові класифікації  ${items[0].additionalClassifications}
+  Run Keyword If      '${status}' == 'PASS'   Опрацювати дотаткові класифікації  ${item.additionalClassifications}
 #  Input text    id=latitude0    ${latitude}
 #  Sleep   1
 #  Input text    id=longitude0   ${longitude}

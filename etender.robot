@@ -659,6 +659,10 @@ Enter enquiry date
   [Arguments]  ${username}
   ${search_tab}=  Get From Dictionary  ${USERS.users['${username}']}  HELPER_SEARCH_TAB
   Return From Keyword If  '${search_tab}' == 'КОНКУРЕНТНІ ПРОЦЕДУРИ'
+  scrollIntoView by script using xpath  //*[@id="naviTitle1"]  # scroll to tab 'КОНКУРЕНТНІ ПРОЦЕДУРИ'
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
   Click Element  id=naviTitle1
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  1

@@ -374,27 +374,27 @@ add feature lot
 
 
 Опрацювати дотаткові класифікації
-  [Arguments]  ${additionalClassifications}
+  [Arguments]  ${additionalClassifications}  ${index}
   # TODO: Обробляти випадок коли є більше однієї додаткової класифікації
   ${scheme}=  Get From Dictionary  ${additionalClassifications[0]}  scheme
-  Run Keyword And Return  Вказати ${scheme} дотаткову класифікацію  ${additionalClassifications[0]}
+  Run Keyword And Return  Вказати ${scheme} дотаткову класифікацію  ${additionalClassifications[0]}  ${index}
 
 Вказати INN дотаткову класифікацію
-  [Arguments]  ${additionalClassification}
+  [Arguments]  ${additionalClassification}  ${index}
   ${description}=  Get From Dictionary  ${additionalClassification}  description
-  Click Element  xpath=//input[@id='openAddClassificationInnModal00']
+  Click Element  xpath=//input[@id='openAddClassificationInnModal0${index}']
   Sleep  3
-  Input text     xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//input  ${description}
+  Input text     xpath=//div[@id="addClassificationInn_0_${index}" and contains(@class,"top")]//input  ${description}
   Wait Until Element Is Visible  xpath=//td[contains(., '${description}')]
   Sleep  2
   Click Element  xpath=//td[contains(., '${description}')]
   Sleep  1
-  Click Element  xpath=//div[@id="addClassificationInn_0_0" and contains(@class,"top")]//button[@id="addClassification_choose"]
+  Click Element  xpath=//div[@id="addClassificationInn_0_${index}" and contains(@class,"top")]//button[@id="addClassification_choose"]
 
 Вказати ДК003 дотаткову класифікацію
-  [Arguments]  ${additionalClassification}
+  [Arguments]  ${additionalClassification}  ${index}
   ${description}=  Get From Dictionary  ${additionalClassification}  description
-  Click Element  id=openAddClassificationModal000
+  Click Element  id=openAddClassificationModal0${index}0
   Sleep  3
   Select From List By Value  xpath=//div[@id="addClassification" and contains(@class,"modal")]//select[@name="dkScheme"]  ДК003
   Sleep  3
@@ -406,9 +406,9 @@ add feature lot
   Click Element  xpath=//div[@id="addClassification" and contains(@class,"modal")]//*[@id="addClassification_choose"]
 
 Вказати ДК018 дотаткову класифікацію
-  [Arguments]  ${additionalClassification}
+  [Arguments]  ${additionalClassification}  ${index}
   ${description}=  Get From Dictionary  ${additionalClassification}  description
-  Click Element  id=openAddClassificationModal000
+  Click Element  id=openAddClassificationModal0${index}0
   Sleep  3
   Select From List By Value  xpath=//div[@id="addClassification" and contains(@class,"modal")]//select[@name="dkScheme"]  ДК018
   Sleep  3
@@ -420,7 +420,7 @@ add feature lot
   Click Element  xpath=//div[@id="addClassification" and contains(@class,"modal")]//*[@id="addClassification_choose"]
 
 Вказати ДКПП дотаткову класифікацію
-  [Arguments]  ${additionalClassification}
+  [Arguments]  ${additionalClassification}  ${index}
   log  Це щось старе, і його мають прибрати. Не буду нічого тут робити!  WARN
 
 Enter enquiry date
@@ -475,7 +475,7 @@ Enter enquiry date
   [Arguments]  ${items}
   ${items_count}=  Get Length  ${items}
   :FOR  ${i}  IN RANGE  ${items_count}
-  \     Run Keyword If  '${i}' == '0'  Додати предмет  ${items[${i}]}  ${i}
+  \     Додати предмет  ${items[${i}]}  ${i}
 
 Додати предмет
   [Arguments]  ${item}  ${index}
@@ -494,24 +494,26 @@ Enter enquiry date
   ${region}=             Get From Dictionary  ${item.deliveryAddress}   region
   ${region}=             convert_common_string_to_etender_string  ${region}
   ${locality}=           Get From Dictionary  ${item.deliveryAddress}   locality
+  ${locality}=           convert_common_string_to_etender_string  ${locality}
   ${postalCode}=         Get From Dictionary  ${item.deliveryAddress}   postalCode
   ${streetAddress}=      Get From Dictionary  ${item.deliveryAddress}   streetAddress
 
-  Sleep  1
-  Input text    id=itemsDescription00      ${items_description}
-  Sleep  1
-  Input text    id=itemsQuantity00         ${quantity}
-  Click Element   xpath=//div[contains(@ng-model,'unit.selected')]//input
+  Run Keyword If  '${index}' != '0'  Click Element  id=addLotItem_0
   Sleep  3
-  Input text    xpath=//input[@type='search']  ${unit}
+  Input text    id=itemsDescription0${index}      ${items_description}
+  Sleep  1
+  Input text    id=itemsQuantity0${index}         ${quantity}
+  Click Element   xpath=(//div[contains(@ng-model,"unit.selected")]//input[@type="search"])[${index}+1]
+  Sleep  3
+  Input text    xpath=(//div[contains(@ng-model,"unit.selected")]//input[@type="search"])[${index}+1]  ${unit}
   Sleep  2
   Click Element   xpath=//div[contains(@class,"selectize-dropdown") and contains(@repeat,"unit")]//div[@role="option" and contains(@class,"active")]
-  Sleep  1
-  scrollIntoView by script using xpath  //input[starts-with(@ng-click, "openClassificationModal")]  # openClassificationModal - main
+  Sleep  5
+  scrollIntoView by script using xpath  //input[@id="openClassificationModal0${index}"]  # openClassificationModal - main
   sleep   2
   JavaScript scrollBy  0  -100
   sleep   2
-  Click Element  xpath=//input[starts-with(@ng-click, 'openClassificationModal')]
+  Click Element  id=openClassificationModal0${index}
   Sleep  1
   Input text     id=classificationCode  ${cpv}
   Wait Until Element Is Visible  xpath=//td[contains(., '${cpv}')]
@@ -522,21 +524,22 @@ Enter enquiry date
   Sleep  3
   ${status}  ${value}=  Run Keyword And Ignore Error  Get From Dictionary  ${item}  additionalClassifications
   log to console       Attempt to get 1st additonal classification scheme: ${status}
-  Run Keyword If      '${status}' == 'PASS'   Опрацювати дотаткові класифікації  ${item.additionalClassifications}
+  Run Keyword If      '${status}' == 'PASS'   Опрацювати дотаткові класифікації  ${item.additionalClassifications}  ${index}
 #  Input text    id=latitude0    ${latitude}
 #  Sleep   1
 #  Input text    id=longitude0   ${longitude}
   Sleep  2
-  Input text    id=delStartDate00        ${deliveryDateStart}
+  Input text    id=delStartDate0${index}        ${deliveryDateStart}
   Sleep  2
-  Input text    id=delEndDate00          ${deliveryDateEnd}
+  Input text    id=delEndDate0${index}          ${deliveryDateEnd}
   Sleep  2
-  Select From List By Label  id=region_00  ${region}
+  Select From List By Label  id=region_0${index}  ${region}
   Sleep  2
-  Select From List By Label  id=city_00  ${locality}
-  Input text    id=street_00   ${streetAddress}
+  #  TODO: sync this region/locality selection logic with keyword -- Створити постачальника, додати документацію і підтвердити його
+  Run Keyword If  '${region}' != 'Київ'  Input text  name=otherCity_0${index}  ${locality}
+  Input text    id=street_0${index}   ${streetAddress}
   Sleep  1
-  Input text    id=postIndex_00    ${postalCode}
+  Input text    id=postIndex_0${index}    ${postalCode}
 
 Додати неціновий показник на предмет
   [Arguments]  ${username}  ${tender_uaid}  ${feature_data}  ${object_id}

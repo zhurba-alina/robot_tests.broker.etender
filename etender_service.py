@@ -99,6 +99,16 @@ def get_time_now():
     return time_string
 
 
+def get_date_now():
+    date_string = datetime.now().strftime("%d-%m-%Y")
+    return date_string
+
+
+def get_date_10d_future():
+    date_string = (datetime.now() + timedelta(days=10)).strftime("%d-%m-%Y")
+    return date_string
+
+
 def convert_common_string_to_etender_string(string):
     dict = get_helper_dictionary()
     for key, val in dict.iteritems():

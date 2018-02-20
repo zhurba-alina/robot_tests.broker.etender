@@ -1383,20 +1383,16 @@ Wait for upload
   Click Element  xpath=//a[.="Внести інформацію про договір"]
   Sleep  10
   Input text  id=contractNumber  ${contract_index}
-  Input text  name=dateSigned  15-02-2018
-  ${time_now_tmp}=  get_time_now
+  ${time_now_tmp}=     get_time_now
+  ${date_now_tmp}=     get_date_now
+  ${date_future_tmp}=  get_date_10d_future
+  Input text  name=dateSigned  ${date_now_tmp}
   Input text  name=timeSigned  ${time_now_tmp}
-  Input text  name=endDate  24-02-2018
-  Capture Page Screenshot
-  Sleep  4
+  Input text  name=endDate     ${date_future_tmp}
   scrollIntoView by script using xpath  //button[@data-target="#saveData"]  # button - Опублікувати документи та завершити пізніше
   sleep   2
   JavaScript scrollBy  0  -100
   sleep   2
-#  scrollIntoView by script using xpath  //button[@data-target="#saveData"]  # button - Опублікувати документи та завершити пізніше
-#  sleep   2
-#  JavaScript scrollBy  0  -100
-#  sleep   2
   Click Element  xpath=//button[@data-target="#saveData"]  # button - Опублікувати документи та завершити пізніше
   Sleep  10
   Click Element  xpath=//div[@id="saveData"]//button[@ng-click="save(documentsToAdd)"]
@@ -1451,6 +1447,7 @@ Wait for upload
   JavaScript scrollBy  0  -100
   sleep   2
   Click Element  xpath=//button[@click-and-block="showSignModalContract(contract)"]  # button - Накласти ЕЦП на договір
+  Sleep  5
 
   # now - sign! again ---------------------------------------------------------
   Select From List By Label  id=CAsServersSelect  Тестовий ЦСК АТ "ІІТ"

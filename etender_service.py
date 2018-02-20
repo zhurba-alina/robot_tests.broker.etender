@@ -75,9 +75,6 @@ def string_to_float(string):
 
 
 def change_data(initial_data):
-    #TODO: remove redundant hardcoded values
-    initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
-    initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
     initial_data['data']['procuringEntity']['name'] = u"TenderOwner#"
     initial_data['data']['procuringEntity']['address']['locality']       = u"Алупка"
     initial_data['data']['procuringEntity']['address']['postalCode']     = u"13531"
@@ -132,6 +129,9 @@ def get_helper_dictionary():
         u"кг.": u"кілограм",
         u"грн.": u"UAH",
         u"(включаючи ПДВ)": True,
+        u"Київ": u"місто Київ",
+        # TODO: remove this temporary workaround, consult with quinta team about input data
+        u"Дніпро": u"Дніпропетровськ",
     }
 
 

@@ -45,7 +45,7 @@ def to_iso(date):
     return date.isoformat()
 
 def convert_etender_date_to_iso_format(date):
-    return parse_etender_date(date).isoformat()
+    return TZ.localize(parse_etender_date(date)).isoformat()
 
 
 def convert_date_to_etender_format(isodate):
@@ -75,6 +75,9 @@ def string_to_float(string):
 
 
 def change_data(initial_data):
+    #TODO: remove redundant hardcoded values
+    initial_data['data']['items'][0]['deliveryAddress']['locality'] = u"м. Київ"
+    initial_data['data']['items'][0]['deliveryAddress']['region'] = u"Київська область"
     initial_data['data']['procuringEntity']['name'] = u"TenderOwner#"
     initial_data['data']['procuringEntity']['address']['locality']       = u"Алупка"
     initial_data['data']['procuringEntity']['address']['postalCode']     = u"13531"
@@ -120,8 +123,7 @@ def parse_currency_value_with_spaces(raw):
 
 
 def convert_etender_string_to_common_string(string):
-    dict = get_helper_dictionary()
-    return dict.get(string, string)
+    return get_helper_dictionary().get(string)
 
 
 def get_helper_dictionary():
@@ -129,9 +131,19 @@ def get_helper_dictionary():
         u"кг.": u"кілограм",
         u"грн.": u"UAH",
         u"(включаючи ПДВ)": True,
-        u"Київ": u"місто Київ",
+         u"Київ": u"місто Київ",
         # TODO: remove this temporary workaround, consult with quinta team about input data
         u"Дніпро": u"Дніпропетровськ",
+        u'період уточнень': u'active.enquiries',
+        u'очікування пропозицій': u'active.tendering',
+        u'прекваліфікація': u'active.pre-qualification',
+        u'блокування перед аукціоном': u'active.pre-qualification.stand-still',
+        u'період аукціону': u'active.auction',
+        u'кваліфікація переможця': u'active.qualification',
+        u'пропозиції розглянуто': u'active.awarded',
+        u'завершена закупівля': u'complete',
+        u'закупівля не відбулась': u'unsuccessful',
+        u'відмінена закупівля': u'cancelled'
     }
 
 

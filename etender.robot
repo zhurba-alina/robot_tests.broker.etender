@@ -8,6 +8,7 @@ Library  etender_service.py
 *** Variables ***
 ${locator.tenderId}                                            xpath=//*[@id='tenderidua']/b
 ${locator.title}                                               id=tenderTitle
+${locator.status}                                              id=tenderStatus
 ${locator.description}                                         id=tenderDescription
 ${locator.minimalStep.amount}                                  id=lotMinimalStep_0
 ${locator.procuringEntity.name}                                id=tenderOwner
@@ -904,6 +905,12 @@ Check Is Element Loaded
   ${new_value}=  float_to_string_2f  ${new_value}  # at least 2 fractional point precision, avoid rounding
   Input text  id=minimalStep_0  ${new_value}
 
+
+Отримати інформацію про status
+  Reload Page
+  ${return_value}=   Отримати текст із поля і показати на сторінці   status
+  ${return_value}=   convert_etender_string_to_common_string  ${return_value.lower()}
+  [Return]  ${return_value}
 
 Отримати інформацію із тендера
   [Arguments]  ${user}  ${tender_id}  ${fieldname}

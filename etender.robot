@@ -448,6 +448,20 @@ Enter enquiry date
   Log  ${plan_id}
   Should Match Regexp                ${plan_id}  UA-P-\\d{4}-.*
 
+Задати запитання на тендер
+  [Arguments]  ${username}  ${tender_uaid}  ${questions}
+  Log  ${questions}
+  Відкрити розділ запитань
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Wait Until Page Contains Element   id=askQuestion
+  Click Element  id=askQuestion
+  Wait Until Page Does Not Contain      ${locator_block_overlay}
+  Wait Until Page Contains Element      id=title
+  Input text        id=title            ${questions.data.title}
+  Input text        id=description      ${questions.data.description}
+  Click Element     id=sendQuestion
+
+
 Завантажити документ
   [Arguments]  @{ARGUMENTS}
   [Documentation]

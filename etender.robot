@@ -449,6 +449,7 @@ Enter enquiry date
   Log  ${plan_id}
   Should Match Regexp                ${plan_id}  UA-P-\\d{4}-.*
 
+
 Задати запитання на тендер
   [Arguments]  ${username}  ${tender_uaid}  ${questions}
   Log  ${questions}
@@ -682,15 +683,15 @@ Enter enquiry date
 
 
 Завантажити документ в ставку
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-    ...    ${ARGUMENTS[0]} ==  username
-    ...    ${ARGUMENTS[1]} ==  file
-    ...    ${ARGUMENTS[2]} ==  tenderId
-  Selenium2Library.Switch Browser     ${ARGUMENTS[0]}
-  sleep   4
- # Choose File     xpath=(//button[@name='file'][contains(text(), 'Додати файл')])[2]      ${ARGUMENTS[1]}
-  Choose File                 id=addNewDocToExistingBid_0          ${ARGUMENTS[1]}
+  [Arguments]  ${username}  ${file}  ${tender_uaid}
+  Click Element     xpath=//button[contains(@ng-click, 'changeEditBidClicked()')]
+  Select From List By Index     id=bidDocType_      1
+  Sleep   4
+  Click Element   id=addBidDoc_
+  Choose File     xpath=//input[@type="file"]  ${file}
+  Capture Page Screenshot
+  Close Browser
+  etender.Підготувати клієнт для користувача  ${username}
   sleep  10
 
 
@@ -726,33 +727,40 @@ Enter enquiry date
   Sleep  5
 
 Подати цінову пропозицію
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
-  ${amount}=    Get From Dictionary     ${ARGUMENTS[2].data.value}         amount
-  sleep  60
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  sleep  15
-  Input text    xpath=//input[@name='amount0']                  ${amount}
-  Click Element                     xpath=//div[@id='addBidDiv']//button[@class="btn btn-success"][contains(text(), 'Реєстрація пропозиції')]
+  [Arguments]  ${username}  ${tender_uaid}  ${test_bid_data}  @{arguments}
+  Log  ${test_bid_data}
+  ${amount}=    Get From Dictionary     ${test_bid_data.data.value}         amount
+  ${amount}=    Convert To String       ${amount}
+  sleep  5
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  sleep  5
+  Відкрити розділ пропозицій
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Input text        id=amount0                  ${amount}
+  Click Element     id=createBid_0
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  3
-  Click Element    xpath=//div[@id='modalAddBidWarning']//button[@class='btn btn-success']
-  sleep  10
-  Capture Page Screenshot
+
+Отримати інформацію із пропозиції
+  [Arguments]  ${username}  ${tender_uaid}  ${field}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Відкрити розділ пропозицій
+  ${value}=     Get Text                id=bidAmount0
+  ${value}=     parse_currency_value_with_spaces    ${value}
+  ${value}=     Convert To Number       ${value}
+  Log  ${value}
+  [Return]  ${value}
 
 Змінити цінову пропозицію
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} ==  ${test_bid_data}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  [Arguments]  ${username}  ${tender_uaid}  ${field}  ${value}
+  etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   Sleep    5
-  Input text    xpath=//input[@name='amount']        510
+  Click Element     xpath=//button[contains(@ng-click, 'changeEditBidClicked()')]
+  ${value}=    Convert To String       ${value}
+  Input text        id=amount0                  ${value}
+  Click Element                      xpath=//button[contains(@click-and-block, 'updateBid(bid)')]
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Sleep    3
-  Click Element                      xpath=//div[3]/button
 
 Скасувати цінову пропозицію
   [Arguments]  @{ARGUMENTS}
@@ -769,8 +777,7 @@ Enter enquiry date
   [Documentation]
   ...      ${ARGUMENTS[0]} =  username
   ...      ${ARGUMENTS[1]} =  ${TENDER_UAID}
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
+  #etender.Пошук тендера по ідентифікатору    ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
   Reload Page
 
 Оновити сторінку з планом
@@ -913,12 +920,8 @@ Check Is Element Loaded
   [Return]  ${return_value}
 
 Отримати інформацію із тендера
-  [Arguments]  ${user}  ${tender_id}  ${fieldname}
-  [Documentation]
-  ...      Викликає кейворди для отримання відповідних полів. Неявно очікує що сторінка аукціона вже відкрита
-  Switch browser   ${user}
-  Run keyword if  '${fieldname}' == 'awards[0].complaintPeriod.endDate'  etender.Пошук тендера по ідентифікатору  ${user}  ${tender_id}
-  Run Keyword And Return  Отримати інформацію про ${fieldname}
+  [Arguments]  ${username}  ${tender_uaid}  ${field}
+  Run Keyword And Return  Отримати інформацію про ${field}
 
 Отримати текст із поля і показати на сторінці
   [Arguments]   ${fieldname}
@@ -1006,7 +1009,7 @@ Check Is Element Loaded
 
 Отримати інформацію про enquiryPeriod.startDate
   ${return_value}=   Отримати текст із поля і показати на сторінці  enquiryPeriod.startDate
-  ${return_value}=  Set Variable  ${return_value.replace(u'з ','')}
+  ${return_value}=   Set Variable  ${return_value.replace(u'з ','')}
   ${return_value}=   convert_etender_date_to_iso_format   ${return_value}
   [return]  ${return_value}
 

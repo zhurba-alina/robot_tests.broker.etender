@@ -451,29 +451,35 @@ Enter enquiry date
 
 
 Задати запитання на тендер
-  [Arguments]  ${username}  ${tender_uaid}  ${questions}
-  Log  ${questions}
+  [Arguments]  ${username}  ${tender_uaid}  ${question}
+  Задати запитання на  Тендер  0  ${question}
+
+Задати запитання на лот
+  [Arguments]  ${username}  ${tender_uaid}  ${lot_id}  ${question}
+  Задати запитання на  Лот  ${lot_id}  ${question}
+
+Задати запитання на
+  [Arguments]  ${entity}  ${lot_id}  ${question}
+  Log  ${question}
   Відкрити розділ запитань
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   Wait Until Page Contains Element   id=askQuestion
   Click Element  id=askQuestion
   Wait Until Page Does Not Contain      ${locator_block_overlay}
+  Run Keyword If  '${entity}'=='Лот'    Вибрати лот запитання  ${lot_id}
   Wait Until Page Contains Element      id=title
-  Input text        id=title            ${questions.data.title}
-  Input text        id=description      ${questions.data.description}
+  Input text        id=title            ${question.data.title}
+  Input text        id=description      ${question.data.description}
   Click Element     id=sendQuestion
 
+Вибрати лот запитання
+  [Arguments]  ${lot_id}
+  Select From List By Label  xpath=//*[@ng-model="vm.questionTo"]  Лоту
+  ${lot}=       Get Text      xpath=//option[contains(.,'${lot_id}')]
+  Select From List By Label  xpath=//*[@ng-model="vm.question.lot"]     ${lot}
 
-Завантажити документ
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} ==  username
-  ...      ${ARGUMENTS[1]} ==  file
-  ...      ${ARGUMENTS[2]} ==  tender_uaid
-  sleep   2
-  Select From List By Label  xpath=//div[@id="tree-01-02"]//select[@id="docType"]  Інші
-  log  ${ARGUMENTS[1]}
-  Sleep   10
+Завантажити док
+  [Arguments]  ${username}  ${file}  ${locator}
   # TODO: Rework this tricky behavior someday?
   # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
   # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
@@ -788,23 +794,7 @@ Enter enquiry date
   [Arguments]  @{ARGUMENTS}
   Reload Page
 
-Задати питання
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-  ...      ${ARGUMENTS[0]} = username
-  ...      ${ARGUMENTS[1]} = ${TENDER_UAID}
-  ...      ${ARGUMENTS[2]} = question_data
-  ${title}=        Get From Dictionary  ${ARGUMENTS[2].data}  title
-  ${description}=  Get From Dictionary  ${ARGUMENTS[2].data}  description
-  Selenium2Library.Switch Browser    ${ARGUMENTS[0]}
-  etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  20
-  Click Element                      xpath=//a[contains(@href,'#/addQuestion/')]
-  Wait Until Page Contains Element   id=title
-  Sleep  2
-  Input text                         id=title                 ${title}
-  Input text                         id=description           ${description}
-  Click Element                      xpath=//button[@type='submit']
+
 
 Відповісти на запитання
   [Arguments]  ${username}  ${tender_uaid}  ${answer_data}  ${question_id}

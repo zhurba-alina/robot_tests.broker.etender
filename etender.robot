@@ -746,6 +746,7 @@ Enter enquiry date
 Отримати інформацію із пропозиції
   [Arguments]  ${username}  ${tender_uaid}  ${field}
   etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
   Відкрити розділ пропозицій
   ${value}=     Get Text                id=bidAmount0
   ${value}=     parse_currency_value_with_spaces    ${value}
@@ -1131,7 +1132,7 @@ Check Is Element Loaded
 Отримати посилання на аукціон для учасника
   [Arguments]  @{ARGUMENTS}
   etender.Пошук тендера по ідентифікатору   ${ARGUMENTS[0]}   ${ARGUMENTS[1]}
-  Sleep  60
+  Відкрити розділ пропозицій
   Page Should Contain Element  xpath=//a[@id='participationUrl_0']
   Sleep  3
   ${url}=  Get Element Attribute  xpath=//*[@id="participationUrl_0"]@href

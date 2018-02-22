@@ -484,14 +484,24 @@ Enter enquiry date
   # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
   # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
   ${tmp_location}=  Get Location
-  Click Element   id=tend_doc_add
-  Choose File     xpath=//input[@type="file"]  ${ARGUMENTS[1]}
+  Click Element   ${locator}
+  Choose File     xpath=//input[@type="file"]  ${file}
   Sleep   4
   Capture Page Screenshot
   Close Browser
-  etender.Підготувати клієнт для користувача  ${ARGUMENTS[0]}
+  etender.Підготувати клієнт для користувача  ${username}
   Go To  ${tmp_location}
-  Sleep  5
+
+Завантажити документ
+  [Arguments]  ${username}  ${file}  ${tender_uaid}
+  [Documentation]
+  ...   Загрузка дока в тендер
+  sleep   2
+  Select From List By Label  xpath=//div[@id="tree-01-02"]//select[@id="docType"]  Інші
+  log  ${file}
+  Sleep     5
+  Завантажити док  ${username}  ${file}  id=tend_doc_add
+  Sleep     5
 
 Додати предмети
   [Arguments]  ${items}
@@ -696,45 +706,27 @@ Enter enquiry date
   [Arguments]  ${username}  ${file}  ${tender_uaid}
   Click Element     xpath=//button[contains(@ng-click, 'changeEditBidClicked()')]
   Select From List By Index     id=bidDocType_      1
-  Sleep   4
-  Click Element   id=addBidDoc_
-  Choose File     xpath=//input[@type="file"]  ${file}
-  Capture Page Screenshot
-  Close Browser
-  etender.Підготувати клієнт для користувача  ${username}
-  sleep  10
+  Завантажити док  ${username}  ${file}  id=addBidDoc_
+  Sleep  5
 
 
 Змінити документ в ставці
-  [Arguments]  @{ARGUMENTS}
-  [Documentation]
-    ...    ${ARGUMENTS[0]} ==  username
-    ...    ${ARGUMENTS[1]} ==  tenderId
-    ...    ${ARGUMENTS[2]} ==  amount
-    ...    ${ARGUMENTS[3]} ==  amount.value
-  Sleep    3
+  [Arguments]  ${username}  ${tender_uaid}  ${file}  ${doc_id}
+  Log  ${doc_id}
+  Sleep     3
+  Відкрити розділ пропозицій
+  Click Element     xpath=//label[@for="showBidDocs00"]
+  Sleep     1
   Click Element     id=changeDoc_0
-  Sleep    3
-  Choose File       id=updatebid_doc_add     ${ARGUMENTS[1]}
-  Sleep   2
+  Sleep     3
+  Завантажити док  ${username}  ${file}  id=updateBidDoc_0
 
 Завантажити документ в лот
-  [Arguments]  ${username}  ${document_file}  ${tender_uaid}  ${lot_id}
+  [Arguments]  ${username}  ${file}  ${tender_uaid}  ${lot_id}
   sleep   2
   Select From List By Label  xpath=//div[@id="treetree-01-02-0"]//select[@id="docType"]  Інші
-  Sleep   5
-  # TODO: Rework this tricky behavior someday?
-  # Autotest cannot upload file directly, because there is no INPUT element on page. Need to click on button first,
-  # but this will open OS file selection dialog. So we close and reopen browser to get rid of this dialog
-  ${tmp_location}=  Get Location
-  Click Element   id=lot_doc_add
-  Choose File     xpath=//input[@type="file"]  ${document_file}
-  Sleep   4
-  Capture Page Screenshot
-  Close Browser
-  etender.Підготувати клієнт для користувача  ${username}
-  Go To  ${tmp_location}
-  Sleep  5
+  Sleep   1
+  Завантажити док  ${username}  ${file}  id=lot_doc_add
 
 Подати цінову пропозицію
   [Arguments]  ${username}  ${tender_uaid}  ${test_bid_data}  @{arguments}

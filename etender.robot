@@ -93,6 +93,7 @@ Login
   ...      ${ARGUMENTS[1]} ==  tender_data
   ${items}=             Get From Dictionary     ${ARGUMENTS[1].data}               items
   ${title}=             Get From Dictionary     ${ARGUMENTS[1].data}               title
+  ${title_en}=             Get From Dictionary     ${ARGUMENTS[1].data}               title_en
   ${description}=       Get From Dictionary     ${ARGUMENTS[1].data}               description
   ${budget}=            Get From Dictionary     ${ARGUMENTS[1].data.value}         amount
   ${budgetToStr}=       float_to_string_2f      ${budget}      # at least 2 fractional point precision, avoid rounding
@@ -116,7 +117,7 @@ Login
   Click Element                     xpath=//a[@data-target='#procedureType']  # Створити оголошення
   Sleep  3
 
-  &{procedure_types}=  Create Dictionary  aboveThresholdUA=Відкриті торги  belowThreshold=Допорогові закупівлі  negotiation=Переговорна процедура
+  &{procedure_types}=  Create Dictionary  aboveThresholdUA=Відкриті торги  belowThreshold=Допорогові закупівлі  negotiation=Переговорна процедура  aboveThresholdEU=Відкриті торги з публікацією англійською мовою
   ${lots}=         Set Variable  ${EMPTY}
   ${lots_count}=   Set Variable  ${EMPTY}
   ${status}  ${lots}=  Run Keyword And Ignore Error  Get From Dictionary  ${ARGUMENTS[1].data}  lots
@@ -128,8 +129,10 @@ Login
   Sleep  3
   Click Element                     id=goToCreate  # Продовжити
   Sleep   3
+
   Додати лот при наявності і внести значення  ${lots_count}  ${lots}
   Input text    id=title                  ${title}
+  Run Keyword If    '${methodType}' == 'aboveThresholdEU'   Input text    id=titleEN    ${title_en}
   Input text    id=description            ${description}
   Додати причину з описом при наявності  ${ARGUMENTS[1].data}
   ${features}=        Set Variable  ${EMPTY}
@@ -139,7 +142,6 @@ Login
   ${features_count}=  Run Keyword IF  '${status}' != 'PASS'  Set Variable  0
   ...                 ELSE  Get Length  ${features}
   Додати нецінові показники при наявності  ${features_count}  ${features}
-
   Додати enquiry_end_date_time при наявності  ${ARGUMENTS[1]}
   Додати start_date_time при наявності        ${ARGUMENTS[1]}  ${methodType}
   Додати end_date_time при наявності          ${ARGUMENTS[1]}
@@ -152,7 +154,7 @@ Login
   Click Element    xpath=//div[contains(@class,"row") and (not(contains(@class,"controls")))]//div[(not(contains(@class,"hidden")))]/label/input[@id="valueAddedTaxIncluded"]
   Додати мінімальний крок при наявності  ${ARGUMENTS[1].data}
   Sleep   1
-  Додати предмети  ${items}
+  Додати предмети  ${methodType}  ${items}
   Sleep  1
   scrollIntoView by script using xpath  //*[@id="createTender"]  # scroll to createTender button
   sleep   2
@@ -504,14 +506,15 @@ Enter enquiry date
   Sleep     5
 
 Додати предмети
-  [Arguments]  ${items}
+  [Arguments]  ${methodTypeT}  ${items}
   ${items_count}=  Get Length  ${items}
   :FOR  ${i}  IN RANGE  ${items_count}
-  \     Додати предмет  ${items[${i}]}  ${i}
+  \     Додати предмет  ${methodTypeT}  ${items[${i}]}  ${i}
 
 Додати предмет
-  [Arguments]  ${item}  ${index}
+  [Arguments]  ${methodTypeT}  ${item}  ${index}
   ${items_description}=  Get From Dictionary  ${item}                   description
+  ${items_descriptionEN}=  Get From Dictionary  ${item}                 description_en
   ${quantity}=           Get From Dictionary  ${item}                   quantity
   ${unit}=               Get From Dictionary  ${item.unit}              name
   ${cpv}=                Get From Dictionary  ${item.classification}    id
@@ -529,10 +532,13 @@ Enter enquiry date
   ${locality}=           convert_common_string_to_etender_string  ${locality}
   ${postalCode}=         Get From Dictionary  ${item.deliveryAddress}   postalCode
   ${streetAddress}=      Get From Dictionary  ${item.deliveryAddress}   streetAddress
+  ${methodType}=         Set Variable  ${methodTypeT}
 
   Run Keyword If  '${index}' != '0'  Click Element  id=addLotItem_0
   Sleep  3
   Input text    id=itemsDescription0${index}      ${items_description}
+  Sleep  1
+  Run Keyword If     '${methodType}' == 'aboveThresholdEU'  Input text    id=itemsDescriptionEN0${index}      ${items_descriptionEN}
   Sleep  1
   Input text    id=itemsQuantity0${index}         ${quantity}
   Click Element   xpath=(//div[contains(@ng-model,"unit.selected")]//input[@type="search"])[${index}+1]

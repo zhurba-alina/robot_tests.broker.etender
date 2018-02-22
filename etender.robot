@@ -734,17 +734,34 @@ Enter enquiry date
   Sleep   1
   Завантажити док  ${username}  ${file}  id=lot_doc_add
 
+Заповнити нецінові критерії
+  [Arguments]  ${features_ids}  ${parameters}
+  ${count}=  Get Length  ${features_ids}
+  :FOR  ${i}  IN RANGE  ${count}
+  \     Run Keyword  Вибрати неціновий критерій  ${features_ids[${i}]}  ${parameters[${i}]['value']}
+
+Вибрати неціновий критерій
+  [Arguments]  ${feature_id}  ${value}
+  ${index}=  get_feature_index  ${value}
+  Select From List By Index  xpath=//span[contains(.,'${feature_id}')]/../..//select  ${index}
+  Sleep  1
+
+Пітдвердити чекбокси пропозиції
+  Select Checkbox  id=selfEligible
+  Select Checkbox  id=selfQualified
+
 Подати цінову пропозицію
-  [Arguments]  ${username}  ${tender_uaid}  ${test_bid_data}  @{arguments}
-  Log  ${test_bid_data}
-  ${amount}=    Get From Dictionary     ${test_bid_data.data.value}         amount
-  ${amount}=    Convert To String       ${amount}
-  sleep  5
+  [Arguments]  ${username}  ${tender_uaid}  ${bid_data}  ${lots_ids}  ${features_ids}
   etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   sleep  5
   Відкрити розділ пропозицій
   Wait Until Page Does Not Contain   ${locator_block_overlay}
+  ${amount}=    Run Keyword If  ${lots_ids} is None  Set Variable  ${bid_data.data.value.amount}
+  ...           ELSE  Set Variable  ${bid_data.data.lotValues[0].value.amount}
+  ${amount}=    Convert To String       ${amount}
+  Run Keyword Unless  ${features_ids} is None  Заповнити нецінові критерії  ${features_ids}  ${bid_data.data.parameters}
   Input text        id=amount0                  ${amount}
+  Run Keyword And Ignore Error      Пітдвердити чекбокси пропозиції
   Click Element     id=createBid_0
   Wait Until Page Does Not Contain   ${locator_block_overlay}
   sleep  3

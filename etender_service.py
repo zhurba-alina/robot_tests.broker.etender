@@ -146,6 +146,10 @@ def get_helper_dictionary():
         u'відмінена закупівля': u'cancelled'
     }
 
+def get_feature_index(i):
+    return {0.05: '0',
+            0.01: '1',
+            0: '2'}[i]
 
 def convert_unit_name_to_unit_code(string):
     return {

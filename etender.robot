@@ -1267,6 +1267,13 @@ Check Is Element Loaded
   sleep   4
   Click Element                      xpath=//li[@id="naviTitle1"]/span  # go to bids tab
 
+Відкрити розділ вимог і скарг
+  scrollIntoView by script using xpath  //li[@id="naviTitle3"]/span  # scroll to complaints
+  sleep   4
+  JavaScript scrollBy  0  -100
+  sleep   4
+  Click Element                      xpath=//li[@id="naviTitle3"]/span  # go to complaints
+
 Створити постачальника, додати документацію і підтвердити його
   [Arguments]  ${username}  ${tender_uaid}  ${object}  ${document}
   Sleep  30
@@ -1517,3 +1524,42 @@ Wait for upload
   Sleep  1
   Capture Page Screenshot
   Wait Until Page Contains  Підтверджено!  60
+
+Відповісти на вимогу про виправлення умов закупівлі
+  [Arguments]  ${username}  ${tender_uaid}  ${complaintID}  ${answer_data}
+  # TODO: remove workaround and open complaint using given complaintID
+  ${tmp_hacked_title}=  Get From Dictionary  ${USERS.users['Tender_User'].tender_claim_data.claim.data}  title
+  ${tmp_hacked_id}=  Get From Dictionary  ${USERS.users['Tender_User'].tender_claim_data}  complaintID
+  log  ${tmp_hacked_id}
+  ${tmp_hacked_title}=  Run Keyword If  '${tmp_hacked_id}' != '${complaintID}'  temporary keyword for title update  ${USERS.users['Tender_User'].lot_claim_data}  ${complaintID}
+  ...   ELSE  Set Variable  ${tmp_hacked_title}
+  Reload Page
+  Sleep   25
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
+  Відкрити розділ вимог і скарг
+  Wait Until Element Is Visible  xpath=//a[@role="button" and @aria-expanded="false" and contains(.,"${tmp_hacked_title}")]
+  Sleep  5
+  Click Element  xpath=//a[@role="button" and @aria-expanded="false" and contains(.,"${tmp_hacked_title}")]
+  Sleep  5
+  Wait Until Element Is Visible  xpath=(//button[@click-and-block="showAnswerComplaintModal(currentComplaint)"])[1]  # button - відповісти
+  Sleep  10
+  scrollIntoView by script using xpath  (//button[@click-and-block="showAnswerComplaintModal(currentComplaint)"])[1]  # button - відповісти
+  sleep   2
+  JavaScript scrollBy  0  -100
+  sleep   2
+  Click Element  xpath=(//button[@click-and-block="showAnswerComplaintModal(currentComplaint)"])[1]
+  Sleep  5
+  ${resolution}=      Get From Dictionary  ${answer_data.data}  resolution
+  ${resolutionType}=  Get From Dictionary  ${answer_data.data}  resolutionType
+  ${tendererAction}=  Get From Dictionary  ${answer_data.data}  tendererAction
+  Input text  id=tenderAction   ${tendererAction}
+  Input text  id=descriptionEl  ${resolution}
+  Select From List By Value  id=resolutionTypeEl  ${resolutionType}
+  Sleep  1
+  Click Element  id=btnanswerComplaint
+
+temporary keyword for title update
+  [Arguments]  ${lot_claim_data}  ${complaintID}
+  ${tmp_hacked_title}=  Get From Dictionary  ${lot_claim_data.claim.data}  title
+  ${tmp_hacked_id}=     Get From Dictionary  ${lot_claim_data}             complaintID
+  [return]  ${tmp_hacked_title}

@@ -123,7 +123,7 @@ def parse_currency_value_with_spaces(raw):
 
 
 def convert_etender_string_to_common_string(string):
-    return get_helper_dictionary().get(string)
+    return get_helper_dictionary().get(string, string)
 
 
 def get_helper_dictionary():

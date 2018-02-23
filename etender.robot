@@ -755,7 +755,6 @@ Enter enquiry date
   etender.Пошук тендера по ідентифікатору   ${username}   ${tender_uaid}
   sleep  5
   Відкрити розділ пропозицій
-  Wait Until Page Does Not Contain   ${locator_block_overlay}
   ${amount}=    Run Keyword If  ${lots_ids} is None  Set Variable  ${bid_data.data.value.amount}
   ...           ELSE  Set Variable  ${bid_data.data.lotValues[0].value.amount}
   ${amount}=    Convert To String       ${amount}
@@ -819,7 +818,6 @@ Enter enquiry date
   etender.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   sleep   10
   Відкрити розділ запитань
-  sleep   10
   scrollIntoView by script using xpath  //*[@id="addAnswer_0"]  # scroll to addAnswer button
   sleep   4
   JavaScript scrollBy  0  -100
@@ -842,10 +840,11 @@ Enter enquiry date
 
 Відкрити розділ запитань
   scrollIntoView by script using xpath  //li[@id="naviTitle2"]/span  # scroll to questions tab
-  sleep   4
+  sleep   1
   JavaScript scrollBy  0  -100
-  sleep   4
+  sleep   1
   Click Element                      xpath=//li[@id="naviTitle2"]/span  # go to questions tab
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
 
 scrollIntoView by script using xpath
   [Arguments]  ${xpath_locator}
@@ -1108,14 +1107,12 @@ Check Is Element Loaded
 Отримати інформацію про questions[0].title
   sleep   10
   Відкрити розділ запитань
-  sleep   10
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].title
   [return]  ${return_value}
 
 Отримати інформацію про questions[0].description
   Sleep   10
   Відкрити розділ запитань
-  Sleep   10
   ${return_value}=   Отримати текст із поля і показати на сторінці   questions[0].description
   [return]  ${return_value}
 
@@ -1130,14 +1127,12 @@ Check Is Element Loaded
   Reload Page
   Sleep   10
   Відкрити розділ запитань
-  Sleep   10
   ${return_value}=     Отримати текст із поля і показати на сторінці     questions[0].answer
   [return]  ${return_value}
 
 Отримати інформацію про awards[0].complaintPeriod.endDate
   Sleep   10
   Відкрити розділ пропозицій
-  Sleep   10
   ${return_value}=  Отримати текст із поля і показати на сторінці     awards[0].complaintPeriod.endDate
   ${return_value}=  Set Variable  ${return_value.replace(u'по ','')}
   ${return_value}=  convert_etender_date_to_iso_format_and_add_timezone   ${return_value}
@@ -1173,7 +1168,6 @@ Check Is Element Loaded
   log  ${prepared_locator}
   sleep   10
   Відкрити розділ запитань
-  sleep   10
   Wait Until Page Contains Element  ${prepared_locator}  10
   Wait Until Keyword Succeeds  10 x  5  Check Is Element Loaded  ${prepared_locator}
   ${raw_value}=   Get Text  ${prepared_locator}
@@ -1262,10 +1256,11 @@ Check Is Element Loaded
 
 Відкрити розділ пропозицій
   scrollIntoView by script using xpath  //li[@id="naviTitle1"]/span  # scroll to bids tab
-  sleep   4
+  sleep   1
   JavaScript scrollBy  0  -100
-  sleep   4
+  sleep   1
   Click Element                      xpath=//li[@id="naviTitle1"]/span  # go to bids tab
+  Wait Until Page Does Not Contain   ${locator_block_overlay}
 
 Відкрити розділ вимог і скарг
   scrollIntoView by script using xpath  //li[@id="naviTitle3"]/span  # scroll to complaints
@@ -1298,7 +1293,6 @@ Check Is Element Loaded
   Reload Page
   Sleep  5
   Відкрити розділ пропозицій
-  Sleep  5
   ${amount}=             Get From Dictionary  ${object.data.value}  amount
   ${supplier_name}=      Get From Dictionary  ${object.data.suppliers[0]}               name
   ${supplier_code}=      Get From Dictionary  ${object.data.suppliers[0].identifier}    id
@@ -1342,7 +1336,6 @@ Check Is Element Loaded
   Reload Page
   Sleep  5
   Відкрити розділ пропозицій
-  Sleep  5
   Click Element  xpath=//a[@data-target="#modalGetAwards"]  # button - Оцінка документів Кандидата
   Select From List By Label  id=docType  Повідомлення про рішення
   Sleep   5
@@ -1362,7 +1355,6 @@ Check Is Element Loaded
   Go To  ${tmp_location}
   Sleep  5
   Відкрити розділ пропозицій
-  Sleep  5
   Capture Page Screenshot
   Wait Until Keyword Succeeds   10 min  20 x  Wait for upload  # there: button - Оцінка документів Кандидата
 
@@ -1388,7 +1380,6 @@ Check Is Element Loaded
   Reload Page
   Sleep  5
   Відкрити розділ пропозицій
-  Sleep  5
   Click Element  xpath=//a[@data-target="#modalGetAwards"]              # button - Оцінка документів Кандидата
   Capture Page Screenshot
   Sleep  5
@@ -1423,7 +1414,6 @@ Wait for upload
   ${tmp_location_tender}=  Get Location
 
 # ==================  1 - enter values into fields, save
-  Sleep  5
   Click Element  xpath=//a[.="Внести інформацію про договір"]
   Sleep  10
   Input text  id=contractNumber  ${contract_index}
@@ -1448,7 +1438,6 @@ Wait for upload
   Sleep  5
   Capture Page Screenshot
   Відкрити розділ пропозицій
-  Sleep  5
   scrollIntoView by script using xpath  //a[.="Редагувати інформацію про договір "]
   sleep   2
   JavaScript scrollBy  0  -100
@@ -1477,8 +1466,6 @@ Wait for upload
   Sleep  5
   Capture Page Screenshot
   Відкрити розділ пропозицій
-  Sleep  5
-
   scrollIntoView by script using xpath  //a[.="Редагувати інформацію про договір "]
   sleep   2
   JavaScript scrollBy  0  -100

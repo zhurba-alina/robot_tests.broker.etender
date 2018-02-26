@@ -121,6 +121,11 @@ def parse_currency_value_with_spaces(raw):
     # to convert raw values like '2 216 162,83 UAH' to string which is ready for conversion to float
     return ''.join(raw.split(' ')[:-1]).replace(',','.')
 
+def get_minimalStep_currency(raw_value):
+    # to get currency 'UAH' from raw values like '2 216 162,83 UAH'
+    result_dic = raw_value.split(' ')
+    result = result_dic[-1]
+    return result
 
 def convert_etender_string_to_common_string(string):
     return get_helper_dictionary().get(string, string)

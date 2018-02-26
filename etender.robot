@@ -44,15 +44,22 @@ ${locator.awards[0].complaintPeriod.endDate}                   xpath=//div[@ng-i
 ${locator_document_title}                                      xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]
 ${locator_document_href}                                       xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]@href
 ${locator_document_description}                                xpath=//td[contains(@class,"doc-name")]//a[contains(.,"XX_doc_id_XX")]/following-sibling::p
-${locator_lot_title}                                           xpath=//div[@id="treeLot-00-0"]//span[@id="lotTitle_0"]
+${locator_lot_title}                                           xpath=//div[@id="treeLot-00-0"]//*[@id="lotTitle_0"]
+${locator_lot_description}                                     xpath=//div[@id="treeLot-00-0"]//*[@id="lotDescription_0"]
+${locator_lot_value.currency}                                  id=lotCurrency_0
 ${locator_lot_value.amount}                                    id=lotValue_0
-${locator_lot_minimalStep.amount}                              id=lotMinimalStep_0
+${locator_lot_value.valueAddedTaxIncluded}                     xpath=//tender-subject-info//*[@id="lotVatInc_0"]
+${locator_lot_minimalStep.amount}                              xpath=//div[@id="treeLot-00-0"]//*[@id="lotMinimalStep_0"]
+${locator_lot_minimalStep.currency}                            xpath=//div[@id="treeLot-00-0"]//*[@id="lotMinimalStep_0"]
+${locator_lot_minimalStep.valueAddedTaxIncluded}               xpath=//tender-subject-info//*[@id="lotVatInc_0"]
 ${locator.value.currency}                                      id=tenderCurrency
 ${locator.value.valueAddedTaxIncluded}                         id=includeVat
 ${locator.bids}                                                id=ParticipiantInfo_0
 ${locator_block_overlay}                                       xpath=//div[@class='blockUI blockOverlay']
 ${locator_question_title}                                      xpath=//span[contains(@id,'quest_title_') and contains(text(),'XX_que_id_XX')]
-${locator_feature_title}                                       xpath=//div[contains(@ng-repeat,"eature")]//span[contains(@ng-bind,"eature.title") and contains(.,"XX_feature_id_XX")]
+${locator_feature_title}                                       xpath=//*[contains(@ng-bind,'eature.title') and contains(text(),'XX_feature_id_XX')]
+${locator_feature_description}                                 xpath=//*[contains(@ng-bind,'eature.title') and contains(text(),'XX_feature_id_XX')]/../../following-sibling::div//*[contains(@ng-bind,'eature.description')]
+${locator_feature_featureOf}                                   xpath=//div[contains(@ng-repeat,"eature")]//span[contains(@ng-bind,"eature.title") and contains(.,"XX_feature_id_XX")]
 ${huge_timeout_for_visibility}                                 300
 
 
@@ -1220,6 +1227,22 @@ Check Is Element Loaded
   [Arguments]  ${return_value}
   [return]  ${return_value}
 
+Конвертувати інформацію із лоту про description
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із лоту про value.currency
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із лоту про value.valueAddedTaxIncluded
+  [Arguments]  ${return_value}
+  ${return_value}=  Run Keyword If  'ПДВ' in '${return_value}'  Set Variable  True
+    ...  ELSE  Set Variable  False
+  Log  ${return_value}
+  ${return_value}=   Convert To Boolean   ${return_value}
+  [return]  ${return_value}
+
 Конвертувати інформацію із лоту про value.amount
   [Arguments]  ${raw_value}
   ${return_value}=  parse_currency_value_with_spaces  ${raw_value} XX
@@ -1230,6 +1253,19 @@ Check Is Element Loaded
   [Arguments]  ${raw_value}
   ${return_value}=  parse_currency_value_with_spaces  ${raw_value}
   ${return_value}=  Convert To Number  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із лоту про minimalStep.valueAddedTaxIncluded
+  [Arguments]  ${return_value}
+  ${return_value}=  Run Keyword If  'ПДВ' in '${return_value}'  Set Variable  True
+    ...  ELSE  Set Variable  False
+  Log  ${return_value}
+  ${return_value}=   Convert To Boolean   ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із лоту про minimalStep.currency
+  [Arguments]  ${raw_value}
+  ${return_value}=  get_minimalStep_currency  ${raw_value}
   [return]  ${return_value}
 
 Отримати інформацію із нецінового показника
@@ -1251,6 +1287,14 @@ Check Is Element Loaded
   Run Keyword And Return  Конвертувати інформацію із нецінового показника про ${field_name}  ${raw_value}
 
 Конвертувати інформацію із нецінового показника про title
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із нецінового показника про description
+  [Arguments]  ${return_value}
+  [return]  ${return_value}
+
+Конвертувати інформацію із нецінового показника про featureOf
   [Arguments]  ${return_value}
   [return]  ${return_value}
 
